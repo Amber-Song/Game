@@ -68,10 +68,6 @@ export default {
   display: grid;
   grid-template-columns: 260px auto;
 }
-
-table {
-  border-collapse: collapse;
-}
 .board-td {
   width: 30px;
   height: 30px;
@@ -79,27 +75,6 @@ table {
   border: 1px solid black;
   border-collapse: collapse;
 }
-.board-td__white {
-  background-color: white;
-  width: 100%;
-  height: 100%;
-}
-.board-td__blue {
-  background-color: lightblue;
-  width: 100%;
-  height: 100%;
-}
-.board-td__darkblue {
-  background-color: darkblue;
-  width: 100%;
-  height: 100%;
-}
-.board-td__gray {
-  background-color: darkgray;
-  width: 100%;
-  height: 100%;
-}
-
 .introduction-describe {
   margin: 30px;
   margin-top: 10px;

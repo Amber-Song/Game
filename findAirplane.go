@@ -24,13 +24,7 @@ type AirplaneGame struct {
 	PlayerNow  string
 	Round      int
 	Win        []string
-	ThisPlayer string
-}
-
-type ReceiveData struct {
-	WithCredentials bool
-	Params          map[string]string
-	Data            AirplaneGame
+	ThisPlayer string // thisplayer is not variable that two players should synchronise
 }
 
 func generateHead() (int, int) {
@@ -283,15 +277,13 @@ func (room *AirplaneRoom) getUserNow(user string) string {
 	}
 }
 
-func (game *AirplaneGame) getNewGame(r *http.Request, userNow string) AirplaneGame {
+func (game *AirplaneGame) getUpdateGameData(r *http.Request, userNow string) AirplaneGame {
 	reqBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Println(err)
 	}
-	var receiveData ReceiveData
-	err = json.Unmarshal(reqBody, &receiveData)
-
-	receiveGame := receiveData.Data
+	var receiveGame AirplaneGame
+	err = json.Unmarshal(reqBody, &receiveGame)
 	if err != nil {
 		fmt.Println(err)
 	}

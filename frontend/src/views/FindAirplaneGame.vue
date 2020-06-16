@@ -144,20 +144,23 @@ export default {
         this.player2Board[row][column] = this.player2Board[row][column] + 3;
       }
       this.axios
-        .post(`${this.$hostname}/FindAirplane/Game/room`, {
-          withCredentials: true,
-          params: {
-            room: this.getRoom
-          },
-          data: {
+        .post(
+          `${this.$hostname}/FindAirplane/Game/room`,
+          {
             Board1: this.player1Board,
             Board2: this.player2Board,
             PlayerNow: this.playerNow,
             Round: this.round,
             Win: this.win,
             ThisPlayer: this.thisPlayer
+          },
+          {
+            withCredentials: true,
+            params: {
+              room: this.getRoom
+            }
           }
-        })
+        )
         .catch(err => {
           this.errors.push(err);
         });
@@ -168,9 +171,6 @@ export default {
 </script>
 
 <style scoped>
-* {
-  box-sizing: border-box;
-}
 .game {
   width: 90%;
   margin-left: auto;
@@ -206,35 +206,12 @@ export default {
   display: -ms-grid;
   grid-template-columns: 45% 10% 45%;
 }
-table {
-  border-collapse: collapse;
-}
 .board-td {
   width: 40px;
   height: 40px;
   background-color: darkgray;
   border: 1px solid black;
   border-collapse: collapse;
-}
-.board-td__white {
-  background-color: white;
-  width: 100%;
-  height: 100%;
-}
-.board-td__blue {
-  background-color: lightblue;
-  width: 100%;
-  height: 100%;
-}
-.board-td__darkblue {
-  background-color: darkblue;
-  width: 100%;
-  height: 100%;
-}
-.board-td__gray {
-  background-color: darkgray;
-  width: 100%;
-  height: 100%;
 }
 
 .intro {

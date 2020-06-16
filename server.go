@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -36,7 +37,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	b, err := ioutil.ReadFile("./frontend/dist/index.html")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err) // TODO root file broken
 	}
 	w.Write(b)
 }
@@ -54,13 +55,15 @@ func setCookie(w http.ResponseWriter) string {
 	return value
 }
 
-func getCookie(w http.ResponseWriter, r *http.Request) string {
+func getCookie(r *http.Request) (string, error) {
 	cookie, err := r.Cookie("gameUser")
-	if err != nil || cookie == nil {
-		fmt.Println("err", err, "cookie", cookie)
-		return setCookie(w)
+	if err != nil {
+		return "", err
 	}
-	return cookie.Value
+	if cookie == nil {
+		return "", errors.New("Cookie didn't set")
+	}
+	return cookie.Value, nil
 }
 
 func setRoom() string {
@@ -90,20 +93,26 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := getCookie(w, r)
+	user, err := getCookie(r)
+	if user == "" {
+		if err == errors.New("Cookie didn't set") {
+			user = setCookie(w)
+		} else {
+			fmt.Println(err)
+		}
+	}
 	roomid := setRoom()
 	board := generateAirplane()
 	fmt.Println("User name is ", user, "Room Id is ", roomid)
 
 	room := AirplaneRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1)}
-	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "player1"}
+	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: ""}
 	airplaneRooms[roomid] = room
 	airplaneGames[roomid] = game
 
 	fmt.Println("player 1 enter Game now is ", airplaneGames[roomid])
 	cleanRooms()
 
-	// Redirect to the game with roomid
 	b, err := json.Marshal(roomid)
 	if err != nil {
 		fmt.Println(err)
@@ -120,27 +129,33 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get room and cookie
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	user := getCookie(w, r)
+	user, err := getCookie(r)
+	if user == "" {
+		if err == errors.New("Cookie didn't set") {
+			user = setCookie(w)
+		} else {
+			fmt.Println(err)
+		}
+	}
 	fmt.Println("User name is ", user, "Room Id is ", roomid)
 
 	// Check what is the user now and also if is a new user, update room and game
 	room := airplaneRooms[roomid]
 	game := airplaneGames[roomid]
-	userNow := room.getUserNow(user)
+	userNow := room.getUserNow(user) // this should decide which is this play instead of this player in the struct
 	if userNow == "" {
 		if room.player2 == "" {
 			userNow = "player2"
 			board := generateAirplane()
-			newRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire}
-			newGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow}
-			airplaneRooms[roomid] = newRoom
-			airplaneGames[roomid] = newGame
-			room = newRoom
-			game = newGame
+			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire}
+			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow}
+			airplaneRooms[roomid] = updateRoom
+			airplaneGames[roomid] = updateGame
+			room = updateRoom
+			game = updateGame
 			fmt.Println("player 2 enter Game now is ", airplaneGames[roomid])
-
 		} else {
-			http.Redirect(w, r, "/notFound", http.StatusFound)
+			http.Redirect(w, r, "/FindAirplane/Game", http.StatusFound)
 			return
 		}
 	}
@@ -149,13 +164,14 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		//	if post, get new data, update it and then send the data back
 		fmt.Println("Post data")
-		newGame := game.getNewGame(r, userNow)
-		fmt.Println("get new data", newGame)
-		airplaneGames[roomid] = newGame
+		updateGame := game.getUpdateGameData(r, userNow)
+		fmt.Println("get new data", updateGame)
+		airplaneGames[roomid] = updateGame
 		fmt.Println("Game now is ", airplaneGames[roomid])
 	} else {
 		//	if get, then return data
-		b, err := json.Marshal(game)
+		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow}
+		b, err := json.Marshal(updateGame)
 		if err != nil {
 			println(err)
 		}
