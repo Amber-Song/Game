@@ -36,7 +36,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := ioutil.ReadFile("./frontend/dist/index.html")
+	b, err := ioutil.ReadFile("frontend/dist/index.html")
 	if err != nil {
 		fmt.Println(err) // TODO root file broken
 	}
@@ -189,7 +189,7 @@ func main() {
 	airplaneTypes = append(airplaneTypes, AirplaneType{AirplaneBody: 3, AirplaneWing: 5, AirplaneTail: 3})
 
 	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/FindAirplane/Game", airplaneInitHandler)
-	http.HandleFunc("/FindAirplane/Game/room", airplaneGameHandler)
+	http.HandleFunc("/api/FindAirplane/Game", airplaneInitHandler)
+	http.HandleFunc("/api/FindAirplane/Game/room", airplaneGameHandler)
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }

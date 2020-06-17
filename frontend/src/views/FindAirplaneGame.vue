@@ -114,7 +114,7 @@ export default {
     reload() {
       this.$store.commit("getRoom", { roomid: this.roomid });
       this.axios
-        .get(`${this.$hostname}/FindAirplane/Game/room`, {
+        .get(`${this.$hostname}/api/FindAirplane/Game/room`, {
           withCredentials: true,
           params: {
             room: this.getRoom
@@ -137,7 +137,6 @@ export default {
       this.$router.push({ path: "/FindAirplane/Introduction" });
     },
     flip(row, column) {
-      console.log("Flip function is called...", row, column);
       if (this.thisPlayer == "player1") {
         this.player1Board[row][column] = this.player1Board[row][column] + 3;
       } else {
@@ -145,7 +144,7 @@ export default {
       }
       this.axios
         .post(
-          `${this.$hostname}/FindAirplane/Game/room`,
+          `${this.$hostname}/api/FindAirplane/Game/room`,
           {
             Board1: this.player1Board,
             Board2: this.player2Board,

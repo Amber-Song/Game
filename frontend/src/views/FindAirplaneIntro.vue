@@ -57,10 +57,8 @@ export default {
   },
   methods: {
     startGame() {
-      console.log(this.boardlength);
-
       this.axios
-        .get(`${this.$hostname}/FindAirplane/Game`, {
+        .get(`${this.$hostname}/api/FindAirplane/Game`, {
           withCredentials: true,
           params: { boardLength: this.boardlength }
         })
