@@ -1,5 +1,5 @@
 <template>
-  <div class="game">
+  <div class="page">
     <h1>&rarr; Find airplane's head</h1>
     <div class="game-round-player">
       Round {{ round }}
@@ -71,7 +71,7 @@
       </table>
 
       <div class="inline-block">
-        <div class="inline-block">&larr; This is an example of game.</div>
+        <div class="inline-block">&larr; This is an example of airplanes.</div>
         <br>
         <div class="inline-block" v-on:click="backToIntro()">
           &rarr; Go back to introduction page and
@@ -170,7 +170,7 @@ export default {
 </script>
 
 <style scoped>
-.game {
+.page {
   width: 90%;
   margin-left: auto;
   margin-right: auto;

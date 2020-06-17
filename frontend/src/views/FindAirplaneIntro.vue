@@ -1,6 +1,9 @@
 <template>
-  <div class="introduction">
-    <h1>&rarr; Find airplane's head</h1>
+  <div class="introduction-page">
+    <h1
+      title="Get bored of playing this? Take a look at other games!"
+      v-on:click="backToHome()"
+    >&rarr; Find airplane's head</h1>
     <!-- This is the image for the example -->
     <div class="introduction-content">
       <table>
@@ -24,12 +27,6 @@
           the flipped pieces will show you it is an airplane's head, or a part of the body,
           or not airplanes. The one who uses the least pieces to find two airplanes' head
           (the dark blue piece) win the game.
-        </div>
-        <br>
-        <div>
-          * To play the game, one player click play now button which will jump to the game page
-          with a special room number. And the player who enters the room first, copy and send the URL
-          to the other player. While the other player enters the URL, the player will automatically enter the room.
         </div>
         <br>
         <h2>Setting:</h2>
@@ -72,17 +69,15 @@ export default {
         .catch(error => {
           console.log("Error:", error); // Logs out the error
         });
+    },
+    backToHome() {
+      this.$router.push({ path: "/" });
     }
   }
 };
 </script>
 
 <style scoped>
-.introduction {
-  width: 80%;
-  margin-left: auto;
-  margin-right: auto;
-}
 .introduction-content {
   display: grid;
   grid-template-columns: 260px auto;

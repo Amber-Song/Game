@@ -8,6 +8,11 @@
 * {
   box-sizing: border-box;
 }
+.introduction-page {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
 table {
   border-collapse: collapse;
   height: max-content;
