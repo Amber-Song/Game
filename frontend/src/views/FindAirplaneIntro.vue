@@ -18,12 +18,25 @@
       <div class="introduction-describe">
         <h2>Introduction:</h2>
         <div>
-          There will be two airplanes shown in the picture on each board but
-          facing the different directions and placing in a different position.
-          The two players are going to click one piece at one time in turn. The
-          one who uses the least pieces to find two airplanes head (the dark
-          blue piece) win the game.
+          There are two airplanes whose shapes are shown in the picture on each board
+          but facing the different direction and placing in a different position.
+          The two players are going to click one piece at one time in turn and
+          the flipped pieces will show you it is an airplane's head, or a part of the body,
+          or not airplanes. The one who uses the least pieces to find two airplanes' head
+          (the dark blue piece) win the game.
         </div>
+        <br>
+        <div>
+          * To play the game, one player click play now button which will jump to the game page
+          with a special room number. And the player who enters the room first, copy and send the URL
+          to the other player. While the other player enters the URL, the player will automatically enter the room.
+        </div>
+        <br>
+        <h2>Setting:</h2>
+        <label>
+          Choose the boardlength (8-10):
+          <input type="number" min="8" max="10" v-model="boardlength">
+        </label>
         <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
       </div>
     </div>
@@ -32,6 +45,11 @@
 
 <script>
 export default {
+  data: function() {
+    return {
+      boardlength: 8
+    };
+  },
   computed: {
     exampleArrays() {
       return this.$store.state.exampleMatrix;
@@ -39,9 +57,12 @@ export default {
   },
   methods: {
     startGame() {
+      console.log(this.boardlength);
+
       this.axios
         .get(`${this.$hostname}/FindAirplane/Game`, {
-          withCredentials: true
+          withCredentials: true,
+          params: { boardLength: this.boardlength }
         })
         .then(response => {
           this.$store.commit("getRoom", { roomid: response.data });
@@ -77,12 +98,13 @@ export default {
 }
 .introduction-describe {
   margin: 30px;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 h2 {
   font-weight: bold;
   margin: 0px;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 .introduction-button {
   margin: 20px;

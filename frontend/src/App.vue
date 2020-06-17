@@ -10,6 +10,9 @@
 }
 table {
   border-collapse: collapse;
+  height: max-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 .board-td__white {
   background-color: white;
