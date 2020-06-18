@@ -73,9 +73,11 @@
       <div class="inline-block">
         <div class="inline-block">&larr; This is an example of airplanes.</div>
         <br>
-        <div class="inline-block" v-on:click="backToIntro()">
-          &rarr; Go back to introduction page and
-          <strong>restart</strong>.
+        <div class="inline-block" v-on:click="clearTime()">
+          <router-link :to="{name: 'FindAirplaneIntroduction'}" class="link__none-style">
+            &rarr; Go back to introduction page and
+            <strong>restart</strong>.
+          </router-link>
         </div>
       </div>
     </div>
@@ -96,7 +98,8 @@ export default {
       win: [],
       player1Board: [],
       player2Board: [],
-      thisPlayer: ""
+      thisPlayer: "",
+      timeStop: null
     };
   },
   computed: {
@@ -131,10 +134,7 @@ export default {
         .catch(err => {
           this.errors.push(err);
         });
-      window.setTimeout(this.reload, 1000);
-    },
-    backToIntro() {
-      this.$router.push({ path: "/FindAirplane/Introduction" });
+      this.timeStop = window.setTimeout(this.reload, 1000);
     },
     flip(row, column) {
       if (this.thisPlayer == "player1") {
@@ -164,6 +164,9 @@ export default {
           this.errors.push(err);
         });
       this.reload();
+    },
+    clearTime() {
+      clearTimeout(this.timeStop);
     }
   }
 };

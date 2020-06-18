@@ -24,9 +24,4 @@
   border-image-slice: 10;
   padding: 10px;
 }
-.link__none-style,
-.link__none-style:visited {
-  text-decoration: none;
-  color: black;
-}
 </style>

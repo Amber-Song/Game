@@ -1,9 +1,8 @@
 <template>
   <div class="introduction-page">
-    <h1
-      title="Get bored of playing this? Take a look at other games!"
-      v-on:click="backToHome()"
-    >&rarr; Find airplane's head</h1>
+    <h1 title="Get bored of playing this? Take a look at other games!">
+      <router-link :to="{name: 'Home'}" class="link__none-style">&rarr; Find airplane's head</router-link>
+    </h1>
     <!-- This is the image for the example -->
     <div class="introduction-content">
       <table>
@@ -69,9 +68,6 @@ export default {
         .catch(error => {
           console.log("Error:", error); // Logs out the error
         });
-    },
-    backToHome() {
-      this.$router.push({ path: "/" });
     }
   }
 };

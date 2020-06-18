@@ -39,4 +39,9 @@ table {
   width: 100%;
   height: 100%;
 }
+.link__none-style,
+.link__none-style:visited {
+  text-decoration: none;
+  color: black;
+}
 </style>
