@@ -31,6 +31,7 @@
               <div v-if="block === 3" class="board-td__white"></div>
               <div v-else-if="block === 4" class="board-td__blue"></div>
               <div v-else-if="block === 5" class="board-td__darkblue"></div>
+              <div v-else-if="thisPlayer == 'player2'" class="board-td__gray"></div>
               <div v-else class="board-td__gray" v-on:click="flip(indexarray, indexblock)"></div>
             </td>
           </tr>
@@ -50,6 +51,7 @@
               <div v-if="block === 3" class="board-td__white"></div>
               <div v-else-if="block === 4" class="board-td__blue"></div>
               <div v-else-if="block === 5" class="board-td__darkblue"></div>
+              <div v-else-if="thisPlayer == 'player1'" class="board-td__gray"></div>
               <div v-else class="board-td__gray" v-on:click="flip(indexarray, indexblock)"></div>
             </td>
           </tr>
@@ -137,33 +139,35 @@ export default {
       this.timeStop = window.setTimeout(this.reload, 1000);
     },
     flip(row, column) {
-      if (this.thisPlayer == "player1") {
-        this.player1Board[row][column] = this.player1Board[row][column] + 3;
-      } else {
-        this.player2Board[row][column] = this.player2Board[row][column] + 3;
-      }
-      this.axios
-        .post(
-          `${this.$hostname}/api/FindAirplane/Game/room`,
-          {
-            Board1: this.player1Board,
-            Board2: this.player2Board,
-            PlayerNow: this.playerNow,
-            Round: this.round,
-            Win: this.win,
-            ThisPlayer: this.thisPlayer
-          },
-          {
-            withCredentials: true,
-            params: {
-              room: this.getRoom
+      if (this.thisPlayer == this.playerNow) {
+        if (this.thisPlayer == "player1") {
+          this.player1Board[row][column] = this.player1Board[row][column] + 3;
+        } else {
+          this.player2Board[row][column] = this.player2Board[row][column] + 3;
+        }
+        this.axios
+          .post(
+            `${this.$hostname}/api/FindAirplane/Game/room`,
+            {
+              Board1: this.player1Board,
+              Board2: this.player2Board,
+              PlayerNow: this.playerNow,
+              Round: this.round,
+              Win: this.win,
+              ThisPlayer: this.thisPlayer
+            },
+            {
+              withCredentials: true,
+              params: {
+                room: this.getRoom
+              }
             }
-          }
-        )
-        .catch(err => {
-          this.errors.push(err);
-        });
-      this.reload();
+          )
+          .catch(err => {
+            this.errors.push(err);
+          });
+        this.reload();
+      }
     },
     clearTime() {
       clearTimeout(this.timeStop);
