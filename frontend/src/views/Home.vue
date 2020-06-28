@@ -12,7 +12,7 @@
         <router-link
           :to="{name: 'FindAirplaneIntroduction'}"
           class="link__none-style"
-        >Find Airplane's Head</router-link>
+        >Seek for Airplane's Head</router-link>
       </li>
     </ul>
   </div>

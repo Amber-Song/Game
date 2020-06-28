@@ -1,7 +1,7 @@
 <template>
   <div class="page">
     <h1>
-      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>Find airplane's head
+      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>Seek for airplane's head
     </h1>
 
     <div class="notice">

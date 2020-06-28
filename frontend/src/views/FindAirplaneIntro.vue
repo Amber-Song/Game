@@ -2,7 +2,7 @@
   <div class="introduction-page">
     <h1 title="Get bored of playing this? Take a look at other games!">
       <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>
-      <router-link :to="{name: 'Home'}" class="link__none-style">Find airplane's head</router-link>
+      <router-link :to="{name: 'Home'}" class="link__none-style">Seek for airplane's head</router-link>
     </h1>
     <!-- This is the image for the example -->
     <div class="introduction-content">
