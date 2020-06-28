@@ -1,10 +1,37 @@
 <template>
   <div class="introduction-page">
     <h1 title="Get bored of playing this? Take a look at other games!">
-      <router-link :to="{name: 'Home'}" class="link__none-style">&rarr; Find airplane's head</router-link>
+      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>
+      <router-link :to="{name: 'Home'}" class="link__none-style">Find airplane's head</router-link>
     </h1>
     <!-- This is the image for the example -->
     <div class="introduction-content">
+      <!-- This is the introduction -->
+      <div class="introduction-describe">
+        <h2>Introduction:</h2>
+        <div>
+          There are two airplanes whose shapes are shown in the picture on the board.
+          Each player has one board but the two airplanes face different directions and
+          place in different positions. The two players are going to click one piece at each time in turn
+          and the flipped pieces will show you it is an airplane's head, or a part of the body, or not airplanes.
+          The one who uses the least pieces to find two airplanes' head (the dark blue piece) win the game.
+        </div>
+        <br>
+        <h2>Setting:</h2>
+        <label>
+          The shape of airplane:
+          <select name="shape">
+            <option value="1">Airplane 1</option>
+          </select>
+        </label>
+        <br>
+        <label>
+          Choose the boardlength (8-10):
+          <input type="number" min="8" max="10" v-model="boardlength">
+        </label>
+        <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
+      </div>
+
       <table>
         <tr v-for="(array, indexarray) in exampleArrays" :key="indexarray">
           <td v-for="(block, indexblock) in array" :key="indexblock" class="board-td">
@@ -15,26 +42,6 @@
           </td>
         </tr>
       </table>
-
-      <!-- This is the introduction -->
-      <div class="introduction-describe">
-        <h2>Introduction:</h2>
-        <div>
-          There are two airplanes whose shapes are shown in the picture on each board
-          but facing the different direction and placing in a different position.
-          The two players are going to click one piece at one time in turn and
-          the flipped pieces will show you it is an airplane's head, or a part of the body,
-          or not airplanes. The one who uses the least pieces to find two airplanes' head
-          (the dark blue piece) win the game.
-        </div>
-        <br>
-        <h2>Setting:</h2>
-        <label>
-          Choose the boardlength (8-10):
-          <input type="number" min="8" max="10" v-model="boardlength">
-        </label>
-        <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
-      </div>
     </div>
   </div>
 </template>
@@ -76,7 +83,7 @@ export default {
 <style scoped>
 .introduction-content {
   display: grid;
-  grid-template-columns: 260px auto;
+  grid-template-columns: auto 260px;
 }
 .board-td {
   width: 30px;
@@ -86,19 +93,53 @@ export default {
   border-collapse: collapse;
 }
 .introduction-describe {
+  font-family: "Neucha", sans-serif;
+  font-size: 1.25em;
   margin: 30px;
   margin-top: 0px;
 }
 h2 {
+  font-family: "Aladin", cursive;
   font-weight: bold;
   margin: 0px;
   margin-bottom: 10px;
   margin-top: 10px;
 }
 .introduction-button {
-  margin: 20px;
+  font-family: "Neucha", sans-serif;
+  font-size: 1.25em;
+  margin: 40px;
   margin-left: 50%;
   padding: 5px 10px;
   border-radius: 3px;
+}
+table {
+  margin-top: 40px;
+}
+label {
+  line-height: 200%;
+}
+input {
+  font-family: "Neucha", sans-serif;
+  font-size: 1em;
+  width: 50px;
+}
+select {
+  font-family: "Neucha", sans-serif;
+  font-size: 1em;
+  width: min-content;
+}
+option {
+  font-family: "Neucha", sans-serif;
+  font-size: 1em;
+  width: min-content;
+}
+button:hover {
+  background-color: #003bac;
+  border-top: 2px solid #608cdf;
+  border-left: 2px solid #608cdf;
+  border-bottom: 2px solid #002a7b;
+  border-right: 2px solid #002a7b;
+  color: white;
 }
 </style>

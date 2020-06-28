@@ -8,6 +8,7 @@
     </div>
     <ul>
       <li>
+        <font-awesome-icon :icon="['fas', 'plane']"/>
         <router-link
           :to="{name: 'FindAirplaneIntroduction'}"
           class="link__none-style"
@@ -23,5 +24,11 @@
   border-image: linear-gradient(to top, #f9a507, #00b176);
   border-image-slice: 10;
   padding: 10px;
+}
+ul {
+  font-size: 1.25em;
+}
+a:hover {
+  text-decoration: underline;
 }
 </style>

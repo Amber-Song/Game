@@ -107,5 +107,7 @@ func main() {
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/api/FindAirplane/Game", airplaneInitHandler)
 	http.HandleFunc("/api/FindAirplane/Game/room", airplaneGameHandler)
+	// http.HandleFunc("/api/FindAirplane/restart", airplaneRestartHandler)
+
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }

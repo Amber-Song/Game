@@ -5,13 +5,25 @@
 </template>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Aladin&display=swap");
+
 * {
   box-sizing: border-box;
 }
-.introduction-page {
-  width: 80%;
+.page {
+  width: 90%;
+  max-width: 1350px;
   margin-left: auto;
   margin-right: auto;
+  font-family: "Neucha", sans-serif;
+}
+.introduction-page {
+  width: 80%;
+  max-width: 1350px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: "Neucha", sans-serif;
 }
 table {
   border-collapse: collapse;
@@ -43,5 +55,17 @@ table {
 .link__none-style:visited {
   text-decoration: none;
   color: black;
+}
+h1 {
+  font-family: "Aladin", cursive;
+  font-size: 2.5em;
+}
+.icon__airplane {
+  rotate: -45deg;
+  color: #011962;
+}
+.icon__bullborn {
+  margin: 0 15px;
+  color: #011962;
 }
 </style>

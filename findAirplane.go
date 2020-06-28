@@ -30,6 +30,8 @@ type AirplaneGame struct {
 	Round      int
 	Win        []string
 	ThisPlayer string // thisplayer is not variable that two players should synchronise
+	Player1    string
+	Player2    string
 }
 
 // AirplaneType different shape of airplane
@@ -310,9 +312,9 @@ func (game *AirplaneGame) getUpdateGameData(r *http.Request, userNow string, boa
 
 	var newGameState AirplaneGame
 	if userNow == "player1" {
-		newGameState = AirplaneGame{Board1: receiveGame.Board1, Board2: game.Board2, PlayerNow: "player2", Round: game.Round, Win: checkWin(receiveGame.Board1, game.Board2, boardLength), ThisPlayer: userNow}
+		newGameState = AirplaneGame{Board1: receiveGame.Board1, Board2: game.Board2, PlayerNow: "player2", Round: game.Round, Win: checkWin(receiveGame.Board1, game.Board2, boardLength), ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
 	} else {
-		newGameState = AirplaneGame{Board1: game.Board1, Board2: receiveGame.Board2, PlayerNow: "player1", Round: game.Round + 1, Win: checkWin(game.Board1, receiveGame.Board2, boardLength), ThisPlayer: userNow}
+		newGameState = AirplaneGame{Board1: game.Board1, Board2: receiveGame.Board2, PlayerNow: "player1", Round: game.Round + 1, Win: checkWin(game.Board1, receiveGame.Board2, boardLength), ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
 	}
 
 	return newGameState
@@ -339,7 +341,7 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	board := generateAirplane(boardLength, airplaneTypes[airplaneType].AirplaneBody, airplaneTypes[airplaneType].AirplaneWing, airplaneTypes[airplaneType].AirplaneTail)
 
 	room := AirplaneRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1), boardLength: boardLength, airplaneType: airplaneType}
-	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: ""}
+	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: user, Player2: ""}
 	airplaneRooms[roomid] = room
 	airplaneGames[roomid] = game
 
@@ -380,7 +382,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 			userNow = "player2"
 			board := generateAirplane(room.boardLength, airplaneTypes[room.airplaneType].AirplaneBody, airplaneTypes[room.airplaneType].AirplaneWing, airplaneTypes[room.airplaneType].AirplaneTail)
 			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire, boardLength: room.boardLength, airplaneType: room.airplaneType}
-			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow}
+			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow, Player1: room.player1, Player2: user}
 			airplaneRooms[roomid] = updateRoom
 			airplaneGames[roomid] = updateGame
 			room = updateRoom
@@ -398,7 +400,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 		airplaneGames[roomid] = updateGame
 	} else {
 		//	if get, then return data
-		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow}
+		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
 		b, err := json.Marshal(updateGame)
 		if err != nil {
 			println(err)
@@ -406,3 +408,28 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write(b)
 	}
 }
+
+// restart
+// func airplaneRestartHandler(w http.ResponseWriter, r *http.Request) {
+// 	// Enabling CORS on a Go Web Server
+// 	setupResponse(w)
+// 	if r.Method == "OPTIONS" {
+// 		return
+// 	}
+
+// 	// Get room and cookie
+// 	roomid := strings.Join(r.URL.Query()["room"], "")
+// 	check := checkRoom(roomid)
+// 	if !check {
+// 		http.Redirect(w, r, "/NotFound", http.StatusFound)
+// 		return
+// 	}
+// 	fmt.Println("restart! get roomid ", roomid)
+
+// 	room := airplaneRooms[roomid]
+// 	board1 := generateAirplane(room.boardLength, airplaneTypes[room.airplaneType].AirplaneBody, airplaneTypes[room.airplaneType].AirplaneWing, airplaneTypes[room.airplaneType].AirplaneTail)
+// 	board2 := generateAirplane(room.boardLength, airplaneTypes[room.airplaneType].AirplaneBody, airplaneTypes[room.airplaneType].AirplaneWing, airplaneTypes[room.airplaneType].AirplaneTail)
+// 	newGame := AirplaneGame{Board1: board1, Board2: board2, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: room.player1, Player2: room.player2}
+// 	airplaneGames[roomid] = newGame
+// 	fmt.Println("data changed ", airplaneGames[roomid])
+// }
