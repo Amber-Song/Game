@@ -8,7 +8,7 @@
     </div>
     <ul>
       <li>
-        <font-awesome-icon :icon="['fas', 'plane']"/>
+        <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>
         <router-link
           :to="{name: 'FindAirplaneIntroduction'}"
           class="link__none-style"
@@ -28,7 +28,7 @@
 ul {
   font-size: 1.25em;
 }
-a:hover {
+li:hover {
   text-decoration: underline;
 }
 </style>

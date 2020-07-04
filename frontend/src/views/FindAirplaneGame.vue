@@ -271,7 +271,7 @@ button {
   font-family: "Neucha", sans-serif;
   font-size: 1em;
   margin: 15px 0;
-  padding: 5px 10px;
+  padding: 4px 10px 0 10px;
   border-radius: 3px;
   color: black;
 }

@@ -110,7 +110,7 @@ h2 {
   font-size: 1.25em;
   margin: 40px;
   margin-left: 50%;
-  padding: 5px 10px;
+  padding: 4px 10px 0 10px;
   border-radius: 3px;
 }
 table {
@@ -123,11 +123,13 @@ input {
   font-family: "Neucha", sans-serif;
   font-size: 1em;
   width: 50px;
+  padding: 6px 0 0 5px;
 }
 select {
   font-family: "Neucha", sans-serif;
   font-size: 1em;
   width: min-content;
+  padding: 2px 5px 0 5px;
 }
 option {
   font-family: "Neucha", sans-serif;

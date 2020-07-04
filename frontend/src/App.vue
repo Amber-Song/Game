@@ -61,7 +61,7 @@ h1 {
   font-size: 2.5em;
 }
 .icon__airplane {
-  rotate: -45deg;
+  transform: rotate(-45deg);
   color: #011962;
 }
 .icon__bullborn {
