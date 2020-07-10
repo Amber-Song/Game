@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
 import FindAirplaneGame from "../views/FindAirplaneGame.vue";
+import RockPaperScissorsIntro from "../views/RockPaperScissorsIntro.vue";
+import RockPaperScissorsGame from "../views/RockPaperScissorGame.vue";
 import NotFound from "../views/NotFound.vue";
 
 Vue.use(VueRouter);
@@ -33,6 +35,17 @@ const routes = [
     name: "FindAirplaneGame",
     component: FindAirplaneGame,
     props: route => ({ roomid: route.query.room })
+  },
+  {
+    path: "/RockPaperScissors/Introduction",
+    name: "RockPaperScissorsIntroduction",
+    component: RockPaperScissorsIntro
+  },
+  {
+    path: "/RockPaperScissors/Game/room",
+    name: "RockPaperScissorsGame",
+    component: RockPaperScissorsGame,
+    props: router => ({ roomid: router.query.room })
   },
   {
     path: "*",

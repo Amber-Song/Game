@@ -18,6 +18,7 @@
         </span>
         <span v-else>Player2 entered the room.</span>
       </span>
+      <span v-else>Please wait for player2 !</span>
     </div>
 
     <div class="game-round-player">
