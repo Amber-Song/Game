@@ -68,4 +68,23 @@ h1 {
   margin: 0 15px;
   color: #011962;
 }
+
+@media (max-width: 700px) {
+  .page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "Neucha", sans-serif;
+  }
+  .introduction-page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "Neucha", sans-serif;
+  }
+  h1 {
+    font-family: "Aladin", cursive;
+    font-size: 2em;
+  }
+}
 </style>

@@ -107,7 +107,7 @@ h2 {
 }
 .introduction-button {
   font-family: "Neucha", sans-serif;
-  font-size: 1.25em;
+  font-size: 1.2em;
   margin: 40px;
   margin-left: 50%;
   padding: 4px 10px 0 10px;
@@ -143,5 +143,25 @@ button:hover {
   border-bottom: 2px solid #002a7b;
   border-right: 2px solid #002a7b;
   color: white;
+}
+
+@media (max-width: 750px) {
+  .introduction-content {
+    display: block;
+  }
+  .introduction-describe {
+    font-family: "Neucha", sans-serif;
+    font-size: 1em;
+    margin: 30px;
+    margin-top: 0px;
+  }
+  .introduction-button {
+    font-family: "Neucha", sans-serif;
+    font-size: 1em;
+    margin: 40px;
+    margin-left: 50%;
+    padding: 4px 10px 0 10px;
+    border-radius: 3px;
+  }
 }
 </style>

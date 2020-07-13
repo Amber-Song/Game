@@ -269,7 +269,7 @@ span {
 }
 button {
   font-family: "Neucha", sans-serif;
-  font-size: 1em;
+  font-size: 1.2em;
   margin: 15px 0;
   padding: 4px 10px 0 10px;
   border-radius: 3px;
@@ -284,5 +284,32 @@ button:hover {
 }
 button:hover a {
   color: white;
+}
+
+@media (max-width: 700px) {
+  .game-round-player {
+    width: 100%;
+    text-align: center;
+    font-family: "Aladin", cursive;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .competition {
+    display: block;
+  }
+  .board-td {
+    width: 35px;
+    height: 35px;
+    background-color: darkgray;
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+}
+@media (max-width: 440px) {
+  .inline-block {
+    display: block;
+    margin-right: 30px;
+  }
 }
 </style>
