@@ -9,7 +9,7 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
+    path: "/Game",
     name: "Home",
     component: Home,
     alias: "/index.html"
@@ -24,12 +24,12 @@ const routes = [
   //     import(/* webpackChunkName: "about" */ "../views/About.vue")
   // },
   {
-    path: "/FindAirplane/Introduction",
+    path: "/Game/FindAirplane/Introduction",
     name: "FindAirplaneIntroduction",
     component: FindAirplaneIntro
   },
   {
-    path: "/FindAirplane/Game/room",
+    path: "/Game/FindAirplane/Game/room",
     name: "FindAirplaneGame",
     component: FindAirplaneGame,
     props: route => ({ roomid: route.query.room })

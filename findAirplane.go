@@ -388,7 +388,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 			room = updateRoom
 			game = updateGame
 		} else {
-			http.Redirect(w, r, "/FindAirplane/Game", http.StatusFound)
+			http.Redirect(w, r, "/Game/FindAirplane/Game", http.StatusFound)
 			return
 		}
 	}

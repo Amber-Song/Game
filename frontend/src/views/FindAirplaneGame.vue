@@ -142,7 +142,7 @@ export default {
     reload() {
       this.$store.commit("getRoom", { roomid: this.roomid });
       this.axios
-        .get(`${this.$hostname}/api/FindAirplane/Game/room`, {
+        .get(`${this.$hostname}/Game/api/FindAirplane/Game/room`, {
           withCredentials: true,
           params: {
             room: this.getRoom
@@ -172,7 +172,7 @@ export default {
         }
         this.axios
           .post(
-            `${this.$hostname}/api/FindAirplane/Game/room`,
+            `${this.$hostname}/Game/api/FindAirplane/Game/room`,
             {
               Board1: this.player1Board,
               Board2: this.player2Board,

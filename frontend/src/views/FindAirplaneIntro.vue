@@ -61,14 +61,14 @@ export default {
   methods: {
     startGame() {
       this.axios
-        .get(`${this.$hostname}/api/FindAirplane/Game`, {
+        .get(`${this.$hostname}/Game/api/FindAirplane/Game`, {
           withCredentials: true,
           params: { boardLength: this.boardlength }
         })
         .then(response => {
           this.$store.commit("getRoom", { roomid: response.data });
           this.$router.push({
-            path: "/FindAirplane/Game/room",
+            path: "/Game/FindAirplane/Game/room",
             query: { room: response.data }
           });
         })
