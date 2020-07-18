@@ -18,6 +18,9 @@
         </span>
         <span v-else>Player2 entered the room.</span>
       </span>
+      <span v-else>
+        <strong>Please wait for player2!</strong>
+      </span>
     </div>
 
     <div class="game-round-player">
@@ -110,9 +113,7 @@
 <script>
 export default {
   props: {
-    roomid: {
-      type: String
-    }
+    roomid: String
   },
   data: function() {
     return {
