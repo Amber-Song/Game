@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
 import FindAirplaneGame from "../views/FindAirplaneGame.vue";
+import FindAirplaneLocal from "../views/FindAirplaneLocal.vue";
 import NotFound from "../views/NotFound.vue";
 
 Vue.use(VueRouter);
@@ -33,6 +34,12 @@ const routes = [
     name: "FindAirplaneGame",
     component: FindAirplaneGame,
     props: route => ({ roomid: route.query.room })
+  },
+  {
+    path: "/Game/FindAirplane/Localgame",
+    name: "FindAirplaneLocal",
+    component: FindAirplaneLocal,
+    props: route => ({ boardlength: route.query.boardlength })
   },
   {
     path: "*",

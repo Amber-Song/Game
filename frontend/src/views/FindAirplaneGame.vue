@@ -113,9 +113,7 @@
 <script>
 export default {
   props: {
-    roomid: {
-      type: String
-    }
+    roomid: String
   },
   data: function() {
     return {
