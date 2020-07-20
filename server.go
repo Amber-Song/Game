@@ -133,6 +133,7 @@ func main() {
 	// Rock paper scissor
 	http.HandleFunc("/api/RockPaperScissor/Game", rpsInitHandler)
 	http.HandleFunc("/api/RockPaperScissor/Game/room", rpsGameHandler)
+	http.HandleFunc("/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
 
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }
