@@ -132,6 +132,7 @@ func main() {
 	// http.HandleFunc("/api/FindAirplane/restart", airplaneRestartHandler)
 	// Rock paper scissor
 	http.HandleFunc("/api/RockPaperScissor/Game", rpsInitHandler)
+	http.HandleFunc("/api/RockPaperScissor/Game/wait", rpsWaitForPlayer2Handler)
 	http.HandleFunc("/api/RockPaperScissor/Game/room", rpsGameHandler)
 	http.HandleFunc("/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
 
