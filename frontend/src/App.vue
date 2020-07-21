@@ -7,6 +7,7 @@
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Neucha&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Aladin&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
 
 * {
   box-sizing: border-box;
@@ -67,6 +68,10 @@ h1 {
 .icon__bullborn {
   margin: 0 15px;
   color: #011962;
+}
+.icon__scissor {
+  transform: rotate(45deg);
+  color: #c16400;
 }
 
 @media (max-width: 700px) {

@@ -8,11 +8,18 @@
     </div>
     <ul>
       <li>
-        <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>
+        <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane icon"/>
         <router-link
           :to="{name: 'FindAirplaneIntroduction'}"
           class="link__none-style"
         >Seek for Airplane's Head</router-link>
+      </li>
+      <li>
+        <span class="fa fa-hand-scissors-o icon__scissor icon"></span>
+        <router-link
+          :to="{name: 'RockPaperScissorsIntroduction'}"
+          class="link__none-style"
+        >Rock Paper Scissors</router-link>
       </li>
     </ul>
   </div>
@@ -28,7 +35,13 @@
 ul {
   font-size: 1.25em;
 }
+li {
+  line-height: 35px;
+}
 li:hover {
   text-decoration: underline;
+}
+.icon {
+  width: 30px;
 }
 </style>

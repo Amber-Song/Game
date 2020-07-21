@@ -363,7 +363,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Get room and cookie
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkRoom(roomid)
+	check := checkAirplaneRoom(roomid)
 	if !check {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
@@ -419,7 +419,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 
 // 	// Get room and cookie
 // 	roomid := strings.Join(r.URL.Query()["room"], "")
-// 	check := checkRoom(roomid)
+// 	check := checkAirplaneRoom(roomid)
 // 	if !check {
 // 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 // 		return
