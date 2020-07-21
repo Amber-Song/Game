@@ -73,4 +73,23 @@ h1 {
   transform: rotate(45deg);
   color: #c16400;
 }
+
+@media (max-width: 700px) {
+  .page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "Neucha", sans-serif;
+  }
+  .introduction-page {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: "Neucha", sans-serif;
+  }
+  h1 {
+    font-family: "Aladin", cursive;
+    font-size: 2em;
+  }
+}
 </style>

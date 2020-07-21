@@ -127,8 +127,9 @@ func main() {
 
 	// Airplane
 	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/api/FindAirplane/Game", airplaneInitHandler)
-	http.HandleFunc("/api/FindAirplane/Game/room", airplaneGameHandler)
+	http.HandleFunc("/Game", indexHandler)
+	http.HandleFunc("/Game/api/FindAirplane/Game", airplaneInitHandler)
+	http.HandleFunc("/Game/api/FindAirplane/Game/room", airplaneGameHandler)
 	// http.HandleFunc("/api/FindAirplane/restart", airplaneRestartHandler)
 	// Rock paper scissor
 	http.HandleFunc("/api/RockPaperScissor/Game", rpsInitHandler)

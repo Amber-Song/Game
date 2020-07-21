@@ -18,7 +18,9 @@
         </span>
         <span v-else>Player2 entered the room.</span>
       </span>
-      <span v-else>Please wait for player2 !</span>
+      <span v-else>
+        <strong>Please wait for player2!</strong>
+      </span>
     </div>
 
     <div class="game-round-player">
@@ -111,9 +113,7 @@
 <script>
 export default {
   props: {
-    roomid: {
-      type: String
-    }
+    roomid: String
   },
   data: function() {
     return {
@@ -143,7 +143,7 @@ export default {
     reload() {
       this.$store.commit("getRoom", { roomid: this.roomid });
       this.axios
-        .get(`${this.$hostname}/api/FindAirplane/Game/room`, {
+        .get(`${this.$hostname}/Game/api/FindAirplane/Game/room`, {
           withCredentials: true,
           params: {
             room: this.getRoom
@@ -173,7 +173,7 @@ export default {
         }
         this.axios
           .post(
-            `${this.$hostname}/api/FindAirplane/Game/room`,
+            `${this.$hostname}/Game/api/FindAirplane/Game/room`,
             {
               Board1: this.player1Board,
               Board2: this.player2Board,
@@ -270,7 +270,7 @@ span {
 }
 button {
   font-family: "Neucha", sans-serif;
-  font-size: 1em;
+  font-size: 1.2em;
   margin: 15px 0;
   padding: 4px 10px 0 10px;
   border-radius: 3px;
@@ -285,5 +285,32 @@ button:hover {
 }
 button:hover a {
   color: white;
+}
+
+@media (max-width: 700px) {
+  .game-round-player {
+    width: 100%;
+    text-align: center;
+    font-family: "Aladin", cursive;
+    font-size: 1em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .competition {
+    display: block;
+  }
+  .board-td {
+    width: 35px;
+    height: 35px;
+    background-color: darkgray;
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+}
+@media (max-width: 440px) {
+  .inline-block {
+    display: block;
+    margin-right: 30px;
+  }
 }
 </style>

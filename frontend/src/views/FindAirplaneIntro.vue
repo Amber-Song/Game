@@ -19,6 +19,14 @@
         <br>
         <h2>Setting:</h2>
         <label>
+          Play
+          <select v-model="where">
+            <option value="online">online</option>
+            <option value="local">local</option>
+          </select>
+        </label>
+        <br>
+        <label>
           The shape of airplane:
           <select name="shape">
             <option value="1">Airplane 1</option>
@@ -50,7 +58,8 @@
 export default {
   data: function() {
     return {
-      boardlength: 8
+      boardlength: 8,
+      where: "online"
     };
   },
   computed: {
@@ -60,21 +69,28 @@ export default {
   },
   methods: {
     startGame() {
-      this.axios
-        .get(`${this.$hostname}/api/FindAirplane/Game`, {
-          withCredentials: true,
-          params: { boardLength: this.boardlength }
-        })
-        .then(response => {
-          this.$store.commit("getRoom", { roomid: response.data });
-          this.$router.push({
-            path: "/FindAirplane/Game/room",
-            query: { room: response.data }
-          });
-        })
-        .catch(error => {
-          console.log("Error:", error); // Logs out the error
+      if (this.where == "local") {
+        this.$router.push({
+          path: "/Game/FindAirplane/Localgame",
+          query: { boardlength: this.boardlength }
         });
+      } else {
+        this.axios
+          .get(`${this.$hostname}/Game/api/FindAirplane/Game`, {
+            withCredentials: true,
+            params: { boardLength: this.boardlength }
+          })
+          .then(response => {
+            this.$store.commit("getRoom", { roomid: response.data });
+            this.$router.push({
+              path: "/Game/FindAirplane/Game/room",
+              query: { room: response.data }
+            });
+          })
+          .catch(error => {
+            console.log("Error:", error); // Logs out the error
+          });
+      }
     }
   }
 };
@@ -107,7 +123,7 @@ h2 {
 }
 .introduction-button {
   font-family: "Neucha", sans-serif;
-  font-size: 1.25em;
+  font-size: 1.2em;
   margin: 40px;
   margin-left: 50%;
   padding: 4px 10px 0 10px;
@@ -143,5 +159,28 @@ button:hover {
   border-bottom: 2px solid #002a7b;
   border-right: 2px solid #002a7b;
   color: white;
+}
+
+@media (max-width: 700px) {
+  .introduction-content {
+    display: block;
+  }
+  .introduction-describe {
+    font-family: "Neucha", sans-serif;
+    font-size: 1em;
+    margin: 10px;
+    margin-top: 0px;
+  }
+  .introduction-button {
+    font-family: "Neucha", sans-serif;
+    font-size: 1em;
+    margin: 20px;
+    margin-left: 50%;
+    padding: 4px 10px 0 10px;
+    border-radius: 3px;
+  }
+  table {
+    margin-top: 0px;
+  }
 }
 </style>

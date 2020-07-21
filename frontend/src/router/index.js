@@ -3,15 +3,19 @@ import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
 import FindAirplaneGame from "../views/FindAirplaneGame.vue";
+<<<<<<< HEAD
 import RockPaperScissorsIntro from "../views/RockPaperScissorsIntro.vue";
 import RockPaperScissorsGame from "../views/RockPaperScissorGame.vue";
+=======
+import FindAirplaneLocal from "../views/FindAirplaneLocal.vue";
+>>>>>>> master
 import NotFound from "../views/NotFound.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
+    path: "/Game",
     name: "Home",
     component: Home,
     alias: "/index.html"
@@ -26,15 +30,21 @@ const routes = [
   //     import(/* webpackChunkName: "about" */ "../views/About.vue")
   // },
   {
-    path: "/FindAirplane/Introduction",
+    path: "/Game/FindAirplane/Introduction",
     name: "FindAirplaneIntroduction",
     component: FindAirplaneIntro
   },
   {
-    path: "/FindAirplane/Game/room",
+    path: "/Game/FindAirplane/Game/room",
     name: "FindAirplaneGame",
     component: FindAirplaneGame,
     props: route => ({ roomid: route.query.room })
+  },
+  {
+    path: "/Game/FindAirplane/Localgame",
+    name: "FindAirplaneLocal",
+    component: FindAirplaneLocal,
+    props: route => ({ boardlength: route.query.boardlength })
   },
   {
     path: "/RockPaperScissors/Introduction",
