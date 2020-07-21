@@ -187,7 +187,7 @@ export default {
       this.timeStop = window.setTimeout(this.loadData, 1000);
 
       this.axios
-        .get(`${this.$hostname}/api/RockPaperScissor/Game/wait`, {
+        .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/wait`, {
           withCredentials: true,
           params: { room: this.getRoom }
         })
@@ -226,7 +226,7 @@ export default {
         this.player1ChooseDecide = this.player1Choose;
         this.axios
           .post(
-            `${this.$hostname}/api/RockPaperScissor/Game/room`,
+            `${this.$hostname}/Game/api/RockPaperScissor/Game/room`,
             {
               Card1: this.player1Cards[this.player1ChooseDecide],
               Card1Index: this.player1ChooseDecide
@@ -246,7 +246,7 @@ export default {
         this.player2ChooseDecide = this.player2Choose;
         this.axios
           .post(
-            `${this.$hostname}/api/RockPaperScissor/Game/room`,
+            `${this.$hostname}/Game/api/RockPaperScissor/Game/room`,
             {
               Card2: this.player2Cards[this.player2ChooseDecide],
               Card2Index: this.player2ChooseDecide
@@ -266,7 +266,7 @@ export default {
 
     queryServer() {
       this.axios
-        .get(`${this.$hostname}/api/RockPaperScissor/Game/room`, {
+        .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/room`, {
           withCredentials: true,
           params: {
             room: this.getRoom
@@ -294,7 +294,7 @@ export default {
     instructEnd() {
       // Call the server to renew the collections
       this.axios
-        .get(`${this.$hostname}/api/RockPaperScissor/Game/roundend`, {
+        .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/roundend`, {
           withCredentials: true,
           params: {
             room: this.getRoom

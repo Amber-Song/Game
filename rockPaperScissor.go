@@ -165,7 +165,7 @@ func rpsWaitForPlayer2Handler(w http.ResponseWriter, r *http.Request) {
 			rpsGames[roomid] = updateGame
 			game = updateGame
 		} else {
-			http.Redirect(w, r, "/api/RockPaperScissor/Game", http.StatusFound)
+			http.Redirect(w, r, "/Game/api/RockPaperScissor/Game", http.StatusFound)
 			return
 		}
 	}

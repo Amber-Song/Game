@@ -23,13 +23,13 @@ export default {
   methods: {
     startGame() {
       this.axios
-        .get(`${this.$hostname}/api/RockPaperScissor/Game`, {
+        .get(`${this.$hostname}/Game/api/RockPaperScissor/Game`, {
           withCredentials: true
         })
         .then(response => {
           this.$store.commit("getRoom", { roomid: response.data });
           this.$router.push({
-            path: "/RockPaperScissors/Game/room",
+            path: "/Game/RockPaperScissors/Game/room",
             query: { room: response.data }
           });
         })

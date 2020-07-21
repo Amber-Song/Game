@@ -132,10 +132,10 @@ func main() {
 	http.HandleFunc("/Game/api/FindAirplane/Game/room", airplaneGameHandler)
 	// http.HandleFunc("/api/FindAirplane/restart", airplaneRestartHandler)
 	// Rock paper scissor
-	http.HandleFunc("/api/RockPaperScissor/Game", rpsInitHandler)
-	http.HandleFunc("/api/RockPaperScissor/Game/wait", rpsWaitForPlayer2Handler)
-	http.HandleFunc("/api/RockPaperScissor/Game/room", rpsGameHandler)
-	http.HandleFunc("/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
+	http.HandleFunc("/Game/api/RockPaperScissor/Game", rpsInitHandler)
+	http.HandleFunc("/Game/api/RockPaperScissor/Game/wait", rpsWaitForPlayer2Handler)
+	http.HandleFunc("/Game/api/RockPaperScissor/Game/room", rpsGameHandler)
+	http.HandleFunc("/Game/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
 
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }
