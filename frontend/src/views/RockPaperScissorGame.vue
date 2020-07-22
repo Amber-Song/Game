@@ -31,22 +31,16 @@
       <div>
         <div class="title-center">Player1</div>
         <div class="collection">
-          <div v-for="(card, index) in player1Cards" :key="index" v-on:click="chooseCard(index)">
-            <div v-if="thisPlayer == 'player1'">
+          <div v-for="(card, index) in player1Cards" :key="index">
+            <div v-if="thisPlayer == 'player1'" v-on:click="chooseCard(index)">
+              <div v-if=" card === 'rock' && index != player1Choose" class="fa fa-hand-rock-o card"></div>
               <div
-                v-if=" card === 'rock'"
-                class="fa fa-hand-rock-o card"
-                :class="{ 'card-chose': index === player1Choose }"
-              ></div>
-              <div
-                v-else-if=" card === 'paper'"
+                v-else-if=" card === 'paper' && index != player1Choose"
                 class="fa fa-hand-paper-o card"
-                :class="{ 'card-chose': index === player1Choose }"
               ></div>
               <div
-                v-else
+                v-else-if=" card === 'scissor' && index != player1Choose"
                 class="fa fa-hand-scissors-o card"
-                :class="{ 'card-chose': index === player1Choose }"
               ></div>
             </div>
             <div v-else>
@@ -54,7 +48,6 @@
             </div>
           </div>
         </div>
-        <button v-on:click="decide()" v-if="thisPlayer === 'player1'">Decide</button>
       </div>
 
       <div class="title-center">
@@ -62,10 +55,10 @@
           <strong>Round {{ round }}</strong>
         </div>
         <div
-          v-if="thisPlayer == 'player1' && player1ChooseDecide == -1"
+          v-if="thisPlayer == 'player1' && player1Choose == -1"
         >Please choose one card and click decide button to place on the table!</div>
         <div
-          v-if="thisPlayer == 'player2' && player2ChooseDecide == -1"
+          v-if="thisPlayer == 'player2' && player2Choose == -1"
         >Please choose one card and click decide button to place on the table!</div>
         <div v-if="announceRoundWinner != ''">{{ announceRoundWinner }}</div>
 
@@ -73,35 +66,35 @@
           Timer:
           <strong>{{ timeCount }}</strong>
         </div>
-        <div v-if="win != ''" class="announce__winner">{{ win }} win this game! Congratulation!</div>
+        <div
+          v-if="winner != ''"
+          class="announce__winner"
+        >{{ winner }} win this game! Congratulation!</div>
         <div class="competition__table">
-          <div class="card__empty" :class="{ 'card__placed': player1ChooseDecide != -1}">
-            <div
-              v-if=" player1Flip && player1Card === 'rock'"
-              class="fa fa-hand-rock-o card__competition"
-            ></div>
-            <div
-              v-if=" player1Flip && player1Card === 'paper'"
-              class="fa fa-hand-paper-o card__competition"
-            ></div>
-            <div
-              v-if=" player1Flip && player1Card === 'scissor'"
-              class="fa fa-hand-scissors-o card__competition"
-            ></div>
+          <div class="card__empty">
+            <div v-if="player1Choose != -1" class="card__placed">
+              <div v-if="player1Flip">
+                <div v-if=" player1Card === 'rock'" class="fa fa-hand-rock-o card__competition"></div>
+                <div v-if=" player1Card === 'paper'" class="fa fa-hand-paper-o card__competition"></div>
+                <div
+                  v-if=" player1Card === 'scissor'"
+                  class="fa fa-hand-scissors-o card__competition"
+                ></div>
+              </div>
+            </div>
           </div>
-          <div class="card__empty" :class="{ 'card__placed': player2ChooseDecide != -1}">
-            <div
-              v-if=" player2Flip && player2Card === 'rock'"
-              class="fa fa-hand-rock-o card__competition"
-            ></div>
-            <div
-              v-if=" player2Flip && player2Card === 'paper'"
-              class="fa fa-hand-paper-o card__competition"
-            ></div>
-            <div
-              v-if=" player2Flip && player2Card === 'scissor'"
-              class="fa fa-hand-scissors-o card__competition"
-            ></div>
+
+          <div class="card__empty">
+            <div v-if="player2Choose != -1" class="card__placed">
+              <div v-if="player2Flip">
+                <div v-if=" player2Card === 'rock'" class="fa fa-hand-rock-o card__competition"></div>
+                <div v-if=" player2Card === 'paper'" class="fa fa-hand-paper-o card__competition"></div>
+                <div
+                  v-if=" player2Card === 'scissor'"
+                  class="fa fa-hand-scissors-o card__competition"
+                ></div>
+              </div>
+            </div>
           </div>
         </div>
         <button v-on:click="clearTime()">
@@ -115,22 +108,16 @@
       <div>
         <div class="title-center">Player2</div>
         <div class="collection">
-          <div v-for="(card, index) in player2Cards" :key="index" v-on:click="chooseCard(index)">
-            <div v-if="thisPlayer == 'player2'">
+          <div v-for="(card, index) in player2Cards" :key="index">
+            <div v-if="thisPlayer == 'player2'" v-on:click="chooseCard(index)">
+              <div v-if=" card === 'rock' && index != player2Choose" class="fa fa-hand-rock-o card"></div>
               <div
-                v-if=" card === 'rock'"
-                class="fa fa-hand-rock-o card"
-                :class="{ 'card-chose': index === player2Choose}"
-              ></div>
-              <div
-                v-else-if=" card === 'paper'"
+                v-else-if=" card === 'paper' && index != player2Choose"
                 class="fa fa-hand-paper-o card"
-                :class="{ 'card-chose': index === player2Choose}"
               ></div>
               <div
-                v-else
+                v-else-if=" card === 'scissor' && index != player2Choose"
                 class="fa fa-hand-scissors-o card"
-                :class="{ 'card-chose': index === player2Choose}"
               ></div>
             </div>
             <div v-else>
@@ -138,7 +125,6 @@
             </div>
           </div>
         </div>
-        <button v-on:click="decide()" v-if="thisPlayer === 'player2'">Decide</button>
       </div>
     </div>
   </div>
@@ -154,7 +140,7 @@ export default {
   data: function() {
     return {
       round: 0,
-      win: "",
+      winner: "",
       player1Cards: [],
       player2Cards: [],
       thisPlayer: "",
@@ -164,12 +150,10 @@ export default {
       timeCount: 10,
       player1Choose: -1,
       player2Choose: -1,
-      player1ChooseDecide: -1,
-      player2ChooseDecide: -1,
       player1Card: "",
       player2Card: "",
-      player1Flip: false,
-      player2Flip: false,
+      player1Flip: true,
+      player2Flip: true,
       announceRoundWinner: ""
     };
   },
@@ -200,7 +184,7 @@ export default {
           this.round = response.data.Round;
           if (this.player1 != "" && this.player2 != "") {
             clearTimeout(this.timeStop);
-            this.timeStop = window.setTimeout(this.queryServer, 3000);
+            window.setTimeout(this.roundStart, 3000);
           }
         })
         .catch(err => {
@@ -212,24 +196,56 @@ export default {
       clearTimeout(this.timeStop);
     },
 
+    roundStart() {
+      if (this.winner == "") {
+        window.setTimeout(this.roundStart, 17000);
+      } else {
+        return;
+      }
+
+      this.timeCount = 10;
+
+      // Wait for 10 seconds for the answer
+      this.TimerReduceOne();
+
+      // After waiting, post the result, flip card
+      window.setTimeout(this.postChosenCard, 10000);
+      // Wait for a second to get result, show both cards and result
+      window.setTimeout(this.getCardResult, 12000);
+      // Get round result and update collection
+      window.setTimeout(this.getRoundResult, 16000);
+      // Check if game end. If no, start the next round. If yes, announce winner
+    },
+
+    TimerReduceOne() {
+      this.timeCount = this.timeCount - 1;
+      if (this.timeCount < 0) {
+        clearTimeout(this.timeStop);
+        return;
+      }
+      this.timeStop = window.setTimeout(this.TimerReduceOne, 1000);
+    },
+
     chooseCard(index) {
       if (this.thisPlayer == "player1") {
         this.player1Choose = index;
+        this.player1Card = this.player1Cards[index];
       }
       if (this.thisPlayer == "player2") {
         this.player2Choose = index;
+        this.player2Card = this.player2Cards[index];
       }
     },
 
-    decide() {
-      if (this.thisPlayer == "player1" && this.player1ChooseDecide == -1) {
-        this.player1ChooseDecide = this.player1Choose;
+    // Post the chosen card to server
+    postChosenCard() {
+      if (this.thisPlayer == "player1") {
         this.axios
           .post(
             `${this.$hostname}/Game/api/RockPaperScissor/Game/room`,
             {
-              Card1: this.player1Cards[this.player1ChooseDecide],
-              Card1Index: this.player1ChooseDecide
+              Card1: this.player1Card,
+              Card1Index: this.player1Choose
             },
             {
               withCredentials: true,
@@ -242,14 +258,13 @@ export default {
             this.errors.push(err);
           });
       }
-      if (this.thisPlayer == "player2" && this.player2ChooseDecide == -1) {
-        this.player2ChooseDecide = this.player2Choose;
+      if (this.thisPlayer == "player2") {
         this.axios
           .post(
             `${this.$hostname}/Game/api/RockPaperScissor/Game/room`,
             {
-              Card2: this.player2Cards[this.player2ChooseDecide],
-              Card2Index: this.player2ChooseDecide
+              Card2: this.player2Card,
+              Card2Index: this.player2Choose
             },
             {
               withCredentials: true,
@@ -262,9 +277,11 @@ export default {
             this.errors.push(err);
           });
       }
+      this.flipCard();
     },
 
-    queryServer() {
+    // Get the chosen card from the server
+    getCardResult() {
       this.axios
         .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/room`, {
           withCredentials: true,
@@ -276,23 +293,15 @@ export default {
           // Get data
           this.player1Card = response.data.Card1;
           this.player2Card = response.data.Card2;
-          this.player1ChooseDecide = response.data.Card1Index;
-          this.player2ChooseDecide = response.data.Card2Index;
+          this.player1Choose = response.data.Card1Index;
+          this.player2Choose = response.data.Card2Index;
+          this.flipCard();
+          this.checkRoundWin();
         });
-
-      if (this.timeCount <= 0) {
-        clearTimeout(this.timeStop);
-        this.flipCard();
-        this.checkRoundWin();
-        window.setTimeout(this.instructEnd, 4000);
-      }
-
-      this.timeStop = window.setTimeout(this.queryServer, 1000);
-      this.timeCount = this.timeCount - 1;
     },
 
-    instructEnd() {
-      // Call the server to renew the collections
+    // Get the collection change and reset the chosen card
+    getRoundResult() {
       this.axios
         .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/roundend`, {
           withCredentials: true,
@@ -304,30 +313,18 @@ export default {
           this.round = response.data.Round;
           this.player1Cards = response.data.Collection1;
           this.player2Cards = response.data.Collection2;
-          this.timeCount = 10;
           this.player1Choose = -1;
           this.player2Choose = -1;
-          this.player1ChooseDecide = -1;
-          this.player2ChooseDecide = -1;
           this.player1Card = "";
           this.player2Card = "";
-          this.player1Flip = false;
-          this.player2Flip = false;
           this.announceRoundWinner = "";
+          this.checkWinner();
         });
-
-      this.checkWinner();
-      if (this.win != "") {
-        clearTimeout(this.timeStop);
-      } else {
-        clearTimeout(this.timeStop);
-        this.timeStop = window.setTimeout(this.queryServer, 1000);
-      }
     },
 
     flipCard() {
-      this.player1Flip = true;
-      this.player2Flip = true;
+      this.player1Flip = !this.player1Flip;
+      this.player2Flip = !this.player2Flip;
     },
 
     checkRoundWin() {
@@ -391,10 +388,10 @@ export default {
 
     checkWinner() {
       if (this.player1Cards.length == 0) {
-        this.win = "Player1";
+        this.winner = "Player1";
       }
       if (this.player2Cards.length == 0) {
-        this.win = "Player2";
+        this.winner = "Player2";
       }
     }
   }
@@ -432,9 +429,6 @@ export default {
   height: 64px;
   margin: 5px 0px;
   padding-top: 14px;
-}
-.card-chose {
-  box-shadow: 2px 2px 1px #fbd795;
 }
 .competition__table {
   display: grid;
