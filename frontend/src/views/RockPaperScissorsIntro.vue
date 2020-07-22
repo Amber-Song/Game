@@ -10,7 +10,8 @@
       <div>
         Each player gets 10 cards with rock, paper and scissor on it. The player could only see his own cards while playing.
         In each turn, the player has to decide which card he wants to play. After both players decide their card,
-        the two cards will be flipped together. The loser of each turn takes the card back to his card collection.
+        the two cards will be flipped together. The loser of each turn takes two cards back to his card collection.
+        If it is drawn, the cards go back to its own collection. If one player doesn't play any card, he loses in this round.
         The one who has no card in hand is the final winner.
       </div>
       <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
