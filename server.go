@@ -18,6 +18,9 @@ var airplaneTypes []AirplaneType
 var rpsRooms map[string]RPSRoom
 var rpsGames map[string]RPSGame
 
+var tictactoeRooms map[string]TicTacToeBoxRoom
+var tictactoeGames map[string]TicTacToeBoxGame
+
 // ErrCookieNotSet is a error indicate that cookie is not set
 var ErrCookieNotSet error = errors.New("Cookie didn't set")
 
@@ -71,10 +74,30 @@ func getCookie(r *http.Request) (string, error) {
 	return cookie.Value, nil
 }
 
-func setRoom() string {
+func setAirplaneRoom() string {
 	for index := 0; ; index++ {
 		roomid := strconv.Itoa(rand.Intn(1000000))
 		if _, ok := airplaneRooms[roomid]; !ok {
+			return roomid
+		}
+	}
+	return ""
+}
+
+func setRPSRoom() string {
+	for index := 0; ; index++ {
+		roomid := strconv.Itoa(rand.Intn(1000000))
+		if _, ok := rpsRooms[roomid]; !ok {
+			return roomid
+		}
+	}
+	return ""
+}
+
+func setTictactoeRoom() string {
+	for index := 0; ; index++ {
+		roomid := strconv.Itoa(rand.Intn(1000000))
+		if _, ok := tictactoeRooms[roomid]; !ok {
 			return roomid
 		}
 	}
@@ -95,6 +118,13 @@ func checkRPSRoom(roomid string) bool {
 	return false
 }
 
+func checkTictactoeRoom(roomid string) bool {
+	if _, ok := tictactoeRooms[roomid]; ok {
+		return true
+	}
+	return false
+}
+
 // cleanRooms remove all the expire room from games list
 func cleanRooms() {
 	for roomid, room := range airplaneRooms {
@@ -108,6 +138,13 @@ func cleanRooms() {
 		if time.Now().After(room.expire) {
 			delete(rpsRooms, roomid)
 			delete(rpsGames, roomid)
+		}
+	}
+
+	for roomid, room := range tictactoeRooms {
+		if time.Now().After(room.expire) {
+			delete(tictactoeRooms, roomid)
+			delete(tictactoeGames, roomid)
 		}
 	}
 }
@@ -124,6 +161,9 @@ func main() {
 	// Rock paper scissor
 	rpsRooms = make(map[string]RPSRoom, 0)
 	rpsGames = make(map[string]RPSGame, 0)
+	// TicTacToe
+	tictactoeRooms = make(map[string]TicTacToeBoxRoom, 0)
+	tictactoeGames = make(map[string]TicTacToeBoxGame, 0)
 
 	// Airplane
 	http.HandleFunc("/", indexHandler)
@@ -136,6 +176,10 @@ func main() {
 	http.HandleFunc("/Game/api/RockPaperScissor/Game/wait", rpsWaitForPlayer2Handler)
 	http.HandleFunc("/Game/api/RockPaperScissor/Game/room", rpsGameHandler)
 	http.HandleFunc("/Game/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
+	// TicTacToe
+	http.HandleFunc("/Game/api/TicTacToeBox/Game", tictactoeBoxInitHandler)
+	http.HandleFunc("/Game/api/TicTacToeBox/Game/wait", tictactoeBoxWaitHandler)
+	http.HandleFunc("/Game/api/TicTacToeBox/Game/room", tictactoeBoxGameHandler)
 
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }

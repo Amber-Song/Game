@@ -1,19 +1,21 @@
 <template>
   <div class="introduction-page">
     <h1>
-      <span class="fa fa-hand-scissors-o icon__scissor"></span>
-      <router-link :to="{name: 'Home'}" class="link__none-style">Rock Paper Scissors</router-link>
+      <span class="fa fa-cube"></span>
+      <router-link :to="{name: 'Home'}" class="link__none-style">Tic Tac Toe Box version</router-link>
     </h1>
 
     <div class="introduction-describe">
       <h2>introduction:</h2>
       <div>
-        Each player gets 3 cards with rock, paper and scissor on it. Cards are random chosen so the three cards may be the same.
-        The player could only see his own cards while playing.
-        In each turn, the player has to decide which card he wants to play. After both players decide their card,
-        the two cards will be flipped together. The loser of each turn takes two cards back to his card collection.
-        If it is drawn, the cards go back to its own collection. If one player doesn't play any card, he loses in this round.
-        The one who has no card in hand is the final winner.
+        Each player have small, medium, large, three sizes of boxes, each size have two.
+        The player place or move one box on the 3 by 3 board in turn.
+        To move or place the boxes, it should follow the following rules:
+        <ol>
+          <li>The box put or moved on the board could cover the box which is smaller than it or place on the blank area.</li>
+          <li>The box player wants to move has to be the top one which means it shouldn't be covered with larger boxes.</li>
+          <li>Once the box on the board has moved the box it covered appeared.</li>
+        </ol>The player will win the game if his three boxes are in a line, row or diagonal.
       </div>
       <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
     </div>
@@ -25,13 +27,13 @@ export default {
   methods: {
     startGame() {
       this.axios
-        .get(`${this.$hostname}/Game/api/RockPaperScissor/Game`, {
+        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game`, {
           withCredentials: true
         })
         .then(response => {
           this.$store.commit("getRoom", { roomid: response.data });
           this.$router.push({
-            path: "/Game/RockPaperScissors/Game/room",
+            path: "/Game/TicTacToeBox/Game/room",
             query: { room: response.data }
           });
         })
