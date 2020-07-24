@@ -337,7 +337,7 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	if user == "" {
 		user = setCookie(w)
 	}
-	roomid := setRoom()
+	roomid := setAirplaneRoom()
 	board := generateAirplane(boardLength, airplaneTypes[airplaneType].AirplaneBody, airplaneTypes[airplaneType].AirplaneWing, airplaneTypes[airplaneType].AirplaneTail)
 
 	room := AirplaneRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1), boardLength: boardLength, airplaneType: airplaneType}

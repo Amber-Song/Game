@@ -21,6 +21,13 @@
           class="link__none-style"
         >Rock Paper Scissors</router-link>
       </li>
+      <li>
+        <span class="fa fa-cube icon"></span>
+        <router-link
+          :to="{name: 'TicTacToeBoxIntroduction'}"
+          class="link__none-style"
+        >Tic Tac Toe Box version</router-link>
+      </li>
     </ul>
   </div>
 </template>

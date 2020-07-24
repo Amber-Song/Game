@@ -46,7 +46,7 @@ func returnRPS(i int) string {
 
 func generateCardCollection() []string {
 	var collection []string
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 3; i++ {
 		r := rand.Intn(3)
 		collection = append(collection, returnRPS(r))
 	}
@@ -115,7 +115,7 @@ func rpsInitHandler(w http.ResponseWriter, r *http.Request) {
 	if user == "" {
 		user = setCookie(w)
 	}
-	roomid := setRoom()
+	roomid := setRPSRoom()
 
 	collection := generateCardCollection()
 	room := RPSRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1)}
