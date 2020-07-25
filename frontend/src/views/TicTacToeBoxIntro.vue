@@ -17,7 +17,8 @@
           <li>Once the box on the board has moved the box it covered appeared.</li>
         </ol>The player will win the game if his three boxes are in a line, row or diagonal.
       </div>
-      <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
+      <button v-on:click="startGame()" class="introduction-button">Play Online!</button>
+      <button v-on:click="startLocalGame()" class="introduction-button">Play on this computer!</button>
     </div>
   </div>
 </template>
@@ -40,6 +41,12 @@ export default {
         .catch(error => {
           console.log("Error:", error); // Logs out the error
         });
+    },
+
+    startLocalGame() {
+      this.$router.push({
+        path: "/Game/TicTacToeBox/Localgame"
+      });
     }
   }
 };

@@ -5,34 +5,13 @@
       <router-link :to="{name: 'Home'}" class="link__none-style">Tic Tac Toe Box version</router-link>
     </h1>
 
-    <div class="notice">
-      <font-awesome-icon :icon="['fas', 'bullhorn']" class="icon__bullborn"/>
-      <span v-if="thisPlayer == 'player1'">
-        Welcome! You are
-        <strong>player1</strong> !
-      </span>
-      <span v-else>Player1 entered the room.</span>
-      <span v-if="player2 != ''">
-        <span v-if="thisPlayer == 'player2'">
-          Welcome! You are
-          <strong>player2</strong> !
-          <strong>Game start !</strong>
-        </span>
-        <span v-else>
-          Player2 entered the room.
-          <strong>Game start !</strong>
-        </span>
-      </span>
-      <span v-else>Please wait for player2 !</span>
-    </div>
-
     <div class="competition">
       <!-- This is player1 collection -->
       <div class="game-round-player game-round-player-mobile">
         player1
         <br>
         <div v-for="(box, index) in collection1" :key="index">
-          <div v-if="thisPlayer == 'player1'">
+          <div v-if="playerNow == 'player1'">
             <div
               v-if="box == 'small'"
               class="fa fa-cube cube__small blue min-height min-width"
@@ -128,7 +107,7 @@
         player2
         <br>
         <div v-for="(box, index) in collection2" :key="index">
-          <div v-if="thisPlayer == 'player2'">
+          <div v-if="playerNow == 'player2'">
             <div
               v-if="box == 'small'"
               class="fa fa-cube cube__small green min-height min-width"
@@ -162,16 +141,8 @@
 
 <script>
 export default {
-  props: {
-    roomid: {
-      type: String
-    }
-  },
   data: function() {
     return {
-      thisPlayer: "",
-      player1: "",
-      player2: "",
       collection1: [],
       collection2: [],
       board: [],
@@ -190,88 +161,39 @@ export default {
   },
 
   mounted: function() {
+    // Initate collection
+    this.collection1 = ["small", "small", "medium", "medium", "large", "large"];
+    this.collection2 = ["small", "small", "medium", "medium", "large", "large"];
+    this.round = 1;
+    this.playerNow = "player1";
+
     // initate boardDisplay
     var board = [];
-    var boardPlayer = [];
     var line = [];
     for (let i = 0; i < 3; i++) {
       line[i] = "";
     }
     for (let i = 0; i < 3; i++) {
       board[i] = line.slice();
-      boardPlayer[i] = line.slice();
     }
-    this.boardDisplay = board.slice();
-    this.boardDisplayPlayer = boardPlayer.slice();
+    this.boardDisplay = board;
+    this.boardDisplayPlayer = JSON.parse(JSON.stringify(board));
 
-    this.$store.commit("getRoom", { roomid: this.roomid });
-    this.loadData();
-  },
-
-  computed: {
-    getRoom() {
-      return this.$store.state.roomid;
+    // initiate board
+    board = [];
+    line = [];
+    for (let i = 0; i < 3; i++) {
+      var cell = [];
+      line[i] = cell.slice();
     }
+    for (let i = 0; i < 3; i++) {
+      board[i] = JSON.parse(JSON.stringify(line));
+    }
+    this.board = board;
+    this.boardPlayer = JSON.parse(JSON.stringify(board));
   },
 
   methods: {
-    loadData() {
-      this.axios
-        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game/wait`, {
-          withCredentials: true,
-          params: { room: this.getRoom }
-        })
-        .then(response => {
-          this.collection1 = response.data.BoxCollection1;
-          this.collection2 = response.data.BoxCollection2;
-          this.board = response.data.Board;
-          this.boardPlayer = response.data.BoardPlayer;
-          this.thisPlayer = response.data.ThisPlayer;
-          this.player1 = response.data.Player1;
-          this.player2 = response.data.Player2;
-          this.round = response.data.Round;
-          this.playerNow = response.data.PlayerNow;
-
-          if (this.collection1.length < 6 || this.collection2.length < 6) {
-            this.updateBoardDisplay();
-          }
-        })
-        .catch(err => {
-          this.errors.push(err);
-        });
-
-      if (this.player2 == "") {
-        window.setTimeout(this.loadData, 1000);
-      } else {
-        this.queryServer();
-      }
-    },
-
-    queryServer() {
-      this.axios
-        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game/room`, {
-          withCredentials: true,
-          params: {
-            room: this.getRoom
-          }
-        })
-        .then(response => {
-          this.collection1 = response.data.BoxCollection1;
-          this.collection2 = response.data.BoxCollection2;
-          this.board = response.data.Board;
-          this.boardPlayer = response.data.BoardPlayer;
-          this.round = response.data.Round;
-          if (this.playerNow != response.data.PlayerNow) {
-            this.updateBoardDisplay();
-          }
-          this.playerNow = response.data.PlayerNow;
-          this.winner = response.data.Winner;
-        });
-      if (this.winner == "") {
-        window.setTimeout(this.queryServer, 1000);
-      }
-    },
-
     updateBoardDisplay() {
       for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
@@ -288,10 +210,7 @@ export default {
     },
 
     chooseBoxFromBoard(i, j) {
-      if (
-        this.boardDisplayPlayer[i][j] == this.playerNow &&
-        this.playerNow == this.thisPlayer
-      ) {
+      if (this.boardDisplayPlayer[i][j] == this.playerNow) {
         this.notice = "";
         this.boxChosenIndex = -1;
         this.boxChosenI = i;
@@ -301,7 +220,7 @@ export default {
     },
 
     choosebox(index) {
-      if (this.playerNow === "player1" && this.thisPlayer === "player1") {
+      if (this.playerNow === "player1") {
         this.notice = "";
         this.boxChosenI = -1;
         this.boxChosenJ = -1;
@@ -309,7 +228,7 @@ export default {
         this.boxChosen = this.collection1[index];
         return;
       }
-      if (this.playerNow === "player2" && this.thisPlayer === "player2") {
+      if (this.playerNow === "player2") {
         this.notice = "";
         this.boxChosenI = -1;
         this.boxChosenJ = -1;
@@ -328,52 +247,16 @@ export default {
 
         if (avail) {
           this.board[i][j].push(this.boxChosen);
-          this.boardPlayer[i][j].push(this.thisPlayer);
+          this.boardPlayer[i][j].push(this.playerNow);
           this.boardDisplay[i][j] = this.boxChosen;
-          this.boardDisplayPlayer[i][j] = this.thisPlayer;
+          this.boardDisplayPlayer[i][j] = this.playerNow;
 
-          if (this.thisPlayer == "player1") {
+          if (this.playerNow == "player1") {
             this.collection1.splice(this.boxChosenIndex, 1);
-            this.axios
-              .post(
-                `${this.$hostname}/Game/api/TicTacToeBox/Game/room`,
-                {
-                  BoxCollection1: this.collection1,
-                  Board: this.board,
-                  BoardPlayer: this.boardPlayer,
-                  BoardShowPlayer: this.boardDisplayPlayer
-                },
-                {
-                  withCredentials: true,
-                  params: {
-                    room: this.getRoom
-                  }
-                }
-              )
-              .catch(err => {
-                this.errors.push(err);
-              });
+            this.playerNow = "player2";
           } else {
             this.collection2.splice(this.boxChosenIndex, 1);
-            this.axios
-              .post(
-                `${this.$hostname}/Game/api/TicTacToeBox/Game/room`,
-                {
-                  BoxCollection2: this.collection2,
-                  Board: this.board,
-                  BoardPlayer: this.boardPlayer,
-                  BoardShowPlayer: this.boardDisplayPlayer
-                },
-                {
-                  withCredentials: true,
-                  params: {
-                    room: this.getRoom
-                  }
-                }
-              )
-              .catch(err => {
-                this.errors.push(err);
-              });
+            this.playerNow = "player1";
           }
           this.boxChosenIndex = -1;
           this.boxChosen = "";
@@ -390,36 +273,22 @@ export default {
             this.board[this.boxChosenI][this.boxChosenJ].pop();
             this.boardPlayer[this.boxChosenI][this.boxChosenJ].pop();
             this.board[i][j].push(this.boxChosen);
-            this.boardPlayer[i][j].push(this.thisPlayer);
+            this.boardPlayer[i][j].push(this.playerNow);
             this.updateBoardDisplay();
-
-            this.axios
-              .post(
-                `${this.$hostname}/Game/api/TicTacToeBox/Game/room`,
-                {
-                  BoxCollection1: this.collection1,
-                  BoxCollection2: this.collection2,
-                  Board: this.board,
-                  BoardPlayer: this.boardPlayer,
-                  BoardShowPlayer: this.boardDisplayPlayer
-                },
-                {
-                  withCredentials: true,
-                  params: {
-                    room: this.getRoom
-                  }
-                }
-              )
-              .catch(err => {
-                this.errors.push(err);
-              });
-
-            this.boxChosen = "";
             this.boxChosenI = -1;
             this.boxChosenJ = -1;
+            this.boxChosen = "";
+
+            if (this.playerNow == "player1") {
+              this.playerNow = "player2";
+            } else {
+              this.playerNow = "player1";
+            }
           }
         }
       }
+
+      this.checkWinner();
     },
 
     checkPlaceAvailble(i, j) {
@@ -439,6 +308,73 @@ export default {
           return false;
         default:
           return false;
+      }
+    },
+
+    checkWinner() {
+      if (
+        this.boardDisplayPlayer[0][0] != 0 &&
+        this.boardDisplayPlayer[0][0] == this.boardDisplayPlayer[1][0] &&
+        this.boardDisplayPlayer[0][0] == this.boardDisplayPlayer[2][0]
+      ) {
+        this.winner = this.boardDisplayPlayer[0][0];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[0][0] != 0 &&
+        this.boardDisplayPlayer[0][0] == this.boardDisplayPlayer[1][1] &&
+        this.boardDisplayPlayer[0][0] == this.boardDisplayPlayer[2][2]
+      ) {
+        this.winner = this.boardDisplayPlayer[0][0];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[0][0] != 0 &&
+        this.boardDisplayPlayer[0][0] == this.boardDisplayPlayer[0][1] &&
+        this.boardDisplayPlayer[0][0] == this.boardDisplayPlayer[0][2]
+      ) {
+        this.winner = this.boardDisplayPlayer[0][0];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[0][1] != 0 &&
+        this.boardDisplayPlayer[0][1] == this.boardDisplayPlayer[1][1] &&
+        this.boardDisplayPlayer[0][1] == this.boardDisplayPlayer[2][1]
+      ) {
+        this.winner = this.boardDisplayPlayer[0][1];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[0][2] != 0 &&
+        this.boardDisplayPlayer[0][2] == this.boardDisplayPlayer[1][1] &&
+        this.boardDisplayPlayer[0][2] == this.boardDisplayPlayer[2][0]
+      ) {
+        this.winner = this.boardDisplayPlayer[0][2];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[0][2] != 0 &&
+        this.boardDisplayPlayer[0][2] == this.boardDisplayPlayer[1][2] &&
+        this.boardDisplayPlayer[0][2] == this.boardDisplayPlayer[2][2]
+      ) {
+        this.winner = this.boardDisplayPlayer[0][2];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[1][0] != 0 &&
+        this.boardDisplayPlayer[1][0] == this.boardDisplayPlayer[1][1] &&
+        this.boardDisplayPlayer[1][0] == this.boardDisplayPlayer[1][2]
+      ) {
+        this.winner = this.boardDisplayPlayer[1][0];
+        return;
+      }
+      if (
+        this.boardDisplayPlayer[2][0] != 0 &&
+        this.boardDisplayPlayer[2][0] == this.boardDisplayPlayer[2][1] &&
+        this.boardDisplayPlayer[2][0] == this.boardDisplayPlayer[2][2]
+      ) {
+        this.winner = this.boardDisplayPlayer[2][0];
+        return;
       }
     }
   }

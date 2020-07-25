@@ -8,6 +8,7 @@ import RockPaperScissorsIntro from "../views/RockPaperScissorsIntro.vue";
 import RockPaperScissorsGame from "../views/RockPaperScissorGame.vue";
 import TicTacToeBoxIntro from "../views/TicTacToeBoxIntro.vue";
 import TicTacToeBoxGame from "../views/TicTacToeBoxGame.vue";
+import TicTacToeBoxLocal from "../views/TicTacToeBoxLocal.vue";
 import NotFound from "../views/NotFound.vue";
 
 Vue.use(VueRouter);
@@ -66,6 +67,11 @@ const routes = [
     name: "TicTacToeBoxGame",
     component: TicTacToeBoxGame,
     props: router => ({ roomid: router.query.room })
+  },
+  {
+    path: "/Game/TicTacToeBox/Localgame",
+    name: "TicTacToeBoxLocal",
+    component: TicTacToeBoxLocal
   },
   {
     path: "*",
