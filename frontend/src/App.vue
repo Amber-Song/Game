@@ -14,6 +14,7 @@
 }
 .page {
   width: 90%;
+  min-width: 270px;
   max-width: 1350px;
   margin-left: auto;
   margin-right: auto;
@@ -25,6 +26,11 @@
   margin-left: auto;
   margin-right: auto;
   font-family: "Neucha", sans-serif;
+}
+.notice {
+  background-color: #c6e2ff;
+  background-image: linear-gradient(to right, #c6e2ff, white);
+  margin-bottom: 40px;
 }
 table {
   border-collapse: collapse;
@@ -89,7 +95,10 @@ h1 {
   }
   h1 {
     font-family: "Aladin", cursive;
-    font-size: 2em;
+    font-size: 1.5em;
+  }
+  .notice {
+    margin-bottom: 10px;
   }
 }
 </style>

@@ -61,6 +61,7 @@ h2 {
   padding: 4px 10px 0 10px;
   border-radius: 3px;
   margin-top: 20px;
+  margin-left: 50%;
 }
 button:hover {
   background-color: #003bac;
@@ -69,5 +70,14 @@ button:hover {
   border-bottom: 2px solid #002a7b;
   border-right: 2px solid #002a7b;
   color: white;
+}
+
+@media (max-width: 700px) {
+  .introduction-describe {
+    font-size: 1em;
+  }
+  .introduction-button {
+    font-size: 1em;
+  }
 }
 </style>

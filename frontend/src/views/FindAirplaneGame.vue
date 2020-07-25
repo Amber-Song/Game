@@ -205,12 +205,6 @@ export default {
 </script>
 
 <style scoped>
-.notice {
-  background-color: #c6e2ff;
-  background-image: linear-gradient(to right, #c6e2ff, white);
-  margin-bottom: 40px;
-}
-
 .game-round-player {
   width: 100%;
   text-align: center;
@@ -289,12 +283,7 @@ button:hover a {
 
 @media (max-width: 700px) {
   .game-round-player {
-    width: 100%;
-    text-align: center;
-    font-family: "Aladin", cursive;
     font-size: 1em;
-    font-weight: bold;
-    margin-bottom: 10px;
   }
   .competition {
     display: block;
@@ -302,9 +291,9 @@ button:hover a {
   .board-td {
     width: 35px;
     height: 35px;
-    background-color: darkgray;
-    border: 1px solid black;
-    border-collapse: collapse;
+  }
+  button {
+    font-size: 1em;
   }
 }
 @media (max-width: 440px) {

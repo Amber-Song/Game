@@ -28,34 +28,34 @@
 
     <div class="competition">
       <!-- This is player1 collection -->
-      <div class="game-round-player">
+      <div class="game-round-player game-round-player-mobile">
         player1
         <br>
         <div v-for="(box, index) in collection1" :key="index">
           <div v-if="thisPlayer == 'player1'">
             <div
               v-if="box == 'small'"
-              class="fa fa-cube cube__small blue"
+              class="fa fa-cube cube__small blue min-height min-width"
               v-on:click="choosebox(index)"
               v-bind:class="{chosen: index === boxChosenIndex}"
             ></div>
             <div
               v-if="box == 'medium'"
-              class="fa fa-cube cube__medium blue"
+              class="fa fa-cube cube__medium blue min-height min-width"
               v-on:click="choosebox(index)"
               v-bind:class="{chosen: index === boxChosenIndex}"
             ></div>
             <div
               v-if="box == 'large'"
-              class="fa fa-cube cube__large blue"
+              class="fa fa-cube cube__large blue min-height min-width"
               v-on:click="choosebox(index)"
               v-bind:class="{chosen: index === boxChosenIndex}"
             ></div>
           </div>
           <div v-else>
-            <div v-if="box == 'small'" class="fa fa-cube cube__small blue"></div>
-            <div v-if="box == 'medium'" class="fa fa-cube cube__medium blue"></div>
-            <div v-if="box == 'large'" class="fa fa-cube cube__large blue"></div>
+            <div v-if="box == 'small'" class="fa fa-cube cube__small blue min-height min-width"></div>
+            <div v-if="box == 'medium'" class="fa fa-cube cube__medium blue min-height min-width"></div>
+            <div v-if="box == 'large'" class="fa fa-cube cube__large blue min-height min-width"></div>
           </div>
         </div>
       </div>
@@ -124,34 +124,34 @@
       </div>
 
       <!-- This is player2 collection -->
-      <div class="game-round-player">
+      <div class="game-round-player game-round-player-mobile">
         player2
         <br>
         <div v-for="(box, index) in collection2" :key="index">
           <div v-if="thisPlayer == 'player2'">
             <div
               v-if="box == 'small'"
-              class="fa fa-cube cube__small green"
+              class="fa fa-cube cube__small green min-height min-width"
               v-on:click="choosebox(index)"
               v-bind:class="{chosen: index === boxChosenIndex}"
             ></div>
             <div
               v-if="box == 'medium'"
-              class="fa fa-cube cube__medium green"
+              class="fa fa-cube cube__medium green min-height min-width"
               v-on:click="choosebox(index)"
               v-bind:class="{chosen: index === boxChosenIndex}"
             ></div>
             <div
               v-if="box == 'large'"
-              class="fa fa-cube cube__large green"
+              class="fa fa-cube cube__large green min-height min-width"
               v-on:click="choosebox(index)"
               v-bind:class="{chosen: index === boxChosenIndex}"
             ></div>
           </div>
           <div v-else>
-            <div v-if="box == 'small'" class="fa fa-cube cube__small green"></div>
-            <div v-if="box == 'medium'" class="fa fa-cube cube__medium green"></div>
-            <div v-if="box == 'large'" class="fa fa-cube cube__large green"></div>
+            <div v-if="box == 'small'" class="fa fa-cube cube__small green min-height min-width"></div>
+            <div v-if="box == 'medium'" class="fa fa-cube cube__medium green min-height min-width"></div>
+            <div v-if="box == 'large'" class="fa fa-cube cube__large green min-height min-width"></div>
           </div>
         </div>
       </div>
@@ -462,11 +462,6 @@ export default {
 .game-congratulation {
   color: red;
 }
-.notice {
-  background-color: #c6e2ff;
-  background-image: linear-gradient(to right, #c6e2ff, white);
-  margin-bottom: 40px;
-}
 
 .competition {
   display: grid;
@@ -508,5 +503,49 @@ td {
 td div {
   width: 100%;
   height: 100%;
+}
+
+@media (max-width: 700px) {
+  .competition {
+    display: grid;
+    grid-template-columns: 65px auto 65px;
+    grid-gap: 10px;
+  }
+  .game-round-player {
+    font-size: 1em;
+  }
+  .cube__small {
+    font-size: 1em;
+  }
+  .cube__medium {
+    font-size: 2em;
+  }
+  .cube__large {
+    font-size: 3em;
+  }
+  td {
+    width: 70px;
+    height: 70px;
+  }
+  .min-height {
+    min-height: 30px;
+  }
+}
+
+@media (max-width: 380px) {
+  .competition {
+    display: block;
+  }
+  .game-round-player-mobile {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    align-items: baseline;
+  }
+  .min-height {
+    min-height: 0px;
+  }
+  .min-width {
+    min-width: 30px;
+  }
 }
 </style>
