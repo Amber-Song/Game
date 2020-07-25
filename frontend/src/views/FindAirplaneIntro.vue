@@ -166,18 +166,13 @@ button:hover {
     display: block;
   }
   .introduction-describe {
-    font-family: "Neucha", sans-serif;
     font-size: 1em;
     margin: 10px;
     margin-top: 0px;
   }
   .introduction-button {
-    font-family: "Neucha", sans-serif;
     font-size: 1em;
     margin: 20px;
-    margin-left: 50%;
-    padding: 4px 10px 0 10px;
-    border-radius: 3px;
   }
   table {
     margin-top: 0px;

@@ -14,13 +14,13 @@
           class="link__none-style"
         >Seek for Airplane's Head</router-link>
       </li>
-      <li>
+      <!-- <li>
         <span class="fa fa-hand-scissors-o icon__scissor icon"></span>
         <router-link
           :to="{name: 'RockPaperScissorsIntroduction'}"
           class="link__none-style"
         >Rock Paper Scissors</router-link>
-      </li>
+      </li>-->
       <li>
         <span class="fa fa-cube icon"></span>
         <router-link
