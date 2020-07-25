@@ -121,6 +121,13 @@
             </td>
           </tr>
         </table>
+
+        <button>
+          <router-link :to="{name: 'TicTacToeBoxIntroduction'}" class="link__none-style">
+            Back to introduction page to
+            <strong>restart</strong>.
+          </router-link>
+        </button>
       </div>
 
       <!-- This is player2 collection -->
@@ -503,6 +510,25 @@ td div {
   height: 100%;
 }
 
+button {
+  font-family: "Neucha", sans-serif;
+  font-size: 1.2em;
+  margin: 15px 0;
+  padding: 4px 10px 0 10px;
+  border-radius: 3px;
+  color: black;
+}
+button:hover {
+  background-color: #003bac;
+  border-top: 2px solid #608cdf;
+  border-left: 2px solid #608cdf;
+  border-bottom: 2px solid #002a7b;
+  border-right: 2px solid #002a7b;
+}
+button:hover a {
+  color: white;
+}
+
 @media (max-width: 700px) {
   .competition {
     display: grid;
@@ -527,6 +553,9 @@ td div {
   }
   .min-height {
     min-height: 30px;
+  }
+  button {
+    font-size: 1em;
   }
 }
 
