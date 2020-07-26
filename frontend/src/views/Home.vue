@@ -28,6 +28,13 @@
           class="link__none-style"
         >Tic Tac Toe Box version</router-link>
       </li>
+      <li>
+        <span class="fa fa-rotate-right icon"></span>
+        <router-link
+          :to="{name: 'RotatingPuzzleIntroduction'}"
+          class="link__none-style"
+        >Rotating puzzle</router-link>
+      </li>
     </ul>
   </div>
 </template>
