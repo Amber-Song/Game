@@ -36,10 +36,12 @@ type TicTacToeBoxRound struct {
 	BoardShowPlayer [][]string
 }
 
+// generateBox: generate box collection for user
 func generateBox() []string {
 	return []string{"small", "small", "medium", "medium", "large", "large"}
 }
 
+// generateBoard generate 2 dimensional box array
 func generateBoard() [][][]string {
 	var board [][][]string
 	for i := 0; i < 3; i++ {
@@ -53,17 +55,7 @@ func generateBoard() [][][]string {
 	return board
 }
 
-func (room TicTacToeBoxRoom) getUserNow(user string) string {
-	switch user {
-	case room.player1:
-		return "player1"
-	case room.player2:
-		return "player2"
-	default:
-		return ""
-	}
-}
-
+// checkTTTWinner return the userNow when that user win the game
 func checkTTTWinner(playerBoard [][]string) string {
 	if playerBoard[0][0] != "" && playerBoard[0][0] == playerBoard[1][0] && playerBoard[0][0] == playerBoard[2][0] {
 		return playerBoard[0][0]
@@ -99,19 +91,22 @@ func tictactoeBoxInitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cleanRooms()
-
+	// Get the user
 	user, _ := getCookie(r)
 	if user == "" {
 		user = setCookie(w)
 	}
-	roomid := setTictactoeRoom()
-
-	room := TicTacToeBoxRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1)}
+	// Get Room
+	var room TicTacToeBoxRoom
+	room.cleanRooms()
+	roomid := room.setRoom()
+	// Set room and game data
+	room = TicTacToeBoxRoom{player1: user, player2: "", expire: getExpireTime()}
 	game := TicTacToeBoxGame{BoxCollection1: generateBox(), BoxCollection2: generateBox(), Board: generateBoard(), BoardPlayer: generateBoard(), ThisPlayer: "player1", Player1: user, Player2: "", Winner: "", Round: 1, PlayerNow: "player1"}
 	tictactoeRooms[roomid] = room
 	tictactoeGames[roomid] = game
 
+	// Return roomid
 	b, err := json.Marshal(roomid)
 	if err != nil {
 		fmt.Println(err)
@@ -130,14 +125,16 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 	if user == "" {
 		user = setCookie(w)
 	}
+
+	var room TicTacToeBoxRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkTictactoeRoom(roomid)
+	check := room.checkRoomExist(roomid)
 	if !check {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
 
-	room := tictactoeRooms[roomid]
+	room = tictactoeRooms[roomid]
 	game := tictactoeGames[roomid]
 	userNow := room.getUserNow(user)
 
@@ -150,7 +147,7 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 			tictactoeGames[roomid] = updateGame
 			game = updateGame
 		} else {
-			http.Redirect(w, r, "/NotFound", http.StatusFound)
+			http.Redirect(w, r, "/NotFound", http.StatusFound) // TODO Check all the redirect
 			return
 		}
 	}
@@ -175,14 +172,16 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
+
+	var room TicTacToeBoxRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkTictactoeRoom(roomid)
+	check := room.checkRoomExist(roomid)
 	if !check {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
 
-	room := tictactoeRooms[roomid]
+	room = tictactoeRooms[roomid]
 	game := tictactoeGames[roomid]
 	userNow := room.getUserNow(user)
 

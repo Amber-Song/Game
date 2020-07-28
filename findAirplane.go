@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"math"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -14,11 +13,10 @@ import (
 
 // AirplaneRoom store the information not change a lot
 type AirplaneRoom struct {
-	player1      string
-	player2      string
-	expire       time.Time
-	boardLength  int
-	airplaneType int
+	player1     string
+	player2     string
+	expire      time.Time
+	boardLength int
 }
 
 // AirplaneGame store the information which change a lot
@@ -34,11 +32,14 @@ type AirplaneGame struct {
 	Player2    string
 }
 
-// AirplaneType different shape of airplane
-type AirplaneType struct {
-	AirplaneBody int
-	AirplaneWing int
-	AirplaneTail int
+type AirplaneTypeA struct {
+}
+
+type Airplane interface {
+	checkAirplaneAvail(i int, j int, direction string, boardLength int) bool
+	checkAirplaneExisting(i int, j int, direction string, board [][]int) bool
+	placeAirplane(i int, j int, direction string, board [][]int) [][]int
+	generateAirplane(boardLength int) [][]int
 }
 
 func generateHead(boardLength int) (int, int) {
@@ -61,27 +62,26 @@ func generateDirection() string {
 	return ""
 }
 
-// checkAirplane : check if the space is enough for the airplane
-func checkAirplane(i int, j int, direction string, boardLength int, airplaneBody int, airplaneWing int) bool {
-	wingSide := int(math.Floor(float64(airplaneWing) / 2))
+// checkAirplaneAvail : check if the space is enough for the airplane
+func (airplane AirplaneTypeA) checkAirplaneAvail(i int, j int, direction string, boardLength int) bool {
 	switch direction {
 	case "up":
-		if boardLength-1-i < airplaneBody || j < wingSide || boardLength-1-j < wingSide {
+		if boardLength-i <= 3 || j < 2 || boardLength-j <= 2 {
 			return false
 		}
 		return true
 	case "down":
-		if i < airplaneBody || j < wingSide || boardLength-1-j < wingSide {
+		if i < 3 || j < 2 || boardLength-j <= 2 {
 			return false
 		}
 		return true
 	case "left":
-		if boardLength-1-j < airplaneBody || i < wingSide || boardLength-1-i < wingSide {
+		if boardLength-j <= 3 || i < 2 || boardLength-i <= 2 {
 			return false
 		}
 		return true
 	case "right":
-		if j < airplaneBody || i < wingSide || boardLength-1-i < wingSide {
+		if j < 3 || i < 2 || boardLength-i <= 2 {
 			return false
 		}
 		return true
@@ -89,80 +89,77 @@ func checkAirplane(i int, j int, direction string, boardLength int, airplaneBody
 	return false
 }
 
-// checkAirplaneExisting if there is already an airplane
-func checkAirplaneExisting(i int, j int, direction string, board [][]int, boardLength int, airplaneBody int, airplaneWing int, airplaneTail int) bool {
-	wingSide := int(math.Floor(float64(airplaneWing) / 2))
-	tailSide := int(math.Floor(float64(airplaneTail) / 2))
-
+// checkAirplaneExisting : check if the airplane is overlap
+func (airplane AirplaneTypeA) checkAirplaneExisting(i int, j int, direction string, board [][]int) bool {
 	if board[i][j] != 0 {
 		return false
 	}
 
 	switch direction {
 	case "up":
-		for index := i + 1; index <= i+airplaneBody; index++ {
+		for index := i + 1; index <= i+3; index++ {
 			if board[index][j] != 0 {
 				return false
 			}
 		}
-		for index := j - wingSide; index <= j+wingSide; index++ {
+		for index := j - 2; index <= j+2; index++ {
 			if board[i+1][index] != 0 {
 				return false
 			}
 		}
-		for index := j - tailSide; index <= j+tailSide; index++ {
-			if board[i+airplaneBody][index] != 0 {
+		for index := j - 1; index <= j+1; index++ {
+			if board[i+3][index] != 0 {
 				return false
 			}
 		}
 		return true
 	case "down":
-		for index := i - 1; index >= i-airplaneBody; index-- {
+		for index := i - 1; index >= i-3; index-- {
 			if board[index][j] != 0 {
 				return false
 			}
 		}
-		for index := j - wingSide; index <= j+wingSide; index++ {
+		for index := j - 2; index <= j+2; index++ {
 			if board[i-1][index] != 0 {
 				return false
 			}
 		}
-		for index := j - tailSide; index <= j+tailSide; index++ {
-			if board[i-airplaneBody][index] != 0 {
+		for index := j - 1; index <= j+1; index++ {
+			if board[i-3][index] != 0 {
 				return false
 			}
 		}
 		return true
 	case "left":
-		for index := j + 1; index <= j+airplaneBody; index++ {
+		for index := j + 1; index <= j+3; index++ {
 			if board[i][index] != 0 {
 				return false
 			}
 		}
-		for index := i - wingSide; index <= i+wingSide; index++ {
+		for index := i - 2; index <= i+2; index++ {
 			if board[index][j+1] != 0 {
 				return false
 			}
 		}
-		for index := i - tailSide; index <= i+tailSide; index++ {
-			if board[index][j+airplaneBody] != 0 {
+		for index := i - 1; index <= i+1; index++ {
+			if board[index][j+3] != 0 {
 				return false
 			}
 		}
 		return true
 	case "right":
-		for index := j - 1; index >= j-airplaneBody; index-- {
+		for index := j - 1; index >= j-3; index-- {
 			if board[i][index] != 0 {
 				return false
 			}
 		}
-		for index := i - wingSide; index <= i+wingSide; index++ {
+		for index := i - 2; index <= i+2; index++ {
 			if board[index][j-1] != 0 {
 				return false
 			}
 		}
-		for index := i - tailSide; index <= i+tailSide; index++ {
-			if board[index][j-airplaneBody] != 0 {
+		for index := i - 1; index <= i+1; index++ {
+			if board[index][j-3] != 0 {
 				return false
 			}
 		}
@@ -171,59 +168,55 @@ func checkAirplaneExisting(i int, j int, direction string, board [][]int, boardL
 	return false
 }
 
-// placeAirplane the airplane on the board
-func placeAirplane(i int, j int, direction string, board [][]int, boardLength int, airplaneBody int, airplaneWing int, airplaneTail int) [][]int {
-	wingSide := int(math.Floor(float64(airplaneWing) / 2))
-	tailSide := int(math.Floor(float64(airplaneTail) / 2))
-
+func (airplane AirplaneTypeA) placeAirplane(i int, j int, direction string, board [][]int) [][]int {
 	board[i][j] = 2
 
 	switch direction {
 	case "up":
-		for index := i + 1; index <= i+airplaneBody; index++ {
+		for index := i + 1; index <= i+3; index++ {
 			board[index][j] = 1
 		}
-		for index := j - wingSide; index <= j+wingSide; index++ {
+		for index := j - 2; index <= j+2; index++ {
 			board[i+1][index] = 1
 		}
-		for index := j - tailSide; index <= j+tailSide; index++ {
-			board[i+airplaneBody][index] = 1
+		for index := j - 1; index <= j+1; index++ {
+			board[i+3][index] = 1
 		}
 	case "down":
-		for index := i - 1; index >= i-airplaneBody; index-- {
+		for index := i - 1; index >= i-3; index-- {
 			board[index][j] = 1
 		}
-		for index := j - wingSide; index <= j+wingSide; index++ {
+		for index := j - 2; index <= j+2; index++ {
 			board[i-1][index] = 1
 		}
-		for index := j - tailSide; index <= j+tailSide; index++ {
-			board[i-airplaneBody][index] = 1
+		for index := j - 1; index <= j+1; index++ {
+			board[i-3][index] = 1
 		}
 	case "left":
-		for index := j + 1; index <= j+airplaneBody; index++ {
+		for index := j + 1; index <= j+3; index++ {
 			board[i][index] = 1
 		}
-		for index := i - wingSide; index <= i+wingSide; index++ {
+		for index := i - 2; index <= i+2; index++ {
 			board[index][j+1] = 1
 		}
-		for index := i - tailSide; index <= i+tailSide; index++ {
-			board[index][j+airplaneBody] = 1
+		for index := i - 1; index <= i+1; index++ {
+			board[index][j+3] = 1
 		}
 	case "right":
-		for index := j - 1; index >= j-airplaneBody; index-- {
+		for index := j - 1; index >= j-3; index-- {
 			board[i][index] = 1
 		}
-		for index := i - wingSide; index <= i+wingSide; index++ {
+		for index := i - 2; index <= i+2; index++ {
 			board[index][j-1] = 1
 		}
-		for index := i - tailSide; index <= i+tailSide; index++ {
-			board[index][j-airplaneBody] = 1
+		for index := i - 1; index <= i+1; index++ {
+			board[index][j-3] = 1
 		}
 	}
 	return board
 }
 
-func generateAirplane(boardLength int, airplaneBody int, airplaneWing int, airplaneTail int) [][]int {
+func (airplane AirplaneTypeA) generateAirplane(boardLength int) [][]int {
 	var board [][]int
 
 	// Initiate board
@@ -238,8 +231,8 @@ func generateAirplane(boardLength int, airplaneBody int, airplaneWing int, airpl
 	for index := 0; ; index++ {
 		i, j := generateHead(boardLength)
 		direction := generateDirection()
-		if checkAirplane(i, j, direction, boardLength, airplaneBody, airplaneWing) {
-			board = placeAirplane(i, j, direction, board, boardLength, airplaneBody, airplaneWing, airplaneTail)
+		if aisongsognyou	rplane.checkAirplaneAvail(i, j, direction, boardLength) {
+			board = airplane.placeAirplane(i, j, direction, board)
 			break
 		}
 	}
@@ -248,8 +241,8 @@ func generateAirplane(boardLength int, airplaneBody int, airplaneWing int, airpl
 	for index := 0; ; index++ {
 		i, j := generateHead(boardLength)
 		direction := generateDirection()
-		if checkAirplane(i, j, direction, boardLength, airplaneBody, airplaneWing) && checkAirplaneExisting(i, j, direction, board, boardLength, airplaneBody, airplaneWing, airplaneTail) {
-			board = placeAirplane(i, j, direction, board, boardLength, airplaneBody, airplaneWing, airplaneTail)
+		if airplane.checkAirplaneAvail(i, j, direction, boardLength) && airplane.checkAirplaneExisting(i, j, direction, board) {
+			board = airplane.placeAirplane(i, j, direction, board)
 			break
 		}
 	}
@@ -288,38 +281,6 @@ func checkWin(board1 [][]int, board2 [][]int, boardLength int) []string {
 	return win
 }
 
-func (room *AirplaneRoom) getUserNow(user string) string {
-	switch user {
-	case room.player1:
-		return "player1"
-	case room.player2:
-		return "player2"
-	default:
-		return ""
-	}
-}
-
-func (game *AirplaneGame) getUpdateGameData(r *http.Request, userNow string, boardLength int) AirplaneGame {
-	reqBody, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	var receiveGame AirplaneGame
-	err = json.Unmarshal(reqBody, &receiveGame)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	var newGameState AirplaneGame
-	if userNow == "player1" {
-		newGameState = AirplaneGame{Board1: receiveGame.Board1, Board2: game.Board2, PlayerNow: "player2", Round: game.Round, Win: checkWin(receiveGame.Board1, game.Board2, boardLength), ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
-	} else {
-		newGameState = AirplaneGame{Board1: game.Board1, Board2: receiveGame.Board2, PlayerNow: "player1", Round: game.Round + 1, Win: checkWin(game.Board1, receiveGame.Board2, boardLength), ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
-	}
-
-	return newGameState
-}
-
 func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	// Enabling CORS on a Go Web Server
 	setupResponse(w)
@@ -331,21 +292,21 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		boardLength = 8
 	}
-	airplaneType := 0
 
 	user, _ := getCookie(r)
 	if user == "" {
 		user = setCookie(w)
 	}
-	roomid := setAirplaneRoom()
-	board := generateAirplane(boardLength, airplaneTypes[airplaneType].AirplaneBody, airplaneTypes[airplaneType].AirplaneWing, airplaneTypes[airplaneType].AirplaneTail)
+	var room AirplaneRoom
+	room.cleanRooms()
+	roomid := room.setRoom()
+	var airplane AirplaneTypeA
+	board := airplane.generateAirplane(boardLength)
 
-	room := AirplaneRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1), boardLength: boardLength, airplaneType: airplaneType}
+	room = AirplaneRoom{player1: user, player2: "", expire: getExpireTime(), boardLength: boardLength}
 	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: user, Player2: ""}
 	airplaneRooms[roomid] = room
 	airplaneGames[roomid] = game
-
-	cleanRooms()
 
 	b, err := json.Marshal(roomid)
 	if err != nil {
@@ -362,26 +323,28 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get room and cookie
-	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkAirplaneRoom(roomid)
-	if !check {
-		http.Redirect(w, r, "/NotFound", http.StatusFound)
-		return
-	}
 	user, _ := getCookie(r)
 	if user == "" {
 		user = setCookie(w)
 	}
+	var room AirplaneRoom
+	roomid := strings.Join(r.URL.Query()["room"], "")
+	check := room.checkRoomExist(roomid)
+	if !check {
+		http.Redirect(w, r, "/NotFound", http.StatusFound)
+		return
+	}
 
 	// Check what is the user now and also if is a new user, update room and game
-	room := airplaneRooms[roomid]
+	room = airplaneRooms[roomid]
 	game := airplaneGames[roomid]
 	userNow := room.getUserNow(user) // this should decide which is this play instead of this player in the struct
 	if userNow == "" {
 		if room.player2 == "" {
 			userNow = "player2"
-			board := generateAirplane(room.boardLength, airplaneTypes[room.airplaneType].AirplaneBody, airplaneTypes[room.airplaneType].AirplaneWing, airplaneTypes[room.airplaneType].AirplaneTail)
-			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire, boardLength: room.boardLength, airplaneType: room.airplaneType}
+			var airplane AirplaneTypeA
+			board := airplane.generateAirplane(room.boardLength)
+			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire, boardLength: room.boardLength}
 			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow, Player1: room.player1, Player2: user}
 			airplaneRooms[roomid] = updateRoom
 			airplaneGames[roomid] = updateGame
@@ -396,8 +359,23 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if it is post or get
 	if r.Method == http.MethodPost {
 		//	if post, get new data, update it and then send the data back
-		updateGame := game.getUpdateGameData(r, userNow, room.boardLength)
-		airplaneGames[roomid] = updateGame
+		reqBody, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println(err)
+		}
+		var receiveGame AirplaneGame
+		err = json.Unmarshal(reqBody, &receiveGame)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		var newGameState AirplaneGame
+		if userNow == "player1" {
+			newGameState = AirplaneGame{Board1: receiveGame.Board1, Board2: game.Board2, PlayerNow: "player2", Round: game.Round, Win: checkWin(receiveGame.Board1, game.Board2, room.boardLength), ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
+		} else {
+			newGameState = AirplaneGame{Board1: game.Board1, Board2: receiveGame.Board2, PlayerNow: "player1", Round: game.Round + 1, Win: checkWin(game.Board1, receiveGame.Board2, room.boardLength), ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
+		}
+		airplaneGames[roomid] = newGameState
 	} else {
 		//	if get, then return data
 		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2}
@@ -409,7 +387,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// restart
+// TODO restart
 // func airplaneRestartHandler(w http.ResponseWriter, r *http.Request) {
 // 	// Enabling CORS on a Go Web Server
 // 	setupResponse(w)
@@ -419,7 +397,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 
 // 	// Get room and cookie
 // 	roomid := strings.Join(r.URL.Query()["room"], "")
-// 	check := checkAirplaneRoom(roomid)
+//  check := room.checkRoomExist(roomid)
 // 	if !check {
 // 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 // 		return

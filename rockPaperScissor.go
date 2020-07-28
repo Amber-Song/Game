@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// RPSRoom store the data which doesn't change a lot
+// RPSRoom store the room data which doesn't change a lot
 type RPSRoom struct {
 	player1 string
 	player2 string
@@ -51,17 +51,6 @@ func generateCardCollection() []string {
 		collection = append(collection, returnRPS(r))
 	}
 	return collection
-}
-
-func (room RPSRoom) getUserNow(user string) string {
-	switch user {
-	case room.player1:
-		return "player1"
-	case room.player2:
-		return "player2"
-	default:
-		return ""
-	}
 }
 
 func checkRoundWinner(card1 string, card2 string) int {
@@ -109,16 +98,17 @@ func rpsInitHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cleanRooms()
-
 	user, _ := getCookie(r)
 	if user == "" {
 		user = setCookie(w)
 	}
-	roomid := setRPSRoom()
+
+	var room RPSRoom
+	room.cleanRooms()
+	roomid := room.setRoom()
 
 	collection := generateCardCollection()
-	room := RPSRoom{player1: user, player2: "", expire: time.Now().AddDate(0, 0, 1)}
+	room = RPSRoom{player1: user, player2: "", expire: getExpireTime()}
 	game := RPSGame{Collection1: collection, Collection2: collection, Round: 1, ThisPlayer: "player1", Player1: user, Player2: "", Card1: "", Card2: "", Card1Index: -1, Card2Index: -1, UpdateGame: false}
 	rpsRooms[roomid] = room
 	rpsGames[roomid] = game
@@ -139,18 +129,19 @@ func rpsWaitForPlayer2Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get room and cookie
-	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkRPSRoom(roomid)
-	if !check {
-		http.Redirect(w, r, "/NotFound", http.StatusFound)
-		return
-	}
 	user, _ := getCookie(r)
 	if user == "" {
 		user = setCookie(w)
 	}
+	var room RPSRoom
+	roomid := strings.Join(r.URL.Query()["room"], "")
+	check := room.checkRoomExist(roomid)
+	if !check {
+		http.Redirect(w, r, "/NotFound", http.StatusFound)
+		return
+	}
 
-	room := rpsRooms[roomid]
+	room = rpsRooms[roomid]
 	game := rpsGames[roomid]
 	userNow := room.getUserNow(user)
 
@@ -171,9 +162,8 @@ func rpsWaitForPlayer2Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	updateGame := RPSGame{Collection1: game.Collection1, Collection2: game.Collection2, Round: game.Round, ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2, Card1: game.Card1, Card2: game.Card2, Card1Index: game.Card1Index, Card2Index: game.Card2Index, UpdateGame: game.UpdateGame}
-	game = updateGame
 	// Return data
-	b, err := json.Marshal(game)
+	b, err := json.Marshal(updateGame)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -188,19 +178,21 @@ func rpsGameHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get room and cookie
-	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkRPSRoom(roomid)
-	if !check {
-		http.Redirect(w, r, "/NotFound", http.StatusFound)
-		return
-	}
 	user, _ := getCookie(r)
 	if user == "" {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
 
-	room := rpsRooms[roomid]
+	var room RPSRoom
+	roomid := strings.Join(r.URL.Query()["room"], "")
+	check := room.checkRoomExist(roomid)
+	if !check {
+		http.Redirect(w, r, "/NotFound", http.StatusFound)
+		return
+	}
+
+	room = rpsRooms[roomid]
 	game := rpsGames[roomid]
 	userNow := room.getUserNow(user)
 
@@ -223,7 +215,6 @@ func rpsGameHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			updateGame = RPSGame{Collection1: game.Collection1, Collection2: game.Collection2, Round: game.Round, ThisPlayer: "player2", Player1: game.Player1, Player2: game.Player2, Card1: game.Card1, Card2: getPostCard.Card2, Card1Index: game.Card1Index, Card2Index: getPostCard.Card2Index, UpdateGame: false}
 		}
-		game = updateGame
 		rpsGames[roomid] = updateGame
 
 	} else {
@@ -244,12 +235,6 @@ func rpsRoundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Get room and cookie
-	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := checkRPSRoom(roomid)
-	if !check {
-		http.Redirect(w, r, "/NotFound", http.StatusFound)
-		return
-	}
 	user, _ := getCookie(r)
 	if user == "" {
 		user = setCookie(w)
@@ -257,8 +242,16 @@ func rpsRoundHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var room RPSRoom
+	roomid := strings.Join(r.URL.Query()["room"], "")
+	check := room.checkRoomExist(roomid)
+	if !check {
+		http.Redirect(w, r, "/NotFound", http.StatusFound)
+		return
+	}
+
+	room = rpsRooms[roomid]
 	game := rpsGames[roomid]
-	room := rpsRooms[roomid]
 	userNow := room.getUserNow(user)
 
 	if !game.UpdateGame {
