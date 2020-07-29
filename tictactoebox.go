@@ -36,8 +36,7 @@ type TicTacToeBoxRound struct {
 	BoardShowPlayer [][]string
 }
 
-// generateBox: generate box collection for user
-func generateBox() []string {
+func generateBoxCollection() []string {
 	return []string{"small", "small", "medium", "medium", "large", "large"}
 }
 
@@ -55,7 +54,6 @@ func generateBoard() [][][]string {
 	return board
 }
 
-// checkTTTWinner return the userNow when that user win the game
 func checkTTTWinner(playerBoard [][]string) string {
 	if playerBoard[0][0] != "" && playerBoard[0][0] == playerBoard[1][0] && playerBoard[0][0] == playerBoard[2][0] {
 		return playerBoard[0][0]
@@ -98,11 +96,11 @@ func tictactoeBoxInitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	// Get Room
 	var room TicTacToeBoxRoom
-	room.cleanRooms()
-	roomid := room.setRoom()
+	room.removeExpiredRoom()
+	roomid := room.generateRoomid()
 	// Set room and game data
 	room = TicTacToeBoxRoom{player1: user, player2: "", expire: getExpireTime()}
-	game := TicTacToeBoxGame{BoxCollection1: generateBox(), BoxCollection2: generateBox(), Board: generateBoard(), BoardPlayer: generateBoard(), ThisPlayer: "player1", Player1: user, Player2: "", Winner: "", Round: 1, PlayerNow: "player1"}
+	game := TicTacToeBoxGame{BoxCollection1: generateBoxCollection(), BoxCollection2: generateBoxCollection(), Board: generateBoard(), BoardPlayer: generateBoard(), ThisPlayer: "player1", Player1: user, Player2: "", Winner: "", Round: 1, PlayerNow: "player1"}
 	tictactoeRooms[roomid] = room
 	tictactoeGames[roomid] = game
 
@@ -128,21 +126,21 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room TicTacToeBoxRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := room.checkRoomExist(roomid)
-	if !check {
+	isExist := room.isRoomExist(roomid)
+	if !isExist {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
 
 	room = tictactoeRooms[roomid]
 	game := tictactoeGames[roomid]
-	userNow := room.getUserNow(user)
+	playerNow := room.getPlayerNow(user)
 
-	if userNow == "" {
+	if playerNow == "" {
 		if room.player2 == "" {
-			userNow = "player2"
+			playerNow = "player2"
 			updateRoom := TicTacToeBoxRoom{player1: room.player1, player2: user, expire: room.expire}
-			updateGame := TicTacToeBoxGame{BoxCollection1: game.BoxCollection1, BoxCollection2: game.BoxCollection2, Board: game.Board, BoardPlayer: game.BoardPlayer, ThisPlayer: userNow, Player1: game.Player1, Player2: user, Winner: game.Winner, Round: game.Round, PlayerNow: game.PlayerNow}
+			updateGame := TicTacToeBoxGame{BoxCollection1: game.BoxCollection1, BoxCollection2: game.BoxCollection2, Board: game.Board, BoardPlayer: game.BoardPlayer, ThisPlayer: playerNow, Player1: game.Player1, Player2: user, Winner: game.Winner, Round: game.Round, PlayerNow: game.PlayerNow}
 			tictactoeRooms[roomid] = updateRoom
 			tictactoeGames[roomid] = updateGame
 			game = updateGame
@@ -152,7 +150,7 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	updateGame := TicTacToeBoxGame{BoxCollection1: game.BoxCollection1, BoxCollection2: game.BoxCollection2, Board: game.Board, BoardPlayer: game.BoardPlayer, ThisPlayer: userNow, Player1: game.Player1, Player2: game.Player2, Winner: game.Winner, Round: game.Round, PlayerNow: game.PlayerNow}
+	updateGame := TicTacToeBoxGame{BoxCollection1: game.BoxCollection1, BoxCollection2: game.BoxCollection2, Board: game.Board, BoardPlayer: game.BoardPlayer, ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Winner: game.Winner, Round: game.Round, PlayerNow: game.PlayerNow}
 	b, err := json.Marshal(updateGame)
 	if err != nil {
 		fmt.Println(err)
@@ -175,15 +173,15 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room TicTacToeBoxRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	check := room.checkRoomExist(roomid)
-	if !check {
+	isExist := room.isRoomExist(roomid)
+	if !isExist {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
 
 	room = tictactoeRooms[roomid]
 	game := tictactoeGames[roomid]
-	userNow := room.getUserNow(user)
+	playerNow := room.getPlayerNow(user)
 
 	if r.Method == http.MethodPost {
 		reqBody, err := ioutil.ReadAll(r.Body)
@@ -199,7 +197,7 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Update game
 		var updateGame TicTacToeBoxGame
-		if userNow == "player1" {
+		if playerNow == "player1" {
 			updateGame = TicTacToeBoxGame{BoxCollection1: getPost.BoxCollection1, BoxCollection2: game.BoxCollection2, Board: getPost.Board, BoardPlayer: getPost.BoardPlayer, ThisPlayer: "player1", Player1: game.Player1, Player2: game.Player2, Winner: checkTTTWinner(getPost.BoardShowPlayer), Round: game.Round, PlayerNow: "player2"}
 		} else {
 			updateGame = TicTacToeBoxGame{BoxCollection1: game.BoxCollection1, BoxCollection2: getPost.BoxCollection2, Board: getPost.Board, BoardPlayer: getPost.BoardPlayer, ThisPlayer: "player2", Player1: game.Player1, Player2: game.Player2, Winner: checkTTTWinner(getPost.BoardShowPlayer), Round: game.Round + 1, PlayerNow: "player1"}
