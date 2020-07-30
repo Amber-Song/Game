@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -188,6 +189,12 @@ func getExpireTime() time.Time {
 	return time.Now().AddDate(0, 0, 1)
 }
 
+func logError(err error) {
+	if err != nil {
+		log.Println("ERROR:", err)
+	}
+}
+
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 	// Enabling CORS on a Go Web Server
 	setupResponse(w)
@@ -196,9 +203,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	b, err := ioutil.ReadFile("frontend/dist/index.html")
-	if err != nil {
-		fmt.Println(err) // TODO make it flag
-	}
+	logError(err)
 	w.Write(b)
 }
 

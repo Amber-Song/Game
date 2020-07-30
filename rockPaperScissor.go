@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -114,9 +113,7 @@ func rpsInitHandler(w http.ResponseWriter, r *http.Request) {
 	rpsGames[roomid] = game
 
 	b, err := json.Marshal(roomid)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logError(err)
 	w.Write(b)
 }
 
@@ -163,9 +160,7 @@ func rpsWaitForPlayer2Handler(w http.ResponseWriter, r *http.Request) {
 	updateGame := RPSGame{Collection1: game.Collection1, Collection2: game.Collection2, Round: game.Round, ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Card1: game.Card1, Card2: game.Card2, Card1Index: game.Card1Index, Card2Index: game.Card2Index, UpdateGame: game.UpdateGame}
 	// Return data
 	b, err := json.Marshal(updateGame)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logError(err)
 	w.Write(b)
 }
 
@@ -198,14 +193,10 @@ func rpsGameHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		// Get the chosen card
 		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		var getPostCard RPSGame
 		err = json.Unmarshal(reqBody, &getPostCard)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 
 		// update game
 		var updateGame RPSGame
@@ -219,9 +210,7 @@ func rpsGameHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// return array
 		b, err := json.Marshal(game)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		w.Write(b)
 	}
 }
@@ -276,8 +265,6 @@ func rpsRoundHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	b, err := json.Marshal(game)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logError(err)
 	w.Write(b)
 }

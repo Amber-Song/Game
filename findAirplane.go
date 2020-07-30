@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -308,9 +307,7 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	airplaneGames[roomid] = game
 
 	b, err := json.Marshal(roomid)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logError(err)
 	w.Write(b)
 }
 
@@ -333,9 +330,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 		// TODO can be written as game interface?
 		game := AirplaneGame{Err: "Sorry! The room is not existing!"}
 		b, err := json.Marshal(game)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		w.Write(b)
 		return
 	}
@@ -358,9 +353,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			game := AirplaneGame{Err: "Sorry! This room is full!"}
 			b, err := json.Marshal(game)
-			if err != nil {
-				fmt.Println(err)
-			}
+			logError(err)
 			w.Write(b)
 			return
 		}
@@ -370,14 +363,10 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		//	if post, get new data, update it and then send the data back
 		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		var receiveGame AirplaneGame
 		err = json.Unmarshal(reqBody, &receiveGame)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 
 		var newGameState AirplaneGame
 		if playerNow == "player1" {
@@ -390,9 +379,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 		//	if get, then return data
 		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Err: ""}
 		b, err := json.Marshal(updateGame)
-		if err != nil {
-			println(err)
-		}
+		logError(err)
 		w.Write(b)
 	}
 }

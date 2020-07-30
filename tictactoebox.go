@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -107,9 +106,7 @@ func tictactoeBoxInitHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Return roomid
 	b, err := json.Marshal(roomid)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logError(err)
 	w.Write(b)
 }
 
@@ -131,9 +128,7 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 	if !isExist {
 		game := TicTacToeBoxGame{Err: "Sorry! The room is not existing!"}
 		b, err := json.Marshal(game)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		w.Write(b)
 		return
 	}
@@ -153,9 +148,7 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			game := TicTacToeBoxGame{Err: "Sorry! This room is full!"}
 			b, err := json.Marshal(game)
-			if err != nil {
-				fmt.Println(err)
-			}
+			logError(err)
 			w.Write(b)
 			return
 		}
@@ -163,9 +156,7 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 
 	updateGame := TicTacToeBoxGame{BoxCollection1: game.BoxCollection1, BoxCollection2: game.BoxCollection2, Board: game.Board, BoardPlayer: game.BoardPlayer, ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Winner: game.Winner, Round: game.Round, PlayerNow: game.PlayerNow, Err: ""}
 	b, err := json.Marshal(updateGame)
-	if err != nil {
-		fmt.Println(err)
-	}
+	logError(err)
 	w.Write(b)
 }
 
@@ -188,9 +179,7 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 	if !isExist {
 		game := TicTacToeBoxGame{Err: "Sorry! The room is not existing!"}
 		b, err := json.Marshal(game)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		w.Write(b)
 		return
 	}
@@ -201,24 +190,18 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 	if playerNow == "" {
 		game := TicTacToeBoxGame{Err: "Sorry! This room is full!"}
 		b, err := json.Marshal(game)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		w.Write(b)
 		return
 	}
 
 	if r.Method == http.MethodPost {
 		reqBody, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 
 		var getPost TicTacToeBoxRound
 		err = json.Unmarshal(reqBody, &getPost)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 
 		// Update game
 		var updateGame TicTacToeBoxGame
@@ -231,9 +214,7 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		// return array
 		b, err := json.Marshal(game)
-		if err != nil {
-			fmt.Println(err)
-		}
+		logError(err)
 		w.Write(b)
 	}
 }
