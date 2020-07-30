@@ -30,6 +30,7 @@ type AirplaneGame struct {
 	ThisPlayer string // thisplayer is not variable that two players should synchronise
 	Player1    string
 	Player2    string
+	Err        string
 }
 
 type AirplaneTypeA struct {
@@ -302,7 +303,7 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	board := airplane.generateAirplane(boardLength)
 
 	room = AirplaneRoom{player1: user, player2: "", expire: getExpireTime(), boardLength: boardLength}
-	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: user, Player2: ""}
+	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: user, Player2: "", Err: ""}
 	airplaneRooms[roomid] = room
 	airplaneGames[roomid] = game
 
@@ -329,7 +330,13 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	roomid := strings.Join(r.URL.Query()["room"], "")
 	isExist := room.isRoomExist(roomid)
 	if !isExist {
-		http.Redirect(w, r, "/NotFound", http.StatusFound)
+		// TODO can be written as game interface?
+		game := AirplaneGame{Err: "Sorry! The room is not existing!"}
+		b, err := json.Marshal(game)
+		if err != nil {
+			fmt.Println(err)
+		}
+		w.Write(b)
 		return
 	}
 
@@ -343,13 +350,18 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 			var airplane AirplaneTypeA
 			board := airplane.generateAirplane(room.boardLength)
 			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire, boardLength: room.boardLength}
-			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: playerNow, Player1: room.player1, Player2: user}
+			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: playerNow, Player1: room.player1, Player2: user, Err: ""}
 			airplaneRooms[roomid] = updateRoom
 			airplaneGames[roomid] = updateGame
 			room = updateRoom
 			game = updateGame
 		} else {
-			http.Redirect(w, r, "/Game/FindAirplane/Game", http.StatusFound)
+			game := AirplaneGame{Err: "Sorry! This room is full!"}
+			b, err := json.Marshal(game)
+			if err != nil {
+				fmt.Println(err)
+			}
+			w.Write(b)
 			return
 		}
 	}
@@ -369,14 +381,14 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 
 		var newGameState AirplaneGame
 		if playerNow == "player1" {
-			newGameState = AirplaneGame{Board1: receiveGame.Board1, Board2: game.Board2, PlayerNow: "player2", Round: game.Round, Win: checkFAWinner(receiveGame.Board1, game.Board2, room.boardLength), ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2}
+			newGameState = AirplaneGame{Board1: receiveGame.Board1, Board2: game.Board2, PlayerNow: "player2", Round: game.Round, Win: checkFAWinner(receiveGame.Board1, game.Board2, room.boardLength), ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Err: ""}
 		} else {
-			newGameState = AirplaneGame{Board1: game.Board1, Board2: receiveGame.Board2, PlayerNow: "player1", Round: game.Round + 1, Win: checkFAWinner(game.Board1, receiveGame.Board2, room.boardLength), ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2}
+			newGameState = AirplaneGame{Board1: game.Board1, Board2: receiveGame.Board2, PlayerNow: "player1", Round: game.Round + 1, Win: checkFAWinner(game.Board1, receiveGame.Board2, room.boardLength), ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Err: ""}
 		}
 		airplaneGames[roomid] = newGameState
 	} else {
 		//	if get, then return data
-		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2}
+		updateGame := AirplaneGame{Board1: game.Board1, Board2: game.Board2, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: playerNow, Player1: game.Player1, Player2: game.Player2, Err: ""}
 		b, err := json.Marshal(updateGame)
 		if err != nil {
 			println(err)
@@ -405,7 +417,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 // 	room := airplaneRooms[roomid]
 // 	board1 := generateAirplane(room.boardLength, airplaneTypes[room.airplaneType].AirplaneBody, airplaneTypes[room.airplaneType].AirplaneWing, airplaneTypes[room.airplaneType].AirplaneTail)
 // 	board2 := generateAirplane(room.boardLength, airplaneTypes[room.airplaneType].AirplaneBody, airplaneTypes[room.airplaneType].AirplaneWing, airplaneTypes[room.airplaneType].AirplaneTail)
-// 	newGame := AirplaneGame{Board1: board1, Board2: board2, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: room.player1, Player2: room.player2}
+// 	newGame := AirplaneGame{Board1: board1, Board2: board2, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: room.player1, Player2: room.player2, Err:""}
 // 	airplaneGames[roomid] = newGame
 // 	fmt.Println("data changed ", airplaneGames[roomid])
 // }

@@ -137,7 +137,6 @@ func rpsWaitForPlayer2Handler(w http.ResponseWriter, r *http.Request) {
 	roomid := strings.Join(r.URL.Query()["room"], "")
 	isExist := room.isRoomExist(roomid)
 	if !isExist {
-		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
 	}
 

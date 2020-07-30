@@ -229,29 +229,38 @@ export default {
           params: { room: this.getRoom }
         })
         .then(response => {
-          this.collection1 = response.data.BoxCollection1;
-          this.collection2 = response.data.BoxCollection2;
-          this.board = response.data.Board;
-          this.boardPlayer = response.data.BoardPlayer;
-          this.thisPlayer = response.data.ThisPlayer;
-          this.player1 = response.data.Player1;
-          this.player2 = response.data.Player2;
-          this.round = response.data.Round;
-          this.playerNow = response.data.PlayerNow;
+          if (response.data.Err != "") {
+            if (response.data.Err == "Sorry! The room is not existing!") {
+              this.$router.push({ path: "/Game/TicTacToeBox/Introduction" });
+            }
+            if (response.data.Err == "Sorry! This room is full!") {
+              console.log("room full");
+            }
+          } else {
+            this.collection1 = response.data.BoxCollection1;
+            this.collection2 = response.data.BoxCollection2;
+            this.board = response.data.Board;
+            this.boardPlayer = response.data.BoardPlayer;
+            this.thisPlayer = response.data.ThisPlayer;
+            this.player1 = response.data.Player1;
+            this.player2 = response.data.Player2;
+            this.round = response.data.Round;
+            this.playerNow = response.data.PlayerNow;
 
-          if (this.collection1.length < 6 || this.collection2.length < 6) {
-            this.updateBoardDisplay();
+            if (this.collection1.length < 6 || this.collection2.length < 6) {
+              this.updateBoardDisplay();
+            }
+
+            if (this.player2 == "") {
+              window.setTimeout(this.loadData, 1000);
+            } else {
+              this.queryServer();
+            }
           }
         })
         .catch(err => {
           this.errors.push(err);
         });
-
-      if (this.player2 == "") {
-        window.setTimeout(this.loadData, 1000);
-      } else {
-        this.queryServer();
-      }
     },
 
     queryServer() {
@@ -263,16 +272,25 @@ export default {
           }
         })
         .then(response => {
-          this.collection1 = response.data.BoxCollection1;
-          this.collection2 = response.data.BoxCollection2;
-          this.board = response.data.Board;
-          this.boardPlayer = response.data.BoardPlayer;
-          this.round = response.data.Round;
-          if (this.playerNow != response.data.PlayerNow) {
-            this.updateBoardDisplay();
+          if (response.data.Err != "") {
+            if (response.data.Err == "Sorry! The room is not existing!") {
+              this.$router.push({ path: "/Game/TicTacToeBox/Introduction" });
+            }
+            if (response.data.Err == "Sorry! This room is full!") {
+              console.log("room full");
+            }
+          } else {
+            this.collection1 = response.data.BoxCollection1;
+            this.collection2 = response.data.BoxCollection2;
+            this.board = response.data.Board;
+            this.boardPlayer = response.data.BoardPlayer;
+            this.round = response.data.Round;
+            if (this.playerNow != response.data.PlayerNow) {
+              this.updateBoardDisplay();
+            }
+            this.playerNow = response.data.PlayerNow;
+            this.winner = response.data.Winner;
           }
-          this.playerNow = response.data.PlayerNow;
-          this.winner = response.data.Winner;
         });
       if (this.winner == "") {
         window.setTimeout(this.queryServer, 1000);

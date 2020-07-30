@@ -98,10 +98,8 @@
           </div>
         </div>
         <button v-on:click="clearTime()">
-          <router-link :to="{name:'RockPaperScissorsIntroduction'}" class="link__none-style">
-            Back to introduction page to
-            <strong>restart</strong>.
-          </router-link>
+          Back to introduction page to
+          <strong>restart</strong>.
         </button>
       </div>
 

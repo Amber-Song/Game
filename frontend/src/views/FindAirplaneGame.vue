@@ -150,19 +150,31 @@ export default {
           }
         })
         .then(response => {
-          this.player1Board = response.data.Board1;
-          this.player2Board = response.data.Board2;
-          this.playerNow = response.data.PlayerNow;
-          this.round = response.data.Round;
-          this.win = response.data.Win;
-          this.thisPlayer = response.data.ThisPlayer;
-          this.player1 = response.data.Player1;
-          this.player2 = response.data.Player2;
+          if (response.data.Err != "") {
+            clearTimeout(this.timeStop);
+            if (response.data.Err === "Sorry! The room is not existing!") {
+              this.$router.push({
+                path: "/Game/FindAirplane/Introduction"
+              });
+            }
+            if (response.data.Err === "Sorry! This room is full!") {
+              console.log("room full");
+            }
+          } else {
+            this.player1Board = response.data.Board1;
+            this.player2Board = response.data.Board2;
+            this.playerNow = response.data.PlayerNow;
+            this.round = response.data.Round;
+            this.win = response.data.Win;
+            this.thisPlayer = response.data.ThisPlayer;
+            this.player1 = response.data.Player1;
+            this.player2 = response.data.Player2;
+            this.timeStop = window.setTimeout(this.reload, 1000);
+          }
         })
         .catch(err => {
           this.errors.push(err);
         });
-      this.timeStop = window.setTimeout(this.reload, 1000);
     },
     flip(row, column) {
       if (this.thisPlayer == this.playerNow) {
