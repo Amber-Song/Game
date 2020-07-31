@@ -22,6 +22,7 @@
         <select v-model="board">
           <option value="easy">easy</option>
           <option value="hard">hard</option>
+          <option value="hell">hell</option>
         </select>
       </label>
       <button v-on:click="startLocalGame()" class="introduction-button">Play on this device!</button>
@@ -38,10 +39,16 @@ export default {
   },
   methods: {
     startLocalGame() {
-      this.$router.push({
-        path: "/Game/RotatingPuzzle/Localgame",
-        query: { board: this.board }
-      });
+      if (this.board == "hell") {
+        this.$router.push({
+          path: "/Game/RotatingPuzzle/Localgame/Hard"
+        });
+      } else {
+        this.$router.push({
+          path: "/Game/RotatingPuzzle/Localgame",
+          query: { board: this.board }
+        });
+      }
     }
   }
 };
@@ -49,6 +56,18 @@ export default {
 
 
 <style scoped>
+select {
+  font-family: "Neucha", sans-serif;
+  font-size: 1em;
+  width: min-content;
+  padding: 2px 5px 0 5px;
+}
+option {
+  font-family: "Neucha", sans-serif;
+  font-size: 1em;
+  width: min-content;
+}
+
 .introduction-describe {
   font-family: "Neucha", sans-serif;
   font-size: 1.25em;

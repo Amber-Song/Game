@@ -9,6 +9,7 @@ import TicTacToeBoxGame from "../views/TicTacToeBoxGame.vue";
 import TicTacToeBoxLocal from "../views/TicTacToeBoxLocal.vue";
 import RotatingPuzzleIntro from "../views/RotatingPuzzleIntro.vue";
 import RotatingPuzzleLocal from "../views/RotatingPuzzleLocal.vue";
+import RotatingPuzzleLocalHard from "../views/RotatingPuzzleLocalHard.vue";
 import NotFound from "../views/NotFound.vue";
 
 Vue.use(VueRouter);
@@ -72,6 +73,11 @@ const routes = [
     name: "RotatingPuzzleLocal",
     component: RotatingPuzzleLocal,
     props: router => ({ boardtype: router.query.board })
+  },
+  {
+    path: "/Game/RotatingPuzzle/Localgame/Hard",
+    name: "RotatingPuzzleLocalHard",
+    component: RotatingPuzzleLocalHard
   },
   {
     path: "*",
