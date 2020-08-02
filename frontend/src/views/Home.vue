@@ -2,17 +2,25 @@
   <div class="introduction-page">
     <h1>Games</h1>
     <div class="page-notice">
-      * To play the game, one player click play now button which will jump to the game page
-      with a special room number. And the player who enters the room first, copy and send the URL
-      to the other player. While the other player enters the URL, the player will automatically enter the room.
+      * If you want to play online, after clicking the play button,
+      send the URL which including room number to the other player to invite the other player to enter the room.
+      <br>While the other player enters the URL, he/she will automatically enter the room.
+      <br>* If you want to play on the same device, choose to play locally.
     </div>
     <ul>
+      <li>
+        <span class="fa fa-rotate-right icon"></span>
+        <router-link
+          :to="{name: 'RotatingPuzzleIntroduction'}"
+          class="link__none-style"
+        >Rotating puzzle (1 player)</router-link>
+      </li>
       <li>
         <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane icon"/>
         <router-link
           :to="{name: 'FindAirplaneIntroduction'}"
           class="link__none-style"
-        >Seek for Airplane's Head</router-link>
+        >Seek for Airplane's Head (2 players)</router-link>
       </li>
       <!-- <li>
         <span class="fa fa-hand-scissors-o icon__scissor icon"></span>
@@ -26,14 +34,7 @@
         <router-link
           :to="{name: 'TicTacToeBoxIntroduction'}"
           class="link__none-style"
-        >Tic Tac Toe Box version</router-link>
-      </li>
-      <li>
-        <span class="fa fa-rotate-right icon"></span>
-        <router-link
-          :to="{name: 'RotatingPuzzleIntroduction'}"
-          class="link__none-style"
-        >Rotating puzzle</router-link>
+        >Tic Tac Toe Box version (2 players)</router-link>
       </li>
     </ul>
   </div>
@@ -57,5 +58,6 @@ li:hover {
 }
 .icon {
   width: 30px;
+  text-align: center;
 }
 </style>

@@ -8,17 +8,17 @@
     <div class="introduction-describe">
       <h2>introduction:</h2>
       <div>
-        Each player have small, medium, large, three sizes of boxes, each size have two.
-        The player place or move one box on the 3 by 3 board in turn.
-        To move or place the boxes, it should follow the following rules:
+        Each player has two small, medium and large size boxes.
+        The player places or moves one box onto the 3 by 3 board, per turn.
+        To move or place boxes, you should follow the following rules:
         <ol>
-          <li>The box put or moved on the board could cover the box which is smaller than it or place on the blank area.</li>
-          <li>The box player wants to move has to be the top one which means it shouldn't be covered with larger boxes.</li>
-          <li>Once the box on the board has moved the box it covered appeared.</li>
-        </ol>The player will win the game if his three boxes are in a line, row or diagonal.
+          <li>Boxes placed or moved on the board can cover a box which is smaller than it or be placed on a blank area.</li>
+          <li>The box a player wants to move has to be the top box; you cannot move a box covered by a larger box.</li>
+          <li>If a box on the board is moved, any box it covered will appear.</li>
+        </ol>A player will win the game if three of their boxes, of any size, are in a line, row or diagonal.
       </div>
       <button v-on:click="startGame()" class="introduction-button">Play Online!</button>
-      <button v-on:click="startLocalGame()" class="introduction-button">Play on this computer!</button>
+      <button v-on:click="startLocalGame()" class="introduction-button">Play on this device!</button>
     </div>
   </div>
 </template>

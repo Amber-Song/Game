@@ -39,13 +39,16 @@ const routes = [
     path: "/Game/FindAirplane/Game/room",
     name: "FindAirplaneGame",
     component: FindAirplaneGame,
-    props: route => ({ roomid: route.query.room })
+    props: route => ({ roomid: route.query.room, shape: route.query.shape })
   },
   {
     path: "/Game/FindAirplane/Localgame",
     name: "FindAirplaneLocal",
     component: FindAirplaneLocal,
-    props: route => ({ boardlength: route.query.boardlength })
+    props: route => ({
+      boardlength: route.query.boardlength,
+      shape: route.query.shape
+    })
   },
   {
     path: "/Game/TicTacToeBox/Introduction",

@@ -62,8 +62,19 @@
 
     <!-- Here is the example -->
     <div class="intro">
-      <table class="inline-block">
-        <tr v-for="(array, indexarray) in exampleArrays" :key="indexarray">
+      <table class="inline-block" v-if="shape == 'airplaneA'">
+        <tr v-for="(array, indexarray) in airplaneA" :key="indexarray">
+          <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
+            <div v-if="block === 3" class="board-td__white"></div>
+            <div v-else-if="block === 4" class="board-td__blue"></div>
+            <div v-else-if="block === 5" class="board-td__darkblue"></div>
+            <div v-else class="board-td__gray"></div>
+          </td>
+        </tr>
+      </table>
+
+      <table class="inline-block" v-else-if="shape == 'airplaneB'">
+        <tr v-for="(array, indexarray) in airplaneB" :key="indexarray">
           <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
             <div v-if="block === 3" class="board-td__white"></div>
             <div v-else-if="block === 4" class="board-td__blue"></div>
@@ -90,7 +101,8 @@
 <script>
 export default {
   props: {
-    boardlength: Number
+    boardlength: Number,
+    shape: String
   },
   data: function() {
     return {
@@ -102,8 +114,11 @@ export default {
     };
   },
   computed: {
-    exampleArrays() {
-      return this.$store.state.exampleMatrix;
+    airplaneA() {
+      return this.$store.state.airplaneA;
+    },
+    airplaneB() {
+      return this.$store.state.airplaneB;
     }
   },
   mounted: function() {
@@ -153,51 +168,98 @@ export default {
       var direction = "";
       var airplane2Find = false;
 
-      do {
-        // redo playerboard
-        board = this.iniBoard();
-        // Find airplane1
+      if (this.shape == "airplaneA") {
         do {
-          [i, j] = this.generateHead();
-          direction = this.generateDirection();
-        } while (!this.checkAvailableShape1(i, j, direction));
-        // place the first airplane
-        board = this.placeAirplane(board, i, j, direction);
-
-        // Try to find airplane2
-        airplane2Find = false;
-        // Try 5 times to find airplane2,
-        //  If still can't, redo airplane1
-        for (let checkTime = 0; checkTime < 5; checkTime++) {
-          [i, j] = this.generateHead();
-          // Try different direction
-          for (let index = 0; index < 4; index++) {
+          // redo playerboard
+          board = this.iniBoard();
+          // Find airplane1
+          do {
+            [i, j] = this.generateHead();
             direction = this.generateDirection();
-            if (this.checkAvailableShape1(i, j, direction)) {
-              if (this.checkOverlapShape1(board, i, j, direction)) {
-                airplane2Find = true;
-                break;
+          } while (!this.checkAvailableShapeA(i, j, direction));
+          // place the first airplane
+          board = this.placeAirplaneA(board, i, j, direction);
+
+          // Try to find airplane2
+          airplane2Find = false;
+          // Try 5 times to find airplane2,
+          //  If still can't, redo airplane1
+          for (let checkTime = 0; checkTime < 5; checkTime++) {
+            [i, j] = this.generateHead();
+            // Try different direction
+            for (let index = 0; index < 4; index++) {
+              direction = this.generateDirection();
+              if (this.checkAvailableShapeA(i, j, direction)) {
+                if (this.checkOverlapShapeA(board, i, j, direction)) {
+                  airplane2Find = true;
+                  break;
+                }
               }
+            }
+
+            // If airplane2 found, break try to find airplane2 loop
+            if (airplane2Find) {
+              break;
             }
           }
 
-          // If airplane2 found, break try to find airplane2 loop
-          if (airplane2Find) {
-            break;
+          // If airplane2 found, then break the regenerate
+          // else redo the airplane
+        } while (!airplane2Find);
+
+        // Place head 2
+        board = this.placeAirplaneA(board, i, j, direction);
+
+        return board;
+      }
+
+      if (this.shape == "airplaneB") {
+        do {
+          // redo playerboard
+          board = this.iniBoard();
+          // Find airplane1
+          do {
+            [i, j] = this.generateHead();
+            direction = this.generateDirection();
+          } while (!this.checkAvailableShapeB(i, j, direction));
+          // place the first airplane
+          board = this.placeAirplaneB(board, i, j, direction);
+
+          // Try to find airplane2
+          airplane2Find = false;
+          // Try 5 times to find airplane2,
+          //  If still can't, redo airplane1
+          for (let checkTime = 0; checkTime < 5; checkTime++) {
+            [i, j] = this.generateHead();
+            // Try different direction
+            for (let index = 0; index < 4; index++) {
+              direction = this.generateDirection();
+              if (this.checkAvailableShapeB(i, j, direction)) {
+                if (this.checkOverlapShapeB(board, i, j, direction)) {
+                  airplane2Find = true;
+                  break;
+                }
+              }
+            }
+
+            // If airplane2 found, break try to find airplane2 loop
+            if (airplane2Find) {
+              break;
+            }
           }
-        }
 
-        // If airplane2 found, then break the regenerate
-        // else redo the airplane
-      } while (!airplane2Find);
+          // If airplane2 found, then break the regenerate
+          // else redo the airplane
+        } while (!airplane2Find);
 
-      // Place head 2
-      board = this.placeAirplane(board, i, j, direction);
+        // Place head 2
+        board = this.placeAirplaneB(board, i, j, direction);
 
-      return board;
+        return board;
+      }
     },
 
-    placeAirplane(board, i, j, direction) {
+    placeAirplaneA(board, i, j, direction) {
       board[i][j] = 2;
 
       switch (direction) {
@@ -251,7 +313,7 @@ export default {
       return board;
     },
 
-    checkOverlapShape1(board, i, j, direction) {
+    checkOverlapShapeA(board, i, j, direction) {
       if (board[i][j] != 0) {
         return false;
       }
@@ -330,7 +392,7 @@ export default {
       return false;
     },
 
-    checkAvailableShape1(i, j, direction) {
+    checkAvailableShapeA(i, j, direction) {
       switch (direction) {
         case "up":
           if (this.boardlength - i <= 3 || this.boardlength - j <= 2 || j < 2) {
@@ -349,6 +411,182 @@ export default {
           return true;
         case "right":
           if (j < 3 || this.boardlength - i <= 2 || i < 2) {
+            return false;
+          }
+          return true;
+        default:
+          return false;
+      }
+    },
+
+    placeAirplaneB(board, i, j, direction) {
+      board[i][j] = 2;
+
+      switch (direction) {
+        case "up":
+          for (let index = i + 1; index <= i + 4; index++) {
+            board[index][j] = 1;
+          }
+          for (let index = 1; index <= 3; index++) {
+            board[i + index][j + index] = 1;
+            board[i + index][j - index] = 1;
+          }
+          for (let index = j - 1; index <= j + 1; index++) {
+            board[i + 4][index] = 1;
+          }
+          return board;
+        case "down":
+          for (let index = i - 1; index >= i - 4; index--) {
+            board[index][j] = 1;
+          }
+          for (let index = 1; index <= 3; index++) {
+            board[i - index][j + index] = 1;
+            board[i - index][j - index] = 1;
+          }
+          for (let index = j - 1; index <= j + 1; index++) {
+            board[i - 4][index] = 1;
+          }
+          return board;
+        case "left":
+          for (let index = j + 1; index <= j + 4; index++) {
+            board[i][index] = 1;
+          }
+          for (let index = 1; index <= 3; index++) {
+            board[i + index][j + index] = 1;
+            board[i - index][j + index] = 1;
+          }
+          for (let index = i - 1; index <= i + 1; index++) {
+            board[index][j + 4] = 1;
+          }
+          return board;
+        case "right":
+          for (let index = j - 1; index >= j - 4; index--) {
+            board[i][index] = 1;
+          }
+          for (let index = 1; index <= 3; index++) {
+            board[i + index][j - index] = 1;
+            board[i - index][j - index] = 1;
+          }
+          for (let index = i - 1; index <= i + 1; index++) {
+            board[index][j - 4] = 1;
+          }
+          return board;
+        default:
+          break;
+      }
+      return board;
+    },
+
+    checkOverlapShapeB(board, i, j, direction) {
+      if (board[i][j] != 0) {
+        return false;
+      }
+      switch (direction) {
+        case "up":
+          for (let index = i + 1; index <= i + 4; index++) {
+            if (board[index][j] != 0) {
+              return false;
+            }
+          }
+          for (let index = 1; index <= 3; index++) {
+            if (
+              board[i + index][j + index] != 0 ||
+              board[i + index][j - index] != 0
+            ) {
+              return false;
+            }
+          }
+          for (let index = j - 1; index <= j + 1; index++) {
+            if (board[i + 4][index] != 0) {
+              return false;
+            }
+          }
+          return true;
+        case "down":
+          for (let index = i - 1; index >= i - 4; index--) {
+            if (board[index][j] != 0) {
+              return false;
+            }
+          }
+          for (let index = 1; index <= 3; index++) {
+            if (
+              board[i - index][j + index] != 0 ||
+              board[i - index][j - index] != 0
+            ) {
+              return false;
+            }
+          }
+          for (let index = j - 1; index <= j + 1; index++) {
+            if (board[i - 4][index] != 0) {
+              return false;
+            }
+          }
+          return true;
+        case "left":
+          for (let index = j + 1; index <= j + 4; index++) {
+            if (board[i][index] != 0) {
+              return false;
+            }
+          }
+          for (let index = 1; index <= 3; index++) {
+            if (
+              board[i + index][j + index] != 0 ||
+              board[i - index][j + index] != 0
+            ) {
+              return false;
+            }
+          }
+          for (let index = i - 1; index <= i + 1; index++) {
+            if (board[index][j + 4] != 0) {
+              return false;
+            }
+          }
+          return true;
+        case "right":
+          for (let index = j - 1; index >= j - 4; index--) {
+            if (board[i][index] != 0) {
+              return false;
+            }
+          }
+          for (let index = 1; index <= 3; index++) {
+            if (
+              board[i + index][j - index] != 0 ||
+              board[i - index][j - index] != 0
+            ) {
+              return false;
+            }
+          }
+          for (let index = i - 1; index <= i + 1; index++) {
+            if (board[index][j - 4] != 0) {
+              return false;
+            }
+          }
+          return true;
+        default:
+          break;
+      }
+      return false;
+    },
+
+    checkAvailableShapeB(i, j, direction) {
+      switch (direction) {
+        case "up":
+          if (this.boardlength - i <= 4 || this.boardlength - j <= 3 || j < 3) {
+            return false;
+          }
+          return true;
+        case "down":
+          if (i < 4 || this.boardlength - j <= 3 || j < 3) {
+            return false;
+          }
+          return true;
+        case "left":
+          if (this.boardlength - j <= 4 || this.boardlength - i <= 3 || i < 3) {
+            return false;
+          }
+          return true;
+        case "right":
+          if (j < 4 || this.boardlength - i <= 3 || i < 3) {
             return false;
           }
           return true;

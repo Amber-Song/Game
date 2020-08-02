@@ -16,6 +16,7 @@ type AirplaneRoom struct {
 	player2     string
 	expire      time.Time
 	boardLength int
+	shape       string
 }
 
 // AirplaneGame store the information which change a lot
@@ -33,6 +34,9 @@ type AirplaneGame struct {
 }
 
 type AirplaneTypeA struct {
+}
+
+type AirplaneTypeB struct {
 }
 
 type Airplane interface {
@@ -81,6 +85,32 @@ func (airplane AirplaneTypeA) isSpaceAvail(i int, j int, direction string, board
 		return true
 	case "right":
 		if j < 3 || i < 2 || boardLength-i <= 2 {
+			return false
+		}
+		return true
+	}
+	return false
+}
+
+func (airplane AirplaneTypeB) isSpaceAvail(i int, j int, direction string, boardLength int) bool {
+	switch direction {
+	case "up":
+		if boardLength-i <= 4 || j < 3 || boardLength-j <= 3 {
+			return false
+		}
+		return true
+	case "down":
+		if i < 4 || j < 3 || boardLength-j <= 3 {
+			return false
+		}
+		return true
+	case "left":
+		if boardLength-j <= 4 || i < 3 || boardLength-i <= 3 {
+			return false
+		}
+		return true
+	case "right":
+		if j < 4 || i < 3 || boardLength-i <= 3 {
 			return false
 		}
 		return true
@@ -166,6 +196,84 @@ func (airplane AirplaneTypeA) isAirplaneNotOverlap(i int, j int, direction strin
 	return false
 }
 
+func (airplane AirplaneTypeB) isAirplaneNotOverlap(i int, j int, direction string, board [][]int) bool {
+	if board[i][j] != 0 {
+		return false
+	}
+
+	switch direction {
+	case "up":
+		for index := i + 1; index <= i+4; index++ {
+			if board[index][j] != 0 {
+				return false
+			}
+		}
+		for index := 1; index <= 3; index++ {
+			if board[i+index][j+index] != 0 || board[i+index][j-index] != 0 {
+				return false
+			}
+		}
+		for index := j - 1; index <= j+1; index++ {
+			if board[i+4][index] != 0 {
+				return false
+			}
+		}
+		return true
+	case "down":
+		for index := i - 1; index >= i-4; index-- {
+			if board[index][j] != 0 {
+				return false
+			}
+		}
+		for index := 1; index <= 3; index++ {
+			if board[i-index][j+index] != 0 || board[i-index][j-index] != 0 {
+				return false
+			}
+		}
+		for index := j - 1; index <= j+1; index++ {
+			if board[i-4][index] != 0 {
+				return false
+			}
+		}
+		return true
+	case "left":
+		for index := j + 1; index <= j+4; index++ {
+			if board[i][index] != 0 {
+				return false
+			}
+		}
+		for index := 1; index <= 3; index++ {
+			if board[i+index][j+index] != 0 || board[i-index][j+index] != 0 {
+				return false
+			}
+		}
+		for index := i - 1; index <= i+1; index++ {
+			if board[index][j+4] != 0 {
+				return false
+			}
+		}
+		return true
+	case "right":
+		for index := j - 1; index >= j-4; index-- {
+			if board[i][index] != 0 {
+				return false
+			}
+		}
+		for index := 1; index <= 3; index++ {
+			if board[i+index][j-index] != 0 || board[i-index][j-index] != 0 {
+				return false
+			}
+		}
+		for index := i - 1; index <= i+1; index++ {
+			if board[index][j-4] != 0 {
+				return false
+			}
+		}
+		return true
+	}
+	return false
+}
+
 func (airplane AirplaneTypeA) placeAirplane(i int, j int, direction string, board [][]int) [][]int {
 	board[i][j] = 2
 
@@ -214,7 +322,93 @@ func (airplane AirplaneTypeA) placeAirplane(i int, j int, direction string, boar
 	return board
 }
 
+func (airplane AirplaneTypeB) placeAirplane(i int, j int, direction string, board [][]int) [][]int {
+	board[i][j] = 2
+
+	switch direction {
+	case "up":
+		for index := i + 1; index <= i+3; index++ {
+			board[index][j] = 1
+		}
+		for index := 1; index <= 3; index++ {
+			board[i+index][j+index] = 1
+			board[i+index][j-index] = 1
+		}
+		for index := j - 1; index <= j+1; index++ {
+			board[i+3][index] = 1
+		}
+	case "down":
+		for index := i - 1; index >= i-3; index-- {
+			board[index][j] = 1
+		}
+		for index := 1; index <= 3; index++ {
+			board[i-index][j+index] = 1
+			board[i-index][j-index] = 1
+		}
+		for index := j - 1; index <= j+1; index++ {
+			board[i-3][index] = 1
+		}
+	case "left":
+		for index := j + 1; index <= j+3; index++ {
+			board[i][index] = 1
+		}
+		for index := 1; index <= 3; index++ {
+			board[i+index][j+index] = 1
+			board[i-index][j+index] = 1
+		}
+		for index := i - 1; index <= i+1; index++ {
+			board[index][j+3] = 1
+		}
+	case "right":
+		for index := j - 1; index >= j-3; index-- {
+			board[i][index] = 1
+		}
+		for index := 1; index <= 3; index++ {
+			board[i+index][j-index] = 1
+			board[i-index][j-index] = 1
+		}
+		for index := i - 1; index <= i+1; index++ {
+			board[index][j-3] = 1
+		}
+	}
+	return board
+}
+
 func (airplane AirplaneTypeA) generateAirplane(boardLength int) [][]int {
+	var board [][]int
+
+	// Initiate board
+	for i := 0; i < boardLength; i++ {
+		board = append(board, []int{})
+		for j := 0; j < boardLength; j++ {
+			board[i] = append(board[i], 0)
+		}
+	}
+
+	// Find place for the first airplane and place it
+	for index := 0; ; index++ {
+		i, j := generateHead(boardLength)
+		direction := generateDirection()
+		if airplane.isSpaceAvail(i, j, direction, boardLength) {
+			board = airplane.placeAirplane(i, j, direction, board)
+			break
+		}
+	}
+
+	// Find place for the second airplane and place it
+	for index := 0; ; index++ {
+		i, j := generateHead(boardLength)
+		direction := generateDirection()
+		if airplane.isSpaceAvail(i, j, direction, boardLength) && airplane.isAirplaneNotOverlap(i, j, direction, board) {
+			board = airplane.placeAirplane(i, j, direction, board)
+			break
+		}
+	}
+
+	return board
+}
+
+func (airplane AirplaneTypeB) generateAirplane(boardLength int) [][]int {
 	var board [][]int
 
 	// Initiate board
@@ -288,7 +482,11 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 
 	boardLength, err := strconv.Atoi(strings.Join(r.URL.Query()["boardLength"], ""))
 	if err != nil {
-		boardLength = 8
+		boardLength = 10
+	}
+	shape := strings.Join(r.URL.Query()["shape"], "")
+	if err != nil {
+		shape = "airplaneA"
 	}
 
 	user, _ := getCookie(r)
@@ -298,10 +496,18 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	var room AirplaneRoom
 	room.removeExpiredRoom()
 	roomid := room.generateRoomid()
-	var airplane AirplaneTypeA
-	board := airplane.generateAirplane(boardLength)
 
-	room = AirplaneRoom{player1: user, player2: "", expire: getExpireTime(), boardLength: boardLength}
+	var board [][]int
+	if shape == "airplaneA" {
+		var airplane AirplaneTypeA
+		board = airplane.generateAirplane(boardLength)
+	}
+	if shape == "airplaneB" {
+		var airplane AirplaneTypeB
+		board = airplane.generateAirplane(boardLength)
+	}
+
+	room = AirplaneRoom{player1: user, player2: "", expire: getExpireTime(), boardLength: boardLength, shape: shape}
 	game := AirplaneGame{Board1: board, Board2: board, PlayerNow: "player1", Round: 1, Win: []string{}, ThisPlayer: "", Player1: user, Player2: "", Err: ""}
 	airplaneRooms[roomid] = room
 	airplaneGames[roomid] = game
@@ -342,9 +548,18 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	if playerNow == "" {
 		if room.player2 == "" {
 			playerNow = "player2"
-			var airplane AirplaneTypeA
-			board := airplane.generateAirplane(room.boardLength)
-			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire, boardLength: room.boardLength}
+
+			var board [][]int
+			if room.shape == "airplaneA" {
+				var airplane AirplaneTypeA
+				board = airplane.generateAirplane(room.boardLength)
+			}
+			if room.shape == "airplaneB" {
+				var airplane AirplaneTypeB
+				board = airplane.generateAirplane(room.boardLength)
+			}
+
+			updateRoom := AirplaneRoom{player1: room.player1, player2: user, expire: room.expire, boardLength: room.boardLength, shape: room.shape}
 			updateGame := AirplaneGame{Board1: game.Board1, Board2: board, PlayerNow: game.PlayerNow, Round: game.Round, Win: game.Win, ThisPlayer: playerNow, Player1: room.player1, Player2: user, Err: ""}
 			airplaneRooms[roomid] = updateRoom
 			airplaneGames[roomid] = updateGame

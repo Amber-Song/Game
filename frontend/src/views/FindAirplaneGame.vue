@@ -85,8 +85,19 @@
 
     <!-- Here is the example -->
     <div class="intro">
-      <table class="inline-block">
-        <tr v-for="(array, indexarray) in exampleArrays" :key="indexarray">
+      <table class="inline-block" v-if="shape == 'airplaneA'">
+        <tr v-for="(array, indexarray) in airplaneA" :key="indexarray">
+          <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
+            <div v-if="block === 3" class="board-td__white"></div>
+            <div v-else-if="block === 4" class="board-td__blue"></div>
+            <div v-else-if="block === 5" class="board-td__darkblue"></div>
+            <div v-else class="board-td__gray"></div>
+          </td>
+        </tr>
+      </table>
+
+      <table class="inline-block" v-else-if="shape == 'airplaneB'">
+        <tr v-for="(array, indexarray) in airplaneB" :key="indexarray">
           <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
             <div v-if="block === 3" class="board-td__white"></div>
             <div v-else-if="block === 4" class="board-td__blue"></div>
@@ -113,7 +124,8 @@
 <script>
 export default {
   props: {
-    roomid: String
+    roomid: String,
+    shape: String
   },
   data: function() {
     return {
@@ -129,8 +141,11 @@ export default {
     };
   },
   computed: {
-    exampleArrays() {
-      return this.$store.state.exampleMatrix;
+    airplaneA() {
+      return this.$store.state.airplaneA;
+    },
+    airplaneB() {
+      return this.$store.state.airplaneB;
     },
     getRoom() {
       return this.$store.state.roomid;
