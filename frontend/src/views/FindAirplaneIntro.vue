@@ -1,9 +1,10 @@
 <template>
   <div class="introduction-page">
-    <h1 title="Get bored of playing this? Take a look at other games!">
-      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>
+    <h1>
+      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane title__icon"/>
       <router-link :to="{name: 'Home'}" class="link__none-style">Seek for airplane's head</router-link>
     </h1>
+
     <!-- This is the image for the example -->
     <div class="introduction-content">
       <!-- This is the introduction -->
@@ -28,25 +29,44 @@
         <br>
         <label>
           The shape of airplane:
-          <select name="shape">
-            <option value="1">Airplane 1</option>
+          <select v-model="shape">
+            <option value="airplaneA">Airplane A</option>
+            <option value="airplaneB">Airplane B</option>
           </select>
         </label>
         <br>
         <label>
           Choose the boardlength (8-10):
-          <input type="number" min="8" max="10" v-model="boardlength">
+          <input
+            v-if="shape == 'airplaneA'"
+            type="number"
+            min="8"
+            max="10"
+            v-model="boardlength"
+          >
+          <input v-else type="number" min="10" max="10" v-model="boardlength">
         </label>
         <button v-on:click="startGame()" class="introduction-button">Play Now!</button>
       </div>
 
-      <table>
-        <tr v-for="(array, indexarray) in exampleArrays" :key="indexarray">
-          <td v-for="(block, indexblock) in array" :key="indexblock" class="board-td">
-            <div v-if="block === 3" class="board-td__white"></div>
-            <div v-else-if="block === 4" class="board-td__blue"></div>
-            <div v-else-if="block === 5" class="board-td__darkblue"></div>
-            <div v-else class="board-td__gray"></div>
+      <table v-if="shape == 'airplaneA'">
+        <tr v-for="(array, indexarray) in airplaneA" :key="indexarray">
+          <td v-for="(block, indexblock) in array" :key="indexblock" class="airplane-example__td">
+            <div v-if="block === 3" class="airplane__white"></div>
+            <div v-else-if="block === 4" class="airplane__blue"></div>
+            <div v-else-if="block === 5" class="airplane__darkblue"></div>
+            <div v-else class="airplane__gray"></div>
+          </td>
+        </tr>
+      </table>
+
+      <table v-else-if="shape == 'airplaneB'">
+        <tr v-for="(array, indexarray) in airplaneB" :key="indexarray">
+          <td v-for="(block, indexblock) in array" :key="indexblock" class="airplane-example__td">
+            <div v-if="block === 3" class="airplane__white"></div>
+            <div v-else-if="block === 4" class="airplane__blue"></div>
+            <div v-else-if="block === 5" class="airplane__darkblue"></div>
+            <div v-else class="airplane__gray"></div>
           </td>
         </tr>
       </table>
@@ -58,37 +78,51 @@
 export default {
   data: function() {
     return {
-      boardlength: 8,
-      where: "online"
+      boardlength: 10,
+      where: "online",
+      shape: "airplaneA"
     };
   },
   computed: {
-    exampleArrays() {
-      return this.$store.state.exampleMatrix;
+    airplaneA() {
+      return this.$store.state.airplaneA;
+    },
+    airplaneB() {
+      return this.$store.state.airplaneB;
     }
   },
   methods: {
     startGame() {
+      if (
+        (this.boardlength > 10 || this.boardlength < 8) &&
+        this.shape == "airplaneA"
+      ) {
+        this.boardlength = 8;
+      }
+      if (this.shape == "airplaneB") {
+        this.boardlength = 10;
+      }
+
       if (this.where == "local") {
         this.$router.push({
           path: "/Game/FindAirplane/Localgame",
-          query: { boardlength: this.boardlength }
+          query: { boardlength: this.boardlength, shape: this.shape }
         });
       } else {
         this.axios
           .get(`${this.$hostname}/Game/api/FindAirplane/Game`, {
             withCredentials: true,
-            params: { boardLength: this.boardlength }
+            params: { boardLength: this.boardlength, shape: this.shape }
           })
           .then(response => {
             this.$store.commit("getRoom", { roomid: response.data });
             this.$router.push({
               path: "/Game/FindAirplane/Game/room",
-              query: { room: response.data }
+              query: { room: response.data, shape: this.shape }
             });
           })
           .catch(error => {
-            console.log("Error:", error); // Logs out the error
+            console.log("Error:", error);
           });
       }
     }
@@ -99,66 +133,15 @@ export default {
 <style scoped>
 .introduction-content {
   display: grid;
-  grid-template-columns: auto 260px;
+  grid-template-columns: auto 300px;
 }
-.board-td {
-  width: 30px;
-  height: 30px;
-  background-color: darkgray;
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-.introduction-describe {
-  font-family: "Neucha", sans-serif;
-  font-size: 1.25em;
-  margin: 30px;
-  margin-top: 0px;
-}
-h2 {
-  font-family: "Aladin", cursive;
-  font-weight: bold;
-  margin: 0px;
-  margin-bottom: 10px;
-  margin-top: 10px;
-}
-.introduction-button {
-  font-family: "Neucha", sans-serif;
-  font-size: 1.2em;
-  margin: 40px;
-  margin-left: 50%;
-  padding: 4px 10px 0 10px;
-  border-radius: 3px;
-}
+
 table {
   margin-top: 40px;
+  width: max-content;
 }
 label {
   line-height: 200%;
-}
-input {
-  font-family: "Neucha", sans-serif;
-  font-size: 1em;
-  width: 50px;
-  padding: 6px 0 0 5px;
-}
-select {
-  font-family: "Neucha", sans-serif;
-  font-size: 1em;
-  width: min-content;
-  padding: 2px 5px 0 5px;
-}
-option {
-  font-family: "Neucha", sans-serif;
-  font-size: 1em;
-  width: min-content;
-}
-button:hover {
-  background-color: #003bac;
-  border-top: 2px solid #608cdf;
-  border-left: 2px solid #608cdf;
-  border-bottom: 2px solid #002a7b;
-  border-right: 2px solid #002a7b;
-  color: white;
 }
 
 @media (max-width: 700px) {
@@ -169,10 +152,6 @@ button:hover {
     font-size: 1em;
     margin: 10px;
     margin-top: 0px;
-  }
-  .introduction-button {
-    font-size: 1em;
-    margin: 20px;
   }
   table {
     margin-top: 0px;

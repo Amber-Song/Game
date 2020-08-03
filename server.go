@@ -4,16 +4,18 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
 )
 
-// var tmpl = template.Must(template.ParseGlob("tmpl/*"))
+// Define map for all the rooms and games
+var rooms map[string]Room
+
 var airplaneRooms map[string]AirplaneRoom
 var airplaneGames map[string]AirplaneGame
-var airplaneTypes []AirplaneType
 
 var rpsRooms map[string]RPSRoom
 var rpsGames map[string]RPSGame
@@ -21,8 +23,7 @@ var rpsGames map[string]RPSGame
 var tictactoeRooms map[string]TicTacToeBoxRoom
 var tictactoeGames map[string]TicTacToeBoxGame
 
-// ErrCookieNotSet is a error indicate that cookie is not set
-var ErrCookieNotSet error = errors.New("Cookie didn't set")
+var CookieNotSet error = errors.New("Cookie didn't set")
 
 // setupResponse() is to deal with CORS Cross Origin Resource Sharing
 /* CORS does pre-flight requests sending an OPTIONS request to any URL,
@@ -35,24 +36,128 @@ func setupResponse(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
 
-// Root page of all the game
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	// Enabling CORS on a Go Web Server
-	setupResponse(w)
-	if r.Method == "OPTIONS" {
-		return
-	}
+// Room : Define an interface for Room
+type Room interface {
+	isRoomExist(roomid string) bool
+	generateRoomid() string
+	removeExpiredRoom()
 
-	b, err := ioutil.ReadFile("frontend/dist/index.html")
-	if err != nil {
-		fmt.Println(err) // TODO root file broken
+	getPlayerNow(user string) string
+}
+
+// Implement isRoomExist method in the interface
+func (room AirplaneRoom) isRoomExist(roomid string) bool {
+	if _, ok := airplaneRooms[roomid]; ok {
+		return true
 	}
-	w.Write(b)
+	return false
+}
+
+func (room RPSRoom) isRoomExist(roomid string) bool {
+	if _, ok := rpsRooms[roomid]; ok {
+		return true
+	}
+	return false
+}
+
+func (room TicTacToeBoxRoom) isRoomExist(roomid string) bool {
+	if _, ok := tictactoeRooms[roomid]; ok {
+		return true
+	}
+	return false
+}
+
+// Implement generateRoomid method in the interface
+func (room AirplaneRoom) generateRoomid() string {
+	for index := 0; ; index++ {
+		roomid := getRandomInt(1000000)
+		if !room.isRoomExist(roomid) {
+			return roomid
+		}
+	}
+}
+
+func (room RPSRoom) generateRoomid() string {
+	for index := 0; ; index++ {
+		roomid := getRandomInt(1000000)
+		if !room.isRoomExist(roomid) {
+			return roomid
+		}
+	}
+}
+
+func (room TicTacToeBoxRoom) generateRoomid() string {
+	for index := 0; ; index++ {
+		roomid := getRandomInt(1000000)
+		if !room.isRoomExist(roomid) {
+			return roomid
+		}
+	}
+}
+
+// Implement removeExpiredRoom method in the interface
+func (room AirplaneRoom) removeExpiredRoom() {
+	for roomid, room := range airplaneRooms {
+		if time.Now().After(room.expire) {
+			delete(airplaneRooms, roomid)
+			delete(airplaneGames, roomid)
+		}
+	}
+}
+func (room RPSRoom) removeExpiredRoom() {
+	for roomid, room := range rpsRooms {
+		if time.Now().After(room.expire) {
+			delete(rpsRooms, roomid)
+			delete(rpsGames, roomid)
+		}
+	}
+}
+func (room TicTacToeBoxRoom) removeExpiredRoom() {
+	for roomid, room := range tictactoeRooms {
+		if time.Now().After(room.expire) {
+			delete(tictactoeRooms, roomid)
+			delete(tictactoeGames, roomid)
+		}
+	}
+}
+
+// TODO getPlayerNow code is the same! merge???
+func (room AirplaneRoom) getPlayerNow(user string) string {
+	switch user {
+	case room.player1:
+		return "player1"
+	case room.player2:
+		return "player2"
+	default:
+		return ""
+	}
+}
+
+func (room RPSRoom) getPlayerNow(user string) string {
+	switch user {
+	case room.player1:
+		return "player1"
+	case room.player2:
+		return "player2"
+	default:
+		return ""
+	}
+}
+
+func (room TicTacToeBoxRoom) getPlayerNow(user string) string {
+	switch user {
+	case room.player1:
+		return "player1"
+	case room.player2:
+		return "player2"
+	default:
+		return ""
+	}
 }
 
 func setCookie(w http.ResponseWriter) string {
-	value := strconv.Itoa(rand.Intn(1000000))
-	expire := time.Now().AddDate(0, 0, 1)
+	value := getRandomInt(1000000)
+	expire := getExpireTime()
 	cookie := http.Cookie{
 		Name:    "gameUser",
 		Value:   value,
@@ -69,95 +174,47 @@ func getCookie(r *http.Request) (string, error) {
 		return "", err
 	}
 	if cookie == nil {
-		return "", ErrCookieNotSet
+		return "", CookieNotSet
 	}
 	return cookie.Value, nil
 }
 
-func setAirplaneRoom() string {
-	for index := 0; ; index++ {
-		roomid := strconv.Itoa(rand.Intn(1000000))
-		if _, ok := airplaneRooms[roomid]; !ok {
-			return roomid
-		}
-	}
-	return ""
+// Return a random number in the string type
+func getRandomInt(i int) string {
+	return strconv.Itoa(rand.Intn(i))
 }
 
-func setRPSRoom() string {
-	for index := 0; ; index++ {
-		roomid := strconv.Itoa(rand.Intn(1000000))
-		if _, ok := rpsRooms[roomid]; !ok {
-			return roomid
-		}
-	}
-	return ""
+// Send one day later as an expire day
+func getExpireTime() time.Time {
+	return time.Now().AddDate(0, 0, 1)
 }
 
-func setTictactoeRoom() string {
-	for index := 0; ; index++ {
-		roomid := strconv.Itoa(rand.Intn(1000000))
-		if _, ok := tictactoeRooms[roomid]; !ok {
-			return roomid
-		}
+func logError(err error) {
+	if err != nil {
+		log.Println("ERROR:", err)
 	}
-	return ""
 }
 
-func checkAirplaneRoom(roomid string) bool {
-	if _, ok := airplaneRooms[roomid]; ok {
-		return true
-	}
-	return false
-}
-
-func checkRPSRoom(roomid string) bool {
-	if _, ok := rpsRooms[roomid]; ok {
-		return true
-	}
-	return false
-}
-
-func checkTictactoeRoom(roomid string) bool {
-	if _, ok := tictactoeRooms[roomid]; ok {
-		return true
-	}
-	return false
-}
-
-// cleanRooms remove all the expire room from games list
-func cleanRooms() {
-	for roomid, room := range airplaneRooms {
-		if time.Now().After(room.expire) {
-			delete(airplaneRooms, roomid)
-			delete(airplaneGames, roomid)
-		}
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	// Enabling CORS on a Go Web Server
+	setupResponse(w)
+	if r.Method == "OPTIONS" {
+		return
 	}
 
-	for roomid, room := range rpsRooms {
-		if time.Now().After(room.expire) {
-			delete(rpsRooms, roomid)
-			delete(rpsGames, roomid)
-		}
-	}
-
-	for roomid, room := range tictactoeRooms {
-		if time.Now().After(room.expire) {
-			delete(tictactoeRooms, roomid)
-			delete(tictactoeGames, roomid)
-		}
-	}
+	b, err := ioutil.ReadFile("frontend/dist/index.html")
+	logError(err)
+	w.Write(b)
 }
 
 func main() {
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("frontend/dist/js/"))))
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("frontend/dist/css/"))))
 
+	rooms = make(map[string]Room, 0)
 	// Airplane
 	airplaneRooms = make(map[string]AirplaneRoom, 0)
 	airplaneGames = make(map[string]AirplaneGame, 0)
-	airplaneTypes = make([]AirplaneType, 0)
-	airplaneTypes = append(airplaneTypes, AirplaneType{AirplaneBody: 3, AirplaneWing: 5, AirplaneTail: 3})
 	// Rock paper scissor
 	rpsRooms = make(map[string]RPSRoom, 0)
 	rpsGames = make(map[string]RPSGame, 0)
@@ -165,9 +222,10 @@ func main() {
 	tictactoeRooms = make(map[string]TicTacToeBoxRoom, 0)
 	tictactoeGames = make(map[string]TicTacToeBoxGame, 0)
 
-	// Airplane
+	// Index
 	http.HandleFunc("/", indexHandler)
 	http.HandleFunc("/Game", indexHandler)
+	// Airplane
 	http.HandleFunc("/Game/api/FindAirplane/Game", airplaneInitHandler)
 	http.HandleFunc("/Game/api/FindAirplane/Game/room", airplaneGameHandler)
 	// http.HandleFunc("/api/FindAirplane/restart", airplaneRestartHandler)
