@@ -1,15 +1,14 @@
 <template>
-  <div class="page">
+  <div class="game-page">
     <h1>
-      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane"/>Seek for airplane's head
+      <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane title__icon"/>
+      <router-link :to="{name: 'Home'}" class="link__none-style">Seek for airplane's head</router-link>
     </h1>
 
-    <div class="game-round-player">
+    <div class="game-content">
       Round {{ round }}
       <span class="game-player">&#10142; {{ playerNow }}</span>
-    </div>
-
-    <div class="game-round-player">
+      <br>
       <div v-for="(winner, indexwinner) in win" :key="indexwinner">
         <div
           v-if="winner == 'player1'"
@@ -20,43 +19,48 @@
           class="game-congratulation"
         >&#10047; Congratulate on Player 2!!!</div>
       </div>
-    </div>
 
-    <div class="competition">
-      <div>
-        <div class="game-round-player">Player 1</div>
-        <table>
-          <tr v-for="(array, indexarray) in player1Board" :key="indexarray">
-            <td v-for="(block, indexblock) in array" :key="indexblock" class="board-td">
-              <div v-if="block === 3" class="board-td__white"></div>
-              <div v-else-if="block === 4" class="board-td__blue"></div>
-              <div v-else-if="block === 5" class="board-td__darkblue"></div>
-              <div
-                v-else
-                class="board-td__gray"
-                v-on:click="flip('player1',indexarray, indexblock)"
-              ></div>
-            </td>
-          </tr>
-        </table>
-      </div>
+      <!-- Here is the game -->
+      <div class="competition">
+        <!-- Here is the left part for player 1 -->
+        <div>
+          <div>Player 1</div>
+          <!-- airplane board -->
+          <table>
+            <tr v-for="(array, indexarray) in player1Board" :key="indexarray">
+              <td v-for="(block, indexblock) in array" :key="indexblock" class="board-td">
+                <div v-if="block === 3" class="airplane__white"></div>
+                <div v-else-if="block === 4" class="airplane__blue"></div>
+                <div v-else-if="block === 5" class="airplane__darkblue"></div>
+                <div
+                  v-else
+                  class="airplane__gray"
+                  v-on:click="flip('player1',indexarray, indexblock)"
+                ></div>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-      <div>
-        <div class="game-round-player">Player 2</div>
-        <table>
-          <tr v-for="(array, indexarray) in player2Board" :key="indexarray">
-            <td v-for="(block, indexblock) in array" :key="indexblock" class="board-td">
-              <div v-if="block === 3" class="board-td__white"></div>
-              <div v-else-if="block === 4" class="board-td__blue"></div>
-              <div v-else-if="block === 5" class="board-td__darkblue"></div>
-              <div
-                v-else
-                class="board-td__gray"
-                v-on:click="flip('player2',indexarray, indexblock)"
-              ></div>
-            </td>
-          </tr>
-        </table>
+        <!-- Here is the right part for player 2 -->
+        <div>
+          <div>Player 2</div>
+          <!-- airplane board -->
+          <table>
+            <tr v-for="(array, indexarray) in player2Board" :key="indexarray">
+              <td v-for="(block, indexblock) in array" :key="indexblock" class="board-td">
+                <div v-if="block === 3" class="airplane__white"></div>
+                <div v-else-if="block === 4" class="airplane__blue"></div>
+                <div v-else-if="block === 5" class="airplane__darkblue"></div>
+                <div
+                  v-else
+                  class="airplane__gray"
+                  v-on:click="flip('player2',indexarray, indexblock)"
+                ></div>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -65,10 +69,10 @@
       <table class="inline-block" v-if="shape == 'airplaneA'">
         <tr v-for="(array, indexarray) in airplaneA" :key="indexarray">
           <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
-            <div v-if="block === 3" class="board-td__white"></div>
-            <div v-else-if="block === 4" class="board-td__blue"></div>
-            <div v-else-if="block === 5" class="board-td__darkblue"></div>
-            <div v-else class="board-td__gray"></div>
+            <div v-if="block === 3" class="airplane__white"></div>
+            <div v-else-if="block === 4" class="airplane__blue"></div>
+            <div v-else-if="block === 5" class="airplane__darkblue"></div>
+            <div v-else class="airplane__gray"></div>
           </td>
         </tr>
       </table>
@@ -76,10 +80,10 @@
       <table class="inline-block" v-else-if="shape == 'airplaneB'">
         <tr v-for="(array, indexarray) in airplaneB" :key="indexarray">
           <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
-            <div v-if="block === 3" class="board-td__white"></div>
-            <div v-else-if="block === 4" class="board-td__blue"></div>
-            <div v-else-if="block === 5" class="board-td__darkblue"></div>
-            <div v-else class="board-td__gray"></div>
+            <div v-if="block === 3" class="airplane__white"></div>
+            <div v-else-if="block === 4" class="airplane__blue"></div>
+            <div v-else-if="block === 5" class="airplane__darkblue"></div>
+            <div v-else class="airplane__gray"></div>
           </td>
         </tr>
       </table>
@@ -87,7 +91,7 @@
       <div class="inline-block">
         <div class="inline-block">&larr; This is an example of airplanes.</div>
         <br>
-        <button class="inline-block">
+        <button class="inline-block introduction-button">
           <router-link :to="{name: 'FindAirplaneIntroduction'}" class="link__none-style">
             Back to introduction page to
             <strong>restart</strong>.
@@ -639,21 +643,6 @@ export default {
 </script>
 
 <style scoped>
-.game-round-player {
-  width: 100%;
-  text-align: center;
-  font-family: "Aladin", cursive;
-  font-size: 1.25em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.game-player {
-  font-size: 1em;
-  font-weight: normal;
-}
-.game-congratulation {
-  color: red;
-}
 .competition {
   display: grid;
   display: -ms-grid;
@@ -689,45 +678,17 @@ export default {
 span {
   padding-right: 5px;
 }
-button {
-  font-family: "Neucha", sans-serif;
-  font-size: 1.2em;
-  margin: 15px 0;
-  padding: 4px 10px 0 10px;
-  border-radius: 3px;
-  color: black;
-}
-button:hover {
-  background-color: #003bac;
-  border-top: 2px solid #608cdf;
-  border-left: 2px solid #608cdf;
-  border-bottom: 2px solid #002a7b;
-  border-right: 2px solid #002a7b;
-}
-button:hover a {
-  color: white;
-}
 
 @media (max-width: 700px) {
-  .game-round-player {
-    width: 100%;
-    text-align: center;
-    font-family: "Aladin", cursive;
-    font-size: 1em;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
   .competition {
     display: block;
   }
   .board-td {
     width: 35px;
     height: 35px;
-    background-color: darkgray;
-    border: 1px solid black;
-    border-collapse: collapse;
   }
 }
+
 @media (max-width: 440px) {
   .inline-block {
     display: block;

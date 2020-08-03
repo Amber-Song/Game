@@ -1,46 +1,53 @@
 <template>
-  <div class="page">
+  <div class="game-page">
     <h1>
-      <span class="fa fa-rotate-right"></span>
+      <span class="fa fa-rotate-right title__icon"></span>
       <router-link :to="{name: 'Home'}" class="link__none-style">Rotating puzzle</router-link>
     </h1>
 
-    <div class="game-round-player">
-      <div class="game-congratulation">{{win}}</div>
-      <div class="board">
-        <table>
-          <tr v-for="(line,lineIndex) in board" :key="lineIndex">
-            <td v-for="(cell, cellIndex) in line" :key="cellIndex">
-              <div v-if="cell == 'red'" class="cell__red"></div>
-              <div v-else-if="cell == 'yellow'" class="cell__yellow"></div>
-              <div v-else-if="cell == 'green'" class="cell__green"></div>
-              <div v-else class="cell__blue"></div>
-            </td>
-          </tr>
-        </table>
-        <table class="board-button">
-          <tr v-for="i in buttonNum" :key="i">
-            <td v-for="j in buttonNum" :key="j" class="board-td">
-              <button v-on:click="rotate(i,j)" class="fa fa-rotate-right button-rotate"></button>
-            </td>
-          </tr>
-        </table>
+    <div class="game-content">
+      <div class="game-congratulation">{{ win }}</div>
+
+      <div class="competition-section">
+        <div>
+          <div>Time:</div>
+          <div>{{ timer }} s</div>
+          <br>
+          <div>Target:</div>
+          <table>
+            <tr v-for="(line, indexline) in boardExample" :key="indexline">
+              <td
+                v-for="(cell, indexcell) in line"
+                :key="indexcell"
+                class="rotate-puzzle__example-td"
+                v-bind:class="{'rotate-puzzle__red': cell == 'red', 'rotate-puzzle__yellow':cell == 'yellow', 'rotate-puzzle__green': cell == 'green', 'rotate-puzzle__blue':cell == 'blue'}"
+              ></td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="board">
+          <table>
+            <tr v-for="(line,indexline) in board" :key="indexline">
+              <td
+                v-for="(cell, indexcell) in line"
+                :key="indexcell"
+                class="board-td"
+                v-bind:class="{'rotate-puzzle__red': cell == 'red', 'rotate-puzzle__yellow':cell == 'yellow', 'rotate-puzzle__green': cell == 'green', 'rotate-puzzle__blue':cell == 'blue'}"
+              ></td>
+            </tr>
+          </table>
+          <table class="board-button">
+            <tr v-for="i in buttonNum" :key="i">
+              <td v-for="j in buttonNum" :key="j" class="board-button-td board-td">
+                <button v-on:click="rotate(i,j)" class="fa fa-rotate-right button-rotate"></button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
 
-      <div class="center">Target:</div>
-      <table>
-        <tr v-for="(line, lineIndex) in boardExample" :key="lineIndex">
-          <td v-for="(cell, cellIndex) in line" :key="cellIndex" class="example">
-            <div v-if="cell == 'red'" class="cell__red"></div>
-            <div v-else-if="cell == 'yellow'" class="cell__yellow"></div>
-            <div v-else-if="cell == 'green'" class="cell__green"></div>
-            <div v-else class="cell__blue"></div>
-          </td>
-        </tr>
-      </table>
-      <br>
-
-      <button class="introduction-button">
+      <button class="introduction-button" v-on:click="clearTimer()">
         <router-link :to="{name: 'RotatingPuzzleIntroduction'}" class="link__none-style">
           Back to introduction page to
           <strong>restart</strong>.
@@ -63,7 +70,9 @@ export default {
       panel: [],
       boardExample: [],
       boardExampleColor: [],
-      win: ""
+      win: "",
+      timer: 0,
+      gameTimer: null
     };
   },
   mounted: function() {
@@ -173,12 +182,15 @@ export default {
         this.boardExampleColor[3]
       ]);
     }
+
+    // Set timer
+    this.gameTimer = window.setTimeout(this.updateTimer, 1000);
   },
 
   methods: {
     // This return a random color
     getRandomColor() {
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 30; i++) {
         var r = Math.floor(Math.random() * 4);
         switch (r) {
           case 0:
@@ -219,9 +231,10 @@ export default {
       this.$set(this.board[i - 1], j - 1, this.board[i][j - 1]);
       this.$set(this.board[i], j - 1, color);
 
-      let win = this.checkSuccess();
-      if (win) {
-        this.win = "Congratulation!";
+      let isWin = this.checkSuccess();
+      if (isWin) {
+        this.win = "Congratulation! You win!";
+        window.clearTimeout(this.gameTimer);
       }
     },
 
@@ -234,12 +247,27 @@ export default {
         }
       }
       return true;
+    },
+
+    updateTimer() {
+      this.timer = this.timer + 1;
+      this.gameTimer = window.setTimeout(this.updateTimer, 1000);
+    },
+
+    clearTimer() {
+      window.clearTimeout(this.gameTimer);
     }
   }
 };
 </script>
 
 <style scoped>
+.competition-section {
+  display: grid;
+  grid-template-columns: 180px auto;
+  grid-gap: 10px;
+}
+
 .board {
   position: relative;
   width: max-content;
@@ -248,114 +276,50 @@ export default {
   margin-top: 15px;
   margin-bottom: 15px;
 }
+.board-td {
+  width: 100px;
+  height: 100px;
+  border: 1px solid black;
+  border-collapse: collapse;
+}
+
 .board-button {
   position: absolute;
   top: 50px;
   left: 22px;
   text-align: end;
 }
-.board-td {
+.board-button-td {
   border: none;
 }
-
-td {
-  width: 100px;
-  height: 100px;
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-.cell__red {
-  width: 100%;
-  height: 100%;
-  background-color: #ff3e3e;
-}
-.cell__yellow {
-  width: 100%;
-  height: 100%;
-  background-color: #fafd51;
-}
-.cell__green {
-  width: 100%;
-  height: 100%;
-  background-color: #77ec77;
-}
-.cell__blue {
-  width: 100%;
-  height: 100%;
-  background-color: #4f4fff;
-}
-
 .button-rotate {
   height: 40px;
   width: 40px;
   font-size: 25px;
 }
 
-.example {
-  width: 30px;
-  height: 30px;
-  border: 1px solid black;
-  border-collapse: collapse;
-}
-.center {
-  text-align: center;
-}
-.game-congratulation {
-  color: red;
-}
-.game-round-player {
-  width: 100%;
-  text-align: center;
-  font-family: "Aladin", cursive;
-  font-size: 1.25em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.introduction-button {
-  font-family: "Neucha", sans-serif;
-  font-size: 1.2em;
-  margin: 15px 0;
-  padding: 4px 10px 0 10px;
-  border-radius: 3px;
-  color: black;
-}
-.introduction-button:hover {
-  background-color: #003bac;
-  border-top: 2px solid #608cdf;
-  border-left: 2px solid #608cdf;
-  border-bottom: 2px solid #002a7b;
-  border-right: 2px solid #002a7b;
-}
-.introduction-button:hover a {
-  color: white;
-}
-
-@media (max-width: 700px) {
-  .introduction-button {
-    font-size: 1em;
+@media (max-width: 550px) {
+  .competition-section {
+    display: block;
   }
 }
+
 @media (max-width: 440px) {
-  .game-round-player {
-    font-size: 1em;
-  }
-  .example {
+  .rotate-puzzle__example-td {
     width: 20px;
     height: 20px;
+  }
+  .board-td {
+    width: 55px;
+    height: 55px;
+  }
+  .board-button {
+    top: 25px;
   }
   .button-rotate {
     height: 30px;
     width: 30px;
     font-size: 20px;
-  }
-  .board-button {
-    top: 25px;
-    left: 22px;
-  }
-  td {
-    width: 55px;
-    height: 55px;
   }
 }
 </style>

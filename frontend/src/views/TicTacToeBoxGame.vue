@@ -1,11 +1,11 @@
 <template>
-  <div class="page">
+  <div class="game-page">
     <h1>
-      <span class="fa fa-cube"></span>
+      <span class="fa fa-cube title__icon"></span>
       <router-link :to="{name: 'Home'}" class="link__none-style">Tic Tac Toe Box version</router-link>
     </h1>
 
-    <div class="notice">
+    <div class="game-notice">
       <font-awesome-icon :icon="['fas', 'bullhorn']" class="icon__bullborn"/>
       <span v-if="thisPlayer == 'player1'">
         Welcome! You are
@@ -26,9 +26,9 @@
       <span v-else>Please wait for player2 !</span>
     </div>
 
-    <div class="competition">
+    <div class="game-content competition">
       <!-- This is player1 collection -->
-      <div class="game-round-player game-round-player-mobile">
+      <div class="game-round-player-mobile">
         player1
         <br>
         <div v-for="(box, index) in collection1" :key="index">
@@ -61,11 +61,10 @@
       </div>
 
       <!-- This is board -->
-      <div class="competition__board game-round-player">
-        <div>
-          Round: {{round}}
-          <span class="game-player">&#10142; {{playerNow}}</span>
-        </div>
+      <div class="competition__board">
+        Round: {{round}}
+        <span class="game-player">&#10142; {{playerNow}}</span>
+        <br>
         <div v-if="winner != ''" class="game-congratulation">Congratulations {{winner}} !</div>
         <div>{{notice}}</div>
         <table>
@@ -122,7 +121,7 @@
           </tr>
         </table>
 
-        <button>
+        <button class="introduction-button">
           <router-link :to="{name: 'TicTacToeBoxIntroduction'}" class="link__none-style">
             Back to introduction page to
             <strong>restart</strong>.
@@ -131,7 +130,7 @@
       </div>
 
       <!-- This is player2 collection -->
-      <div class="game-round-player game-round-player-mobile">
+      <div class="game-round-player-mobile">
         player2
         <br>
         <div v-for="(box, index) in collection2" :key="index">
@@ -471,21 +470,6 @@ export default {
 </script>
 
 <style scoped>
-.game-round-player {
-  width: 100%;
-  font-family: "Aladin", cursive;
-  font-size: 1.25em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.game-player {
-  font-size: 1em;
-  font-weight: normal;
-}
-.game-congratulation {
-  color: red;
-}
-
 .competition {
   display: grid;
   grid-template-columns: 110px auto 110px;
@@ -513,10 +497,6 @@ export default {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-table {
-  border: 1px solid black;
-  border-collapse: collapse;
-}
 td {
   width: 120px;
   height: 120px;
@@ -528,33 +508,10 @@ td div {
   height: 100%;
 }
 
-button {
-  font-family: "Neucha", sans-serif;
-  font-size: 1.2em;
-  margin: 15px 0;
-  padding: 4px 10px 0 10px;
-  border-radius: 3px;
-  color: black;
-}
-button:hover {
-  background-color: #003bac;
-  border-top: 2px solid #608cdf;
-  border-left: 2px solid #608cdf;
-  border-bottom: 2px solid #002a7b;
-  border-right: 2px solid #002a7b;
-}
-button:hover a {
-  color: white;
-}
-
 @media (max-width: 700px) {
   .competition {
-    display: grid;
     grid-template-columns: 65px auto 65px;
     grid-gap: 10px;
-  }
-  .game-round-player {
-    font-size: 1em;
   }
   .cube__small {
     font-size: 1em;
@@ -572,14 +529,14 @@ button:hover a {
   .min-height {
     min-height: 30px;
   }
-  button {
-    font-size: 1em;
-  }
 }
 
 @media (max-width: 380px) {
   .competition {
     display: block;
+  }
+  .competition__board {
+    margin-top: 20px;
   }
   .game-round-player-mobile {
     display: grid;

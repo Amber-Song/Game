@@ -1,19 +1,46 @@
 <template>
-  <div class="page">
+  <div class="game-page">
     <h1>
-      <span class="fa fa-rotate-right"></span>
+      <span class="fa fa-rotate-right title__icon"></span>
       <router-link :to="{name: 'Home'}" class="link__none-style">Rotating puzzle</router-link>
     </h1>
 
-    <div class="game-round-player">
-      <div class="game-congratulation">{{win}}</div>
-      <div class="board">
-        <div v-for="(line, indexline) in board" :key="indexline">
-          <div
-            v-for="(cell, indexcell) in line"
-            :key="indexcell"
-            class="triangle"
-            v-bind:class="{'rotate': indexline % 2 == 0 && indexcell % 2 == 1 ||
+    <div class="game-content">
+      <div class="game-congratulation">{{ win }}</div>
+
+      <div class="competition-section">
+        <div>
+          <div>Time:</div>
+          <div>{{ timer }} s</div>
+          <br>
+          <div>Target:</div>
+          <div>
+            <div v-for="(line, indexline) in boardExample" :key="indexline">
+              <div
+                v-for="(cell, indexcell) in line"
+                :key="indexcell"
+                class="triangle_example"
+                v-bind:class="{'triangle_rotate': indexline % 2 == 0 && indexcell % 2 == 1 ||
+        indexline % 2 == 1 && indexcell % 2 == 0,
+        'triangle_example_light-green': cell == 'light-green',
+        'triangle_example_light-yellow':cell == 'yellow',
+        'triangle_example_green': cell == 'green',
+        'triangle_example_orange': cell == 'orange',
+        'triangle_example_purple': cell == 'purple',
+        'triangle_example_pink': cell == 'pink'}"
+              ></div>
+              <br>
+            </div>
+          </div>
+        </div>
+
+        <div class="board">
+          <div v-for="(line, indexline) in board" :key="indexline">
+            <div
+              v-for="(cell, indexcell) in line"
+              :key="indexcell"
+              class="triangle"
+              v-bind:class="{'triangle_rotate': indexline % 2 == 0 && indexcell % 2 == 1 ||
         indexline % 2 == 1 && indexcell % 2 == 0,
         'light-green': cell == 'light-green',
         'yellow':cell == 'yellow',
@@ -21,55 +48,36 @@
         'orange': cell == 'orange',
         'purple': cell == 'purple',
         'pink': cell == 'pink'}"
-          ></div>
-          <br>
-        </div>
+            ></div>
+            <br>
+          </div>
 
-        <div class="button-board">
-          <div
-            v-for="(line,indexline) in buttonArray"
-            :key="indexline"
-            class="button-line"
-            v-bind:class="{'button-move-left': indexline % 2 == 0}"
-          >
+          <div class="button-board">
             <div
-              v-for="(cell, indexcell) in line"
-              :key="indexcell"
-              class="button-cell"
-              v-bind:class="{'button-last':indexcell == 5}"
+              v-for="(line,indexline) in buttonArray"
+              :key="indexline"
+              class="button-line"
+              v-bind:class="{'button-move-left': indexline % 2 == 0}"
             >
-              <button
-                v-if="cell == 1"
-                class="fa fa-rotate-right"
-                v-on:click="rotate(indexline, indexcell)"
-              ></button>
-              <button v-else class="button-empty"></button>
+              <div
+                v-for="(cell, indexcell) in line"
+                :key="indexcell"
+                class="button-cell"
+                v-bind:class="{'button-last':indexcell == 5}"
+              >
+                <button
+                  v-if="cell == 1"
+                  class="fa fa-rotate-right button-rotate"
+                  v-on:click="rotate(indexline, indexcell)"
+                ></button>
+                <button v-else class="button-empty button-rotate"></button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="center">Target:</div>
-      <div>
-        <div v-for="(line, indexline) in boardExample" :key="indexline">
-          <div
-            v-for="(cell, indexcell) in line"
-            :key="indexcell"
-            class="triangle_example"
-            v-bind:class="{'rotate': indexline % 2 == 0 && indexcell % 2 == 1 ||
-        indexline % 2 == 1 && indexcell % 2 == 0,
-        'light-green-example': cell == 'light-green',
-        'yellow-example':cell == 'yellow',
-        'green-example': cell == 'green',
-        'orange-example': cell == 'orange',
-        'purple-example': cell == 'purple',
-        'pink-example': cell == 'pink'}"
-          ></div>
-          <br>
-        </div>
-      </div>
-
-      <button class="introduction-button">
+      <button class="introduction-button" v-on:click="clearTimer()">
         <router-link :to="{name: 'RotatingPuzzleIntroduction'}" class="link__none-style">
           Back to introduction page to
           <strong>restart</strong>.
@@ -88,7 +96,9 @@ export default {
       boardExampleColor: [],
       panel: [9, 9, 9, 9, 9, 9],
       buttonArray: [],
-      win: ""
+      win: "",
+      timer: 0,
+      gameTimer: null
     };
   },
   mounted: function() {
@@ -213,11 +223,14 @@ export default {
       "",
       ""
     ]);
+
+    // Set timer
+    this.gameTimer = window.setTimeout(this.updateTimer, 1000);
   },
 
   methods: {
     generateColor() {
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 30; i++) {
         var r = Math.floor(Math.random() * 6);
         switch (r) {
           case 0:
@@ -315,10 +328,10 @@ export default {
       );
       this.$set(this.board[startRow], startColumn + 1, startItem);
 
-      // Check winner
-      let win = this.checkSuccess();
-      if (win) {
-        this.win = "Congratulation!";
+      let isWin = this.checkSuccess();
+      if (isWin) {
+        this.win = "Congratulation! You win!";
+        window.clearTimeout(this.gameTimer);
       }
     },
 
@@ -331,6 +344,15 @@ export default {
         }
       }
       return true;
+    },
+
+    updateTimer() {
+      this.timer = this.timer + 1;
+      this.gameTimer = window.setTimeout(this.updateTimer, 1000);
+    },
+
+    clearTimer() {
+      window.clearTimeout(this.gameTimer);
     }
   }
 };
@@ -338,9 +360,12 @@ export default {
 
 
 <style scoped>
-* {
-  box-sizing: border-box;
+.competition-section {
+  display: grid;
+  grid-template-columns: 240px auto;
+  grid-gap: 10px;
 }
+
 .triangle {
   display: inline-block;
   margin-right: -25px;
@@ -349,9 +374,6 @@ export default {
   border-left: 30px solid transparent;
   border-right: 30px solid transparent;
   border-bottom: 60px solid white;
-}
-.rotate {
-  transform: rotate(180deg);
 }
 .light-green {
   border-bottom: 60px solid #96ceb4;
@@ -370,36 +392,6 @@ export default {
 }
 .pink {
   border-bottom: 60px solid #fad3cf;
-}
-
-.triangle_example {
-  display: inline-block;
-  margin-top: 4px;
-  margin-right: -10px;
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-bottom: 15px solid white;
-  vertical-align: top;
-}
-.light-green-example {
-  border-bottom: 30px solid #96ceb4;
-}
-.yellow-example {
-  border-bottom: 30px solid #ffeead;
-}
-.green-example {
-  border-bottom: 30px solid #3b9a9c;
-}
-.orange-example {
-  border-bottom: 30px solid #ffad60;
-}
-.purple-example {
-  border-bottom: 30px solid #a696c8;
-}
-.pink-example {
-  border-bottom: 30px solid #fad3cf;
 }
 
 .board {
@@ -424,11 +416,16 @@ export default {
   vertical-align: top;
   margin-right: 30px;
 }
-button {
+.button-rotate {
   width: 40px;
   height: 40px;
   font-size: 20px;
   border-radius: 20px;
+}
+.button-rotate:hover {
+  background: #efefef;
+  color: black;
+  border: initial;
 }
 .button-last {
   margin-right: 0px;
@@ -441,41 +438,9 @@ button {
   margin-left: 35px;
 }
 
-.game-round-player {
-  width: 100%;
-  text-align: center;
-  font-family: "Aladin", cursive;
-  font-size: 1.25em;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.game-congratulation {
-  color: red;
-}
-
-.introduction-button {
-  font-family: "Neucha", sans-serif;
-  font-size: 1.2em;
-  margin: 15px 0;
-  padding: 4px 10px 0 10px;
-  border-radius: 3px;
-  color: black;
-  width: max-content;
-}
-.introduction-button:hover {
-  background-color: #003bac;
-  border-top: 2px solid #608cdf;
-  border-left: 2px solid #608cdf;
-  border-bottom: 2px solid #002a7b;
-  border-right: 2px solid #002a7b;
-}
-.introduction-button:hover a {
-  color: white;
-}
-
 @media (max-width: 700px) {
-  .introduction-button {
-    font-size: 1em;
+  .competition-section {
+    display: block;
   }
 }
 
@@ -517,7 +482,7 @@ button {
   .button-cell {
     margin-right: 20px;
   }
-  button {
+  .button-rotate {
     width: 30px;
     height: 30px;
     font-size: 18px;
