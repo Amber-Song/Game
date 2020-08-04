@@ -11,9 +11,6 @@ import (
 	"time"
 )
 
-// Define map for all the rooms and games
-var rooms map[string]Room
-
 var airplaneRooms map[string]AirplaneRoom
 var airplaneGames map[string]AirplaneGame
 
@@ -36,16 +33,6 @@ func setupResponse(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
 
-// Room : Define an interface for Room
-type Room interface {
-	isRoomExist(roomid string) bool
-	generateRoomid() string
-	removeExpiredRoom()
-
-	getPlayerNow(user string) string
-}
-
-// Implement isRoomExist method in the interface
 func (room AirplaneRoom) isRoomExist(roomid string) bool {
 	if _, ok := airplaneRooms[roomid]; ok {
 		return true
@@ -67,7 +54,6 @@ func (room TicTacToeBoxRoom) isRoomExist(roomid string) bool {
 	return false
 }
 
-// Implement generateRoomid method in the interface
 func (room AirplaneRoom) generateRoomid() string {
 	for index := 0; ; index++ {
 		roomid := getRandomInt(1000000)
@@ -95,7 +81,6 @@ func (room TicTacToeBoxRoom) generateRoomid() string {
 	}
 }
 
-// Implement removeExpiredRoom method in the interface
 func (room AirplaneRoom) removeExpiredRoom() {
 	for roomid, room := range airplaneRooms {
 		if time.Now().After(room.expire) {
@@ -121,7 +106,6 @@ func (room TicTacToeBoxRoom) removeExpiredRoom() {
 	}
 }
 
-// TODO getPlayerNow code is the same! merge???
 func (room AirplaneRoom) getPlayerNow(user string) string {
 	switch user {
 	case room.player1:
@@ -211,7 +195,6 @@ func main() {
 	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("frontend/dist/js/"))))
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("frontend/dist/css/"))))
 
-	rooms = make(map[string]Room, 0)
 	// Airplane
 	airplaneRooms = make(map[string]AirplaneRoom, 0)
 	airplaneGames = make(map[string]AirplaneGame, 0)
