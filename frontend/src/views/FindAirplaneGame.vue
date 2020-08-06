@@ -85,27 +85,8 @@
 
     <!-- Here is the example -->
     <div class="intro">
-      <table class="inline-block" v-if="shape == 'airplaneA'">
-        <tr v-for="(array, indexarray) in airplaneA" :key="indexarray">
-          <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
-            <div v-if="block === 3" class="airplane__white"></div>
-            <div v-else-if="block === 4" class="airplane__blue"></div>
-            <div v-else-if="block === 5" class="airplane__darkblue"></div>
-            <div v-else class="airplane__gray"></div>
-          </td>
-        </tr>
-      </table>
-
-      <table class="inline-block" v-else-if="shape == 'airplaneB'">
-        <tr v-for="(array, indexarray) in airplaneB" :key="indexarray">
-          <td v-for="(block, indexblock) in array" :key="indexblock" class="board-example">
-            <div v-if="block === 3" class="airplane__white"></div>
-            <div v-else-if="block === 4" class="airplane__blue"></div>
-            <div v-else-if="block === 5" class="airplane__darkblue"></div>
-            <div v-else class="airplane__gray"></div>
-          </td>
-        </tr>
-      </table>
+      <airplaneA class="inline-block" v-if="shape == 'airplaneA'"></airplaneA>
+      <airplaneB class="inline-block" v-else-if="shape == 'airplaneB'"></airplaneB>
 
       <div class="inline-block">
         <div class="inline-block">&larr; This is an example of airplanes.</div>
@@ -122,6 +103,9 @@
 </template>
 
 <script>
+import airplaneA from "../components/airplaneA.vue";
+import airplaneB from "../components/airplaneB.vue";
+
 export default {
   props: {
     roomid: String,
@@ -139,6 +123,10 @@ export default {
       player2: "",
       timer: null
     };
+  },
+  components: {
+    airplaneA,
+    airplaneB
   },
   computed: {
     airplaneA() {
