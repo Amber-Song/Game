@@ -33,6 +33,9 @@ export default {
         })
         .then(response => {
           this.$store.commit("getRoom", { roomid: response.data });
+          alert(
+            "Please copy the address shown on next page and send to the other player to invite she/he to enter the game!"
+          );
           this.$router.push({
             path: "/Game/TicTacToeBox/Game/room",
             query: { room: response.data }

@@ -208,7 +208,7 @@ export default {
       this.clearTimeout();
       this.reload();
     },
-    clearTime() {
+    clearTimeout() {
       window.clearTimeout(this.timer);
     }
   }
