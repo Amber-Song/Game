@@ -121,7 +121,7 @@
           </tr>
         </table>
 
-        <button class="introduction-button">
+        <button class="introduction-button" v-on:click="clearTimer()">
           <router-link :to="{name: 'TicTacToeBoxIntroduction'}" class="link__none-style">
             Back to introduction page to
             <strong>restart</strong>.
@@ -191,7 +191,8 @@ export default {
       boxChosen: "",
       boxChosenI: -1,
       boxChosenJ: -1,
-      notice: ""
+      notice: "",
+      timer: null
     };
   },
 
@@ -210,22 +211,19 @@ export default {
     this.boardDisplay = board.slice();
     this.boardDisplayPlayer = boardPlayer.slice();
 
-    this.$store.commit("getRoom", { roomid: this.roomid });
     this.loadData();
   },
 
-  computed: {
-    getRoom() {
-      return this.$store.state.roomid;
-    }
-  },
-
   methods: {
+    clearTimer() {
+      window.clearTimeout(this.timer);
+    },
+
     loadData() {
       this.axios
         .get(`${this.$hostname}/Game/api/TicTacToeBox/Game/wait`, {
           withCredentials: true,
-          params: { room: this.getRoom }
+          params: { room: this.roomid }
         })
         .then(response => {
           if (response.data.Err != "") {
@@ -251,7 +249,7 @@ export default {
             }
 
             if (this.player2 == "") {
-              window.setTimeout(this.loadData, 1000);
+              this.timer = window.setTimeout(this.loadData, 1000);
             } else {
               this.queryServer();
             }
@@ -267,7 +265,7 @@ export default {
         .get(`${this.$hostname}/Game/api/TicTacToeBox/Game/room`, {
           withCredentials: true,
           params: {
-            room: this.getRoom
+            room: this.roomid
           }
         })
         .then(response => {
@@ -292,7 +290,7 @@ export default {
           }
         });
       if (this.winner == "") {
-        window.setTimeout(this.queryServer, 1000);
+        this.timer = window.setTimeout(this.queryServer, 1000);
       }
     },
 
@@ -370,7 +368,7 @@ export default {
                 {
                   withCredentials: true,
                   params: {
-                    room: this.getRoom
+                    room: this.roomid
                   }
                 }
               )
@@ -391,7 +389,7 @@ export default {
                 {
                   withCredentials: true,
                   params: {
-                    room: this.getRoom
+                    room: this.roomid
                   }
                 }
               )
@@ -430,7 +428,7 @@ export default {
                 {
                   withCredentials: true,
                   params: {
-                    room: this.getRoom
+                    room: this.roomid
                   }
                 }
               )

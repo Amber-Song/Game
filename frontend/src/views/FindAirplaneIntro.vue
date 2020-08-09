@@ -115,7 +115,6 @@ export default {
             params: { boardLength: this.boardlength, shape: this.shape }
           })
           .then(response => {
-            this.$store.commit("getRoom", { roomid: response.data });
             // alert the room
             alert(
               "Please copy the address shown on next page and send to the other player to invite she/he to enter the game!"

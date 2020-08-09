@@ -134,9 +134,6 @@ export default {
     },
     airplaneB() {
       return this.$store.state.airplaneB;
-    },
-    getRoom() {
-      return this.$store.state.roomid;
     }
   },
   mounted: function() {
@@ -144,12 +141,11 @@ export default {
   },
   methods: {
     reload() {
-      this.$store.commit("getRoom", { roomid: this.roomid });
       this.axios
         .get(`${this.$hostname}/Game/api/FindAirplane/Game/room`, {
           withCredentials: true,
           params: {
-            room: this.getRoom
+            room: this.roomid
           }
         })
         .then(response => {
@@ -196,7 +192,7 @@ export default {
             {
               withCredentials: true,
               params: {
-                room: this.getRoom
+                room: this.roomid
               }
             }
           )
@@ -205,10 +201,10 @@ export default {
           });
       }
 
-      this.clearTimeout();
+      this.clearTime();
       this.reload();
     },
-    clearTimeout() {
+    clearTime() {
       window.clearTimeout(this.timer);
     }
   }

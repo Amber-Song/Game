@@ -155,13 +155,7 @@ export default {
       announceRoundWinner: ""
     };
   },
-  computed: {
-    getRoom() {
-      return this.$store.state.roomid;
-    }
-  },
   mounted: function() {
-    this.$store.commit("getRoom", { roomid: this.roomid });
     this.loadData();
   },
   methods: {
@@ -171,7 +165,7 @@ export default {
       this.axios
         .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/wait`, {
           withCredentials: true,
-          params: { room: this.getRoom }
+          params: { room: this.roomid }
         })
         .then(response => {
           this.player1Cards = response.data.Collection1;
@@ -248,7 +242,7 @@ export default {
             {
               withCredentials: true,
               params: {
-                room: this.getRoom
+                room: this.roomid
               }
             }
           )
@@ -267,7 +261,7 @@ export default {
             {
               withCredentials: true,
               params: {
-                room: this.getRoom
+                room: this.roomid
               }
             }
           )
@@ -284,7 +278,7 @@ export default {
         .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/room`, {
           withCredentials: true,
           params: {
-            room: this.getRoom
+            room: this.roomid
           }
         })
         .then(response => {
@@ -304,7 +298,7 @@ export default {
         .get(`${this.$hostname}/Game/api/RockPaperScissor/Game/roundend`, {
           withCredentials: true,
           params: {
-            room: this.getRoom
+            room: this.roomid
           }
         })
         .then(response => {

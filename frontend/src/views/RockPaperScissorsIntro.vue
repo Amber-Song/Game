@@ -29,7 +29,6 @@ export default {
           withCredentials: true
         })
         .then(response => {
-          this.$store.commit("getRoom", { roomid: response.data });
           // this.$router.push({
           //   path: "/Game/RockPaperScissors/Game/room",
           //   query: { room: response.data }

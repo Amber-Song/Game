@@ -214,12 +214,7 @@ export default new Vuex.Store({
         "",
         ""
       ]
-    ],
-    roomid: ""
+    ]
   },
-  mutations: {
-    getRoom: (state, data) => {
-      state.roomid = data.roomid;
-    }
-  }
+  mutations: {}
 });
