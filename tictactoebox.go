@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -97,7 +98,7 @@ func tictactoeBoxInitHandler(w http.ResponseWriter, r *http.Request) {
 	// Get Room
 	var room TicTacToeBoxRoom
 	room.removeExpiredRoom()
-	roomid := room.generateRoomid()
+	roomid := generateRoomid("TicTacToeBoxRoom")
 	// Set room and game data
 	room = TicTacToeBoxRoom{player1: user, player2: "", expire: getExpireTime()}
 	game := TicTacToeBoxGame{BoxCollection1: generateBoxCollection(), BoxCollection2: generateBoxCollection(), Board: generateBoard(), BoardPlayer: generateBoard(), ThisPlayer: "player1", Player1: user, Player2: "", Winner: "", Round: 1, PlayerNow: "player1", Err: ""}
@@ -124,8 +125,9 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room TicTacToeBoxRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	isExist := room.isRoomExist(roomid)
+	isExist := isRoomExist(roomid, "TicTacToeBoxRoom")
 	if !isExist {
+		fmt.Print("sorry! THis room is not existing!")
 		game := TicTacToeBoxGame{Err: "Sorry! The room is not existing!"}
 		b, err := json.Marshal(game)
 		logError(err)
@@ -135,7 +137,7 @@ func tictactoeBoxWaitHandler(w http.ResponseWriter, r *http.Request) {
 
 	room = tictactoeRooms[roomid]
 	game := tictactoeGames[roomid]
-	playerNow := room.getPlayerNow(user)
+	playerNow := getPlayerNow(user, room.player1, room.player2)
 
 	if playerNow == "" {
 		if room.player2 == "" {
@@ -175,7 +177,7 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room TicTacToeBoxRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	isExist := room.isRoomExist(roomid)
+	isExist := isRoomExist(roomid, "TicTacToeBoxRoom")
 	if !isExist {
 		game := TicTacToeBoxGame{Err: "Sorry! The room is not existing!"}
 		b, err := json.Marshal(game)
@@ -186,7 +188,7 @@ func tictactoeBoxGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	room = tictactoeRooms[roomid]
 	game := tictactoeGames[roomid]
-	playerNow := room.getPlayerNow(user)
+	playerNow := getPlayerNow(user, room.player1, room.player2)
 	if playerNow == "" {
 		game := TicTacToeBoxGame{Err: "Sorry! This room is full!"}
 		b, err := json.Marshal(game)

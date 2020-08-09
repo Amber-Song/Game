@@ -104,7 +104,7 @@ func rpsInitHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room RPSRoom
 	room.removeExpiredRoom()
-	roomid := room.generateRoomid()
+	roomid := generateRoomid("RPSRoom")
 
 	collection := generateCardCollection()
 	room = RPSRoom{player1: user, player2: "", expire: getExpireTime()}
@@ -132,14 +132,14 @@ func rpsWaitForPlayer2Handler(w http.ResponseWriter, r *http.Request) {
 	}
 	var room RPSRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	isExist := room.isRoomExist(roomid)
+	isExist := isRoomExist(roomid, "RPSRoom")
 	if !isExist {
 		return
 	}
 
 	room = rpsRooms[roomid]
 	game := rpsGames[roomid]
-	playerNow := room.getPlayerNow(user)
+	playerNow := getPlayerNow(user, room.player1, room.player2)
 
 	// Check if it is player2
 	if playerNow == "" {
@@ -180,7 +180,7 @@ func rpsGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room RPSRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	isExist := room.isRoomExist(roomid)
+	isExist := isRoomExist(roomid, "RPSRoom")
 	if !isExist {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
@@ -188,7 +188,7 @@ func rpsGameHandler(w http.ResponseWriter, r *http.Request) {
 
 	room = rpsRooms[roomid]
 	game := rpsGames[roomid]
-	playerNow := room.getPlayerNow(user)
+	playerNow := getPlayerNow(user, room.player1, room.player2)
 
 	if r.Method == http.MethodPost {
 		// Get the chosen card
@@ -232,7 +232,7 @@ func rpsRoundHandler(w http.ResponseWriter, r *http.Request) {
 
 	var room RPSRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	isExist := room.isRoomExist(roomid)
+	isExist := isRoomExist(roomid, "RPSRoom")
 	if !isExist {
 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 		return
@@ -240,7 +240,7 @@ func rpsRoundHandler(w http.ResponseWriter, r *http.Request) {
 
 	room = rpsRooms[roomid]
 	game := rpsGames[roomid]
-	playerNow := room.getPlayerNow(user)
+	playerNow := getPlayerNow(user, room.player1, room.player2)
 
 	if !game.UpdateGame {
 		card1 := game.Card1

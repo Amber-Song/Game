@@ -495,7 +495,7 @@ func airplaneInitHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var room AirplaneRoom
 	room.removeExpiredRoom()
-	roomid := room.generateRoomid()
+	roomid := generateRoomid("AirplaneRoom")
 
 	var board [][]int
 	if shape == "airplaneA" {
@@ -531,7 +531,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	var room AirplaneRoom
 	roomid := strings.Join(r.URL.Query()["room"], "")
-	isExist := room.isRoomExist(roomid)
+	isExist := isRoomExist(roomid, "AirplaneRoom")
 	if !isExist {
 		// TODO can be written as game interface?
 		game := AirplaneGame{Err: "Sorry! The room is not existing!"}
@@ -544,7 +544,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	// Check what is the user now and also if is a new user, update room and game
 	room = airplaneRooms[roomid]
 	game := airplaneGames[roomid]
-	playerNow := room.getPlayerNow(user) // this should decide which is this play instead of this player in the struct
+	playerNow := getPlayerNow(user, room.player1, room.player2) // this should decide which is this play instead of this player in the struct
 	if playerNow == "" {
 		if room.player2 == "" {
 			playerNow = "player2"
@@ -609,7 +609,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 
 // 	// Get room and cookie
 // 	roomid := strings.Join(r.URL.Query()["room"], "")
-//  isExist := room.isRoomExist(roomid)
+// isExist := isRoomExist(roomid, "AirplaneRoom")
 // 	if !isExist {
 // 		http.Redirect(w, r, "/NotFound", http.StatusFound)
 // 		return

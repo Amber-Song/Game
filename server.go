@@ -33,49 +33,32 @@ func setupResponse(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 }
 
-func (room AirplaneRoom) isRoomExist(roomid string) bool {
-	if _, ok := airplaneRooms[roomid]; ok {
-		return true
-	}
-	return false
-}
-
-func (room RPSRoom) isRoomExist(roomid string) bool {
-	if _, ok := rpsRooms[roomid]; ok {
-		return true
-	}
-	return false
-}
-
-func (room TicTacToeBoxRoom) isRoomExist(roomid string) bool {
-	if _, ok := tictactoeRooms[roomid]; ok {
-		return true
-	}
-	return false
-}
-
-func (room AirplaneRoom) generateRoomid() string {
-	for index := 0; ; index++ {
-		roomid := getRandomInt(1000000)
-		if !room.isRoomExist(roomid) {
-			return roomid
+func isRoomExist(roomid string, roomName string) bool {
+	switch roomName {
+	case "AirplaneRoom":
+		if _, ok := airplaneRooms[roomid]; ok {
+			return true
 		}
-	}
-}
-
-func (room RPSRoom) generateRoomid() string {
-	for index := 0; ; index++ {
-		roomid := getRandomInt(1000000)
-		if !room.isRoomExist(roomid) {
-			return roomid
+		return false
+	case "RPSRoom":
+		if _, ok := rpsRooms[roomid]; ok {
+			return true
 		}
+		return false
+	case "TicTacToeBoxRoom":
+		if _, ok := tictactoeRooms[roomid]; ok {
+			return true
+		}
+		return false
 	}
+
+	return false
 }
 
-func (room TicTacToeBoxRoom) generateRoomid() string {
+func generateRoomid(roomName string) string {
 	for index := 0; ; index++ {
 		roomid := getRandomInt(1000000)
-		if !room.isRoomExist(roomid) {
+		if !isRoomExist(roomid, roomName) {
 			return roomid
 		}
 	}
@@ -106,33 +89,11 @@ func (room TicTacToeBoxRoom) removeExpiredRoom() {
 	}
 }
 
-func (room AirplaneRoom) getPlayerNow(user string) string {
+func getPlayerNow(user string, player1 string, player2 string) string {
 	switch user {
-	case room.player1:
+	case player1:
 		return "player1"
-	case room.player2:
-		return "player2"
-	default:
-		return ""
-	}
-}
-
-func (room RPSRoom) getPlayerNow(user string) string {
-	switch user {
-	case room.player1:
-		return "player1"
-	case room.player2:
-		return "player2"
-	default:
-		return ""
-	}
-}
-
-func (room TicTacToeBoxRoom) getPlayerNow(user string) string {
-	switch user {
-	case room.player1:
-		return "player1"
-	case room.player2:
+	case player2:
 		return "player2"
 	default:
 		return ""
