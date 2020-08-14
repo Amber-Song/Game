@@ -14,7 +14,15 @@
             <th>Grass</th>
           </tr>
           <tr v-for="(playerInfo, index) in playerList" :key="index">
-            <td class="playList__playerNow">
+            <td
+              class="playList__playerNow"
+              v-bind:class="{
+              'player1-land ': index == 0,
+              'player2-land': index == 1,
+              'player3-land': index == 2,
+              'player4-land': index == 3,
+              }"
+            >
               <div v-if="index == playerNowIndex">
                 <img src="../assets/fingerPoint.png" alt="this" class="pixelart">
               </div>
@@ -38,8 +46,7 @@
               <option value="right">right</option>
             </select>
           </label>
-          <br>
-          <button v-on:click="directionDecide()">Decide</button>
+          <button v-on:click="directionDecide()" class="button-inline">Decide</button>
         </div>
 
         <div v-if="step == 2" class="diceNshaker">
@@ -56,7 +63,6 @@
           <img v-else-if="dice == 5" src="../assets/dice5.png" alt="dice 5" class="dice pixelart">
           <img v-else-if="dice == 6" src="../assets/dice6.png" alt="dice 6" class="dice pixelart">
 
-          <br>
           <button v-if="!shaking" v-on:click="shakeShaker()">Shake</button>
           <button v-else-if="!opening" v-on:click="openShaker()">Open</button>
           <button v-else v-on:click="doneShake()">Walk</button>
@@ -64,15 +70,15 @@
 
         <div v-if="step == 3 && payment != 0">
           You have to pay ${{payment}} to {{playerPayTo}}.
-          <br>
           <button v-on:click="pay()">Pay</button>
         </div>
 
         <div v-if="step == 4">
           Please choose two connective pieces to put the grass:
           <br>
-          <button v-on:click="placeGrass()">Decide</button>
-          <button v-on:click="resetGrassChoose()">Reset</button>
+          <button v-on:click="placeGrass()" class="button-inline">Decide</button>
+          <button v-on:click="resetGrassChoose()" class="button-inline">Reset</button>
+          <button v-on:click="skipGrassChoose()" class="button-inline">Skip</button>
         </div>
       </div>
 
@@ -85,10 +91,10 @@
               class="game__cell"
               v-on:click="chooseCell(indexLine, indexCell)"
               v-bind:class="{
-                  'cell__player1': board[indexLine][indexCell] == 'player1',
-                  'cell__player2': board[indexLine][indexCell] == 'player2',
-                  'cell__player3': board[indexLine][indexCell] == 'player3',
-                  'cell__player4': board[indexLine][indexCell] == 'player4'
+              'player1-land pixelart': board[indexLine][indexCell] == 'player1',
+              'player2-land pixelart': board[indexLine][indexCell] == 'player2',
+              'player3-land pixelart': board[indexLine][indexCell] == 'player3',
+              'player4-land pixelart': board[indexLine][indexCell] == 'player4',
               }"
             >
               <div
@@ -142,6 +148,11 @@
           'animation__translate__west': (directionHeading == 'west' && walking == true)
           }"
           >
+            <img
+              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/21542/DemoRpgCharacterShadow.png"
+              alt="Shadow"
+              class="character_shadow pixelart"
+            >
             <img
               src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/21542/DemoRpgCharacter.png"
               alt="character"
@@ -867,6 +878,13 @@ export default {
       this.playerNowIndex = this.nextPlayer();
       this.step = 1;
     },
+    skipGrassChoose() {
+      this.textShow = false;
+      this.errorMessage = "";
+      this.resetGrassChoose();
+      this.playerNowIndex = this.nextPlayer();
+      this.step = 1;
+    },
 
     // Functions in placeGrass()
     isGrassPlaceRight() {
@@ -946,42 +964,59 @@ td {
   height: 50px;
   border: 1px solid black;
   border-collapse: collapse;
+  padding: 0px;
+}
+.player1-land {
+  background-image: url("../assets/player1land.png");
+  background-color: green;
+}
+.player2-land {
+  background-image: url("../assets/player2land.png");
+  background-color: blue;
+}
+.player3-land {
+  background-image: url("../assets/player3land.png");
+  background-color: purple;
+}
+.player4-land {
+  background-image: url("../assets/player4land.png");
+  background-color: yellow;
 }
 .cell-chosen__player1 {
   width: 100%;
   height: 100%;
-  border: 1px solid red;
+  border: 2px solid #00ff89;
 }
 .cell-chosen__player2 {
   width: 100%;
   height: 100%;
-  border: 1px solid yellow;
+  border: 2px solid #00b9ff;
 }
 .cell-chosen__player3 {
   width: 100%;
   height: 100%;
-  border: 1px solid green;
+  border: 2px solid #c65ee8;
 }
 .cell-chosen__player4 {
   width: 100%;
   height: 100%;
-  border: 1px solid blue;
-}
-.cell__player1 {
-  background-color: red;
-}
-.cell__player2 {
-  background-color: yellow;
-}
-.cell__player3 {
-  background-color: green;
-}
-.cell__player4 {
-  background-color: blue;
+  border: 2px solid #ffd400;
 }
 
 .pixelart {
   image-rendering: pixelated;
+}
+button {
+  display: block;
+  font-family: "Neucha", sans-serif;
+  font-size: 1em;
+  margin: 10px auto;
+  padding: 4px 10px 0 10px;
+  border-radius: 3px;
+}
+.button-inline {
+  display: inline-block;
+  margin: 10px 10px;
 }
 
 /* dice and dice shaker */
@@ -1081,6 +1116,13 @@ td {
   overflow: hidden;
   position: relative;
   text-align: justify;
+}
+.character_shadow {
+  position: absolute;
+  left: -16px;
+  top: -25px;
+  width: calc(32px * var(--pixel-size));
+  height: calc(32px * var(--pixel-size));
 }
 
 /* CSS naming: functional CSS */
