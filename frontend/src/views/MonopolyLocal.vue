@@ -6,6 +6,8 @@
 
     <div class="game-content competition">
       <div>
+        <div class="game-round">Round {{round}}</div>
+        <div v-if="winner != ''" class="game-congratulation">Congradulation on {{winner}}!</div>
         <table class="playerList">
           <tr>
             <th class="playList__playerNow"></th>
@@ -181,6 +183,8 @@ export default {
     return {
       playerList: [],
       playerNowIndex: 0,
+      round: 1,
+      winner: "",
       board: [],
       step: 1,
       directionChoose: "forward",
@@ -255,47 +259,9 @@ export default {
     }
 
     this.position.push(3, 3);
-    this.halfPlayedBoard(); // This is for developing
   },
 
   methods: {
-    halfPlayedBoard() {
-      for (let i = 1; i < 7; i++) {
-        this.$set(this.board[0], i, "player2");
-      }
-      this.$set(this.board[1], 1, "player1");
-      this.$set(this.board[1], 4, "player2");
-      this.$set(this.board[1], 5, "player2");
-      for (let i = 0; i < 4; i++) {
-        this.$set(this.board[2], i, "player1");
-      }
-      this.$set(this.board[2], 5, "player2");
-      this.$set(this.board[3], 0, "player1");
-      this.$set(this.board[3], 2, "player1");
-      this.$set(this.board[3], 1, "player2");
-      for (let i = 3; i < 7; i++) {
-        this.$set(this.board[3], i, "player2");
-      }
-      for (let i = 0; i < 6; i++) {
-        this.$set(this.board[4], i, "player1");
-      }
-      this.$set(this.board[4], 1, "player2");
-      this.$set(this.board[4], 6, "player2");
-      this.$set(this.board[5], 0, "player1");
-      this.$set(this.board[5], 1, "player1");
-      this.$set(this.board[5], 2, "player2");
-      this.$set(this.board[5], 3, "player2");
-      this.$set(this.board[5], 5, "player1");
-      this.$set(this.board[5], 6, "player2");
-      for (let i = 1; i < 6; i++) {
-        this.$set(this.board[6], i, "player1");
-      }
-      this.$set(this.board[6], 6, "player2");
-
-      this.$set(this.playerList[0], "grassNum", 5);
-      this.$set(this.playerList[1], "grassNum", 5);
-    },
-
     // Step1 direction functions
     calcDirection() {
       switch (this.directionOrigin) {
@@ -362,17 +328,17 @@ export default {
       this.opening = true;
     },
     doneShake() {
-      window.setTimeout(this.nextStepOfGame, 1500 * this.dice + 600 * 3);
+      window.setTimeout(this.Step3OfGame, 1500 * this.dice + 600 * 3);
       window.setTimeout(this.calculatePayment, 1500 * this.dice + 600 * 3);
       window.setTimeout(this.emptyRouting, 1500 * this.dice + 600 * 3);
 
+      this.step = 0;
       this.calculateRouting();
       let isFirstZero = this.isFirstRouteZero();
       if (isFirstZero) {
         this.routing.splice(0, 1);
       }
 
-      // TODO: how to deal with the walking part?
       this.shaking = false;
       this.opening = false;
 
@@ -388,6 +354,9 @@ export default {
         timer = timer + 1500 * this.routing[1].step + 600;
         window.setTimeout(this.runRoutine, timer, 2);
       }
+      window.setTimeout(this.resetDirection, timer);
+    },
+    resetDirection() {
       this.directionOrigin = this.directionHeading;
     },
 
@@ -798,7 +767,7 @@ export default {
 
     // Step4 put grass functions
     chooseCell(indexLine, indexCell) {
-      if (this.isCellAvailble(indexLine, indexCell)) {
+      if (this.isCellAvailble(indexLine, indexCell) && this.step == 4) {
         this.grassPieces.push([indexLine, indexCell]);
 
         if (this.grassPiecesLength == 1) {
@@ -843,6 +812,9 @@ export default {
     },
     placeGrass() {
       this.textShow = false;
+      if (this.playerList[this.playerNowIndex].grassNum == 0) {
+        return;
+      }
       if (this.grassPiecesLength != 2) {
         this.errorMessage = "You need to choose two pieces";
         this.resetGrassChoose();
@@ -876,14 +848,22 @@ export default {
 
       this.resetGrassChoose();
       this.playerNowIndex = this.nextPlayer();
-      this.step = 1;
+      if (!this.isGameFinish()) {
+        this.step = 1;
+      } else {
+        this.step = 0;
+      }
     },
     skipGrassChoose() {
       this.textShow = false;
       this.errorMessage = "";
       this.resetGrassChoose();
       this.playerNowIndex = this.nextPlayer();
-      this.step = 1;
+      if (!this.isGameFinish()) {
+        this.step = 1;
+      } else {
+        this.step = 0;
+      }
     },
 
     // Functions in placeGrass()
@@ -925,9 +905,40 @@ export default {
       return nextIndex;
     },
 
+    // Check Winner
+    isGameFinish() {
+      if (this.playerNowIndex != this.playerNum - 1) {
+        return false;
+      }
+      this.round = this.round + 1;
+      for (let i = 0; i < this.playerNum; i++) {
+        if (this.playerList[i].grassNum != 0) {
+          return false;
+        }
+      }
+      this.getWinner();
+      return true;
+    },
+    getWinner() {
+      let winnerIndex = -1;
+      let winnerCoin = -1;
+
+      for (let i = 0; i < this.playerNum; i++) {
+        if (this.playerList[i].coinNum >= winnerCoin) {
+          winnerIndex = i;
+          winnerCoin = this.playerList[i].coinNum;
+        }
+      }
+
+      this.winner = this.playerList[winnerIndex].playerId;
+    },
+
     // Other
     nextStepOfGame() {
       this.step = this.step + 1;
+    },
+    Step3OfGame() {
+      this.step = 3;
     }
   }
 };
@@ -942,6 +953,12 @@ export default {
   display: grid;
   grid-template-columns: 270px auto;
   grid-column-gap: 10px;
+}
+.game-round {
+  margin-bottom: 20px;
+  border: 1px solid black;
+  border-radius: 3px;
+  padding-top: 3px;
 }
 
 .playerList {
