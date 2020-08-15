@@ -58,16 +58,40 @@
             class="diceShaker pixelart"
             v-bind:class="{'shakerShake': shaking, 'shakerOpen': opening}"
           >
-          <img v-if="dice == 1" src="../assets/dice1.png" alt="dice 1" class="dice pixelart">
-          <img v-else-if="dice == 2" src="../assets/dice2.png" alt="dice 2" class="dice pixelart">
-          <img v-else-if="dice == 3" src="../assets/dice3.png" alt="dice 3" class="dice pixelart">
-          <img v-else-if="dice == 4" src="../assets/dice4.png" alt="dice 4" class="dice pixelart">
-          <img v-else-if="dice == 5" src="../assets/dice5.png" alt="dice 5" class="dice pixelart">
-          <img v-else-if="dice == 6" src="../assets/dice6.png" alt="dice 6" class="dice pixelart">
+          <img v-if="diceShow == 1" src="../assets/dice1.png" alt="dice 1" class="dice pixelart">
+          <img
+            v-else-if="diceShow == 2"
+            src="../assets/dice2.png"
+            alt="dice 2"
+            class="dice pixelart"
+          >
+          <img
+            v-else-if="diceShow == 3"
+            src="../assets/dice3.png"
+            alt="dice 3"
+            class="dice pixelart"
+          >
+          <img
+            v-else-if="diceShow == 4"
+            src="../assets/dice4.png"
+            alt="dice 4"
+            class="dice pixelart"
+          >
+          <img
+            v-else-if="diceShow == 5"
+            src="../assets/dice5.png"
+            alt="dice 5"
+            class="dice pixelart"
+          >
+          <img
+            v-else-if="diceShow == 6"
+            src="../assets/dice6.png"
+            alt="dice 6"
+            class="dice pixelart"
+          >
 
           <button v-if="!shaking" v-on:click="shakeShaker()">Shake</button>
           <button v-else-if="!opening" v-on:click="openShaker()">Open</button>
-          <button v-else v-on:click="doneShake()">Walk</button>
         </div>
 
         <div v-if="step == 3 && payment != 0">
@@ -84,89 +108,98 @@
         </div>
       </div>
 
-      <div class="board">
-        <table>
-          <tr v-for="(line, indexLine) in board" :key="indexLine">
-            <td
-              v-for="(cell, indexCell) in line"
-              :key="indexCell"
-              class="game__cell"
-              v-on:click="chooseCell(indexLine, indexCell)"
-              v-bind:class="{
+      <div class="board-background-img">
+        <div class="board">
+          <table>
+            <tr v-for="(line, indexLine) in board" :key="indexLine">
+              <td
+                v-for="(cell, indexCell) in line"
+                :key="indexCell"
+                class="game__cell"
+                v-on:click="chooseCell(indexLine, indexCell)"
+                v-bind:class="{
               'player1-land pixelart': board[indexLine][indexCell] == 'player1',
               'player2-land pixelart': board[indexLine][indexCell] == 'player2',
               'player3-land pixelart': board[indexLine][indexCell] == 'player3',
               'player4-land pixelart': board[indexLine][indexCell] == 'player4',
               }"
-            >
-              <div
-                v-if="(indexLine == grassPieceOnei && indexCell == grassPieceOnej) || (indexLine == grassPieceTwoi && indexCell == grassPieceTwoj)"
-                v-bind:class="{
+              >
+                <div
+                  v-if="(indexLine == grassPieceOnei && indexCell == grassPieceOnej) || (indexLine == grassPieceTwoi && indexCell == grassPieceTwoj)"
+                  v-bind:class="{
                   'cell-chosen__player1': playerNow == 'player1',
                   'cell-chosen__player2': playerNow == 'player2',
                   'cell-chosen__player3': playerNow == 'player3',
                   'cell-chosen__player4': playerNow == 'player4'
               }"
-              ></div>
-            </td>
-          </tr>
-        </table>
+                ></div>
+              </td>
+            </tr>
+          </table>
 
-        <img
-          v-if=" textShow == true "
-          src="../assets/wheretoputgrass.png"
-          alt="where to put the grass?"
-          class="pixelart text-wrapper"
-          :style="characterPosition"
-        >
-        <img
-          v-if=" errorMessage == 'You need to choose two pieces'"
-          src="../assets/youneedtochoosetwopiece.png"
-          alt="You need to choose two pieces!"
-          class="pixelart text-wrapper"
-          :style="characterPosition"
-        >
-        <img
-          v-if=" errorMessage == 'Two Piece Need To Be Conjunctive'"
-          src="../assets/twopiececonjunctive.png"
-          alt="Two pieces need to be conjunctive!"
-          class="pixelart text-wrapper"
-          :style="characterPosition"
-        >
-        <img
-          v-if=" errorMessage == 'Two Piece cant belong to the same player'"
-          src="../assets/twopiecescantbelongtothesame.png"
-          alt="Two Piece cant belong to the same player!"
-          class="pixelart text-wrapper"
-          :style="characterPosition"
-        >
-        <div class="character-wrapper" :style="[characterWalking, characterPosition]">
-          <div
-            class="character"
-            v-bind:class="{          
+          <img
+            v-if=" textShow == true "
+            src="../assets/wheretoputgrass.png"
+            alt="where to put the grass?"
+            class="pixelart text-wrapper"
+            :style="characterPosition"
+          >
+          <img
+            v-if=" errorMessage == 'Grasses are used up'"
+            src="../assets/nograssleft.png"
+            alt="You have used up all the grass, click skip to continue"
+            class="pixelart text-two-line-wrapper"
+            :style="characterPosition"
+          >
+          <img
+            v-if=" errorMessage == 'You need to choose two pieces'"
+            src="../assets/youneedtochoosetwopiece.png"
+            alt="You need to choose two pieces!"
+            class="pixelart text-wrapper"
+            :style="characterPosition"
+          >
+          <img
+            v-if=" errorMessage == 'Two Piece Need To Be Conjunctive'"
+            src="../assets/twopiececonjunctive.png"
+            alt="Two pieces need to be conjunctive!"
+            class="pixelart text-wrapper"
+            :style="characterPosition"
+          >
+          <img
+            v-if=" errorMessage == 'Two Piece cant belong to the same player'"
+            src="../assets/twopiecescantbelongtothesame.png"
+            alt="Two Piece cant belong to the same player!"
+            class="pixelart text-two-line-wrapper"
+            :style="characterPosition"
+          >
+          <div class="character-wrapper" :style="[characterWalking, characterPosition]">
+            <div
+              class="character"
+              v-bind:class="{          
           'animation__translate__south': (directionHeading == 'south' && walking == true),
           'animation__translate__east': (directionHeading == 'east' && walking == true),
           'animation__translate__north': (directionHeading == 'north' && walking == true),
           'animation__translate__west': (directionHeading == 'west' && walking == true)
           }"
-          >
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/21542/DemoRpgCharacterShadow.png"
-              alt="Shadow"
-              class="character_shadow pixelart"
             >
-            <img
-              src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/21542/DemoRpgCharacter.png"
-              alt="character"
-              class="pixelart__stand pixelart"
-              v-bind:class="{
+              <img
+                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/21542/DemoRpgCharacterShadow.png"
+                alt="Shadow"
+                class="character_shadow pixelart"
+              >
+              <img
+                src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/21542/DemoRpgCharacter.png"
+                alt="character"
+                class="pixelart__stand pixelart"
+                v-bind:class="{
             'animation__pixelart__stepping': walking == true,
             'pixelart__face__south':directionHeading == 'south',
             'pixelart__face__east':directionHeading == 'east',
             'pixelart__face__north':directionHeading == 'north',
             'pixelart__face__west':directionHeading == 'west'
             }"
-            >
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -191,6 +224,7 @@ export default {
       directionHeading: "south",
       directionOrigin: "south",
       dice: 2,
+      diceShow: 2,
       shaking: false,
       opening: false,
       walking: false,
@@ -324,23 +358,25 @@ export default {
       this.shaking = true;
     },
     openShaker() {
-      this.dice = Math.ceil(Math.random() * 6);
+      this.diceShow = Math.ceil(Math.random() * 6);
+      this.dice = this.diceShow;
       this.opening = true;
+      this.doneShake();
     },
     doneShake() {
-      window.setTimeout(this.Step3OfGame, 1500 * this.dice + 600 * 3);
-      window.setTimeout(this.calculatePayment, 1500 * this.dice + 600 * 3);
-      window.setTimeout(this.emptyRouting, 1500 * this.dice + 600 * 3);
+      window.setTimeout(this.Step3OfGame, 1500 * this.diceShow + 600 * 3);
+      window.setTimeout(
+        this.resetDiceAnimation,
+        1500 * this.diceShow + 600 * 3
+      );
+      window.setTimeout(this.calculatePayment, 1500 * this.diceShow + 600 * 3);
+      window.setTimeout(this.emptyRouting, 1500 * this.diceShow + 600 * 3);
 
-      this.step = 0;
       this.calculateRouting();
       let isFirstZero = this.isFirstRouteZero();
       if (isFirstZero) {
         this.routing.splice(0, 1);
       }
-
-      this.shaking = false;
-      this.opening = false;
 
       // let animation follow the routing
       let routingLength = this.routing.length;
@@ -370,22 +406,18 @@ export default {
           if (leftoverCells < this.dice) {
             this.pushSouthToRouting(leftoverCells);
 
-            if (this.position[1] == 0) {
-              this.pushEastToRouting(this.dice - leftoverCells);
-              return;
-            }
             if (this.position[1] == this.boardLength - 1) {
               this.pushWestToRouting(this.dice - leftoverCells);
               return;
             }
-            if (this.position[1] % 2 == 1) {
+            if (this.position[1] % 2 == 0) {
               this.pushEastToRouting(1);
               if (this.dice > leftoverCells + 1) {
                 this.pushNorthToRouting(this.dice - leftoverCells - 1);
               }
               return;
             }
-            if (this.position[1] % 2 == 0) {
+            if (this.position[1] % 2 == 1) {
               this.pushWestToRouting(1);
               if (this.dice > leftoverCells + 1) {
                 this.pushNorthToRouting(this.dice - leftoverCells - 1);
@@ -404,22 +436,18 @@ export default {
           if (leftoverCells < this.dice) {
             this.pushEastToRouting(leftoverCells);
 
-            if (this.position[0] == 0) {
-              this.pushSouthToRouting(this.dice - leftoverCells);
-              return;
-            }
             if (this.position[0] == this.boardLength - 1) {
               this.pushNorthToRouting(this.dice - leftoverCells);
               return;
             }
-            if (this.position[0] % 2 == 1) {
+            if (this.position[0] % 2 == 0) {
               this.pushSouthToRouting(1);
               if (this.dice > leftoverCells + 1) {
                 this.pushWestToRouting(this.dice - leftoverCells - 1);
               }
               return;
             }
-            if (this.position[0] % 2 == 0) {
+            if (this.position[0] % 2 == 1) {
               this.pushNorthToRouting(1);
               if (this.dice > leftoverCells + 1) {
                 this.pushWestToRouting(this.dice - leftoverCells - 1);
@@ -440,10 +468,6 @@ export default {
 
             if (this.position[1] == 0) {
               this.pushEastToRouting(this.dice - leftoverCells);
-              return;
-            }
-            if (this.position[1] == this.boardLength - 1) {
-              this.pushWestToRouting(this.dice - leftoverCells);
               return;
             }
             if (this.position[1] % 2 == 1) {
@@ -474,10 +498,6 @@ export default {
 
             if (this.position[0] == 0) {
               this.pushSouthToRouting(this.dice - leftoverCells);
-              return;
-            }
-            if (this.position[0] == this.boardLength - 1) {
-              this.pushNorthToRouting(this.dice - leftoverCells);
               return;
             }
             if (this.position[0] % 2 == 1) {
@@ -621,7 +641,7 @@ export default {
         this.playerPayTo = "";
         this.paymentChecked = [];
         this.paymentNeedChecking = [];
-        this.textShow = true;
+        this.step4Start();
       }
     },
     calculatePaymentVertical(playerBelonging) {
@@ -755,7 +775,8 @@ export default {
       this.playerPayTo = "";
       this.paymentChecked = [];
       this.paymentNeedChecking = [];
-      this.textShow = true;
+
+      this.step4Start();
     },
     getPlayerPayToIndex(id) {
       for (let i = 0; i < this.playerNum; i++) {
@@ -766,6 +787,14 @@ export default {
     },
 
     // Step4 put grass functions
+    step4Start() {
+      if (this.playerList[this.playerNowIndex].grassNum == 0) {
+        this.errorMessage = "Grasses are used up";
+        return;
+      } else {
+        this.textShow = true;
+      }
+    },
     chooseCell(indexLine, indexCell) {
       if (this.isCellAvailble(indexLine, indexCell) && this.step == 4) {
         this.grassPieces.push([indexLine, indexCell]);
@@ -813,6 +842,8 @@ export default {
     placeGrass() {
       this.textShow = false;
       if (this.playerList[this.playerNowIndex].grassNum == 0) {
+        this.errorMessage = "Grasses are used up";
+        this.resetGrassChoose();
         return;
       }
       if (this.grassPiecesLength != 2) {
@@ -847,8 +878,8 @@ export default {
       this.$set(this.playerList[this.playerNowIndex], "grassNum", newGrassNum);
 
       this.resetGrassChoose();
-      this.playerNowIndex = this.nextPlayer();
       if (!this.isGameFinish()) {
+        this.playerNowIndex = this.nextPlayer();
         this.step = 1;
       } else {
         this.step = 0;
@@ -858,8 +889,8 @@ export default {
       this.textShow = false;
       this.errorMessage = "";
       this.resetGrassChoose();
-      this.playerNowIndex = this.nextPlayer();
       if (!this.isGameFinish()) {
+        this.playerNowIndex = this.nextPlayer();
         this.step = 1;
       } else {
         this.step = 0;
@@ -939,6 +970,10 @@ export default {
     },
     Step3OfGame() {
       this.step = 3;
+    },
+    resetDiceAnimation() {
+      this.shaking = false;
+      this.opening = false;
     }
   }
 };
@@ -1044,8 +1079,8 @@ button {
   width: 32px;
   height: 32px;
   position: absolute;
-  left: 45%;
-  top: 35%;
+  left: 120px;
+  top: 40px;
   z-index: -1;
 }
 .diceShaker {
@@ -1055,7 +1090,7 @@ button {
 .shakerShake {
   animation-name: shake;
   animation-duration: 0.5s;
-  animation-iteration-count: 3;
+  animation-iteration-count: infinite;
   animation-fill-mode: forwards;
 }
 @keyframes shake {
@@ -1109,18 +1144,31 @@ button {
 }
 
 /* character */
-.board {
-  position: relative;
-  width: max-content;
-  height: max-content;
+.board-background-img {
+  background-image: url("../assets/bgi-switch.png");
+  width: 414px;
+  height: 414px;
   margin-left: auto;
   margin-right: auto;
+}
+.board {
+  position: relative;
+  margin-top: 31px;
+  margin-left: 31px;
+  width: max-content;
+  height: max-content;
 }
 .text-wrapper {
   display: block;
   position: absolute;
   top: calc(var(--character-top) - 25px);
   left: calc(var(--character-left) - 30px);
+}
+.text-two-line-wrapper {
+  display: block;
+  position: absolute;
+  top: calc(var(--character-top) - 40px);
+  left: calc(var(--character-left));
 }
 .character-wrapper {
   position: absolute;
