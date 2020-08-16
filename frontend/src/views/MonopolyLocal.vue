@@ -13,7 +13,8 @@
             <th class="playList__playerNow"></th>
             <th>Player</th>
             <th>Coin</th>
-            <th>Grass</th>
+            <th>Grass in hand</th>
+            <th>Blocks</th>
           </tr>
           <tr v-for="(playerInfo, index) in playerList" :key="index">
             <td
@@ -32,6 +33,7 @@
             <td>{{playerInfo.playerId}}</td>
             <td>${{playerInfo.coinNum}}</td>
             <td>{{playerInfo.grassNum}}</td>
+            <td>{{playerInfo.blockNum}}</td>
           </tr>
         </table>
         <br>
@@ -279,7 +281,8 @@ export default {
       this.playerList.push({
         playerId: "player" + (i + 1),
         coinNum: 30,
-        grassNum: 15
+        grassNum: 15,
+        blockNum: 0
       });
     }
 
@@ -756,7 +759,7 @@ export default {
     },
     pay() {
       let coinBeforePay = this.playerList[this.playerNowIndex].coinNum;
-      let playerGotPaidIndex = this.getPlayerPayToIndex(this.playerPayTo);
+      let playerGotPaidIndex = this.getPlayerIndex(this.playerPayTo);
       let playerBeforeGot = this.playerList[playerGotPaidIndex].coinNum;
 
       this.$set(
@@ -778,7 +781,7 @@ export default {
 
       this.step4Start();
     },
-    getPlayerPayToIndex(id) {
+    getPlayerIndex(id) {
       for (let i = 0; i < this.playerNum; i++) {
         if (this.playerList[i].playerId == id) {
           return i;
@@ -864,6 +867,9 @@ export default {
 
       this.errorMessage = "";
 
+      this.updateBlocks(this.board[this.grassPieceOnei][this.grassPieceOnej]);
+      this.updateBlocks(this.board[this.grassPieceTwoi][this.grassPieceTwoj]);
+
       this.$set(
         this.board[this.grassPieceOnei],
         this.grassPieceOnej,
@@ -928,6 +934,23 @@ export default {
       }
       return false;
     },
+    updateBlocks(originalPlayer) {
+      if (this.playerNow != originalPlayer && originalPlayer != "") {
+        let thisplayer = this.playerList[this.getPlayerIndex(originalPlayer)];
+        let blocks = thisplayer.blockNum;
+        this.$set(thisplayer, "blockNum", blocks - 1);
+        thisplayer = this.playerList[this.playerNowIndex];
+        blocks = thisplayer.blockNum;
+        this.$set(thisplayer, "blockNum", blocks + 1);
+
+        return;
+      }
+      if (originalPlayer == "") {
+        let thisplayer = this.playerList[this.playerNowIndex];
+        let blocks = thisplayer.blockNum;
+        this.$set(thisplayer, "blockNum", blocks + 1);
+      }
+    },
     nextPlayer() {
       let nextIndex = this.playerNowIndex + 1;
       if (nextIndex >= this.playerNum) {
@@ -953,11 +976,22 @@ export default {
     getWinner() {
       let winnerIndex = -1;
       let winnerCoin = -1;
+      let winnerBlock = -1;
 
       for (let i = 0; i < this.playerNum; i++) {
-        if (this.playerList[i].coinNum >= winnerCoin) {
+        if (this.playerList[i].coinNum > winnerCoin) {
           winnerIndex = i;
           winnerCoin = this.playerList[i].coinNum;
+          winnerBlock = this.playerList[i].blockNum;
+        }
+        if (this.playerList[i].coinNum == winnerCoin) {
+          console.log("equal");
+          if (this.playerList[i].blockNum > winnerBlock) {
+            console.log("replace");
+            winnerIndex = i;
+            winnerCoin = this.playerList[i].coinNum;
+            winnerBlock = this.playerList[i].blockNum;
+          }
         }
       }
 
