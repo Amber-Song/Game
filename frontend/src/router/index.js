@@ -10,6 +10,8 @@ import TicTacToeBoxLocal from "../views/TicTacToeBoxLocal.vue";
 import RotatingPuzzleIntro from "../views/RotatingPuzzleIntro.vue";
 import RotatingPuzzleLocal from "../views/RotatingPuzzleLocal.vue";
 import RotatingPuzzleLocalHard from "../views/RotatingPuzzleLocalHard.vue";
+import MonopolyIntro from "../views/MonopolyIntro.vue";
+import MonopolyLocal from "../views/MonopolyLocal.vue";
 import NotFound from "../views/NotFound.vue";
 
 Vue.use(VueRouter);
@@ -81,6 +83,17 @@ const routes = [
     path: "/Game/RotatingPuzzle/Localgame/Hard",
     name: "RotatingPuzzleLocalHard",
     component: RotatingPuzzleLocalHard
+  },
+  {
+    path: "/Game/Monopoly/Introduction",
+    name: "MonopolyIntroduction",
+    component: MonopolyIntro
+  },
+  {
+    path: "/Game/Monopoly/Localgame",
+    name: "MonopolyLocal",
+    component: MonopolyLocal,
+    props: router => ({ playerNum: router.query.playerNum })
   },
   {
     path: "*",
