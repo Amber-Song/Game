@@ -37,7 +37,9 @@
         >Tic Tac Toe Box version (2 players)</router-link>
       </li>
       <li>
-        <span class="icon"></span>
+        <span class="icon">
+          <img src="../assets/flower.png">
+        </span>
         <router-link
           :to="{name: 'MonopolyIntroduction'}"
           class="link__none-style"
@@ -64,6 +66,7 @@ li:hover {
   text-decoration: underline;
 }
 .icon {
+  display: inline-block;
   width: 30px;
   text-align: center;
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="introduction-page">
     <h1>
+      <img src="../assets/flower.png" style="height:30px;">
       <router-link :to="{name: 'Home'}" class="link__none-style">Monopoly</router-link>
     </h1>
 

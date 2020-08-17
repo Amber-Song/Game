@@ -1,6 +1,7 @@
 <template>
   <div class="game-page">
     <h1>
+      <img src="../assets/flower.png" style="height:30px;">
       <router-link :to="{name: 'Home'}" class="link__none-style">Monopoly</router-link>
     </h1>
 
@@ -21,9 +22,9 @@
               class="playList__playerNow"
               v-bind:class="{
               'player1-land ': index == 0,
-              'player2-land': index == 1,
-              'player3-land': index == 2,
-              'player4-land': index == 3,
+              'player2-land_title': index == 1,
+              'player3-land_title': index == 2,
+              'player4-land_title': index == 3,
               }"
             >
               <div v-if="index == playerNowIndex">
@@ -1051,6 +1052,23 @@ td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 0px;
+}
+.player2-land_title {
+  background-image: url("../assets/player2land.png");
+  background-position-x: -12px;
+  background-color: blue;
+}
+.player3-land_title {
+  background-image: url("../assets/player3land.png");
+  background-position-x: -20px;
+  background-position-y: -20px;
+  background-color: purple;
+}
+.player4-land_title {
+  background-image: url("../assets/player4land.png");
+  background-position-x: -5px;
+  background-position-y: -20px;
+  background-color: yellow;
 }
 .player1-land {
   background-image: url("../assets/player1land.png");
