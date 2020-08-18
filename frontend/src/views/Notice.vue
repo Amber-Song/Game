@@ -1,7 +1,7 @@
 <template>
   <div class="introduction-page">
     <h1>
-      <router-link :to="{name: 'Home'}" class="link__none-style">Games</router-link>-- Notice
+      <router-link :to="{name: 'Home'}" class="link__none-style">Games</router-link>-- Changelog
     </h1>
 
     <table>

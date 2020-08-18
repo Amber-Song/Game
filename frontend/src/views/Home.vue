@@ -7,8 +7,8 @@
       <br>While the other player enters the URL, he/she will automatically enter the room.
       <br>* If you want to play on the same device, choose to play locally.
       <br>
-      <br>*
-      <router-link :to="{name: 'Notice'}" class="link__none-style">Notice</router-link>
+      <br>* Click to see
+      <router-link :to="{name: 'Notice'}" class="link__none-style">Changelog</router-link>
     </div>
     <ul>
       <li>
