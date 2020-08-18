@@ -6,6 +6,9 @@
       send the URL which including room number to the other player to invite the other player to enter the room.
       <br>While the other player enters the URL, he/she will automatically enter the room.
       <br>* If you want to play on the same device, choose to play locally.
+      <br>
+      <br>*
+      <router-link :to="{name: 'Notice'}" class="link__none-style">Notice</router-link>
     </div>
     <ul>
       <li>

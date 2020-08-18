@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import Notice from "../views/Notice.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
 import FindAirplaneGame from "../views/FindAirplaneGame.vue";
 import FindAirplaneLocal from "../views/FindAirplaneLocal.vue";
@@ -22,6 +23,11 @@ const routes = [
     name: "Home",
     component: Home,
     alias: "/index.html"
+  },
+  {
+    path: "/Game/notice",
+    name: "Notice",
+    component: Notice
   },
   // {
   //   path: "/about",
