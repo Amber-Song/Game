@@ -5,24 +5,7 @@
       <router-link :to="{name: 'Home'}" class="link__none-style">Seek for airplane's head</router-link>
     </h1>
 
-    <div class="game-notice">
-      <font-awesome-icon :icon="['fas', 'bullhorn']" class="icon__bullborn"/>
-      <span v-if="thisPlayer == 'player1'">
-        Welcome! You are
-        <strong>player1</strong> !
-      </span>
-      <span v-else>Player1 entered the room.</span>
-      <span v-if="player2 != ''">
-        <span v-if="thisPlayer == 'player2'">
-          Welcome! You are
-          <strong>player2</strong> !
-        </span>
-        <span v-else>Player2 entered the room.</span>
-      </span>
-      <span v-else>
-        <strong>Please wait for player2!</strong>
-      </span>
-    </div>
+    <notice v-bind:thisPlayer="thisPlayer" v-bind:player2="player2"></notice>
 
     <div class="game-content">
       Round {{ round }}
