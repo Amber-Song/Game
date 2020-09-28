@@ -122,6 +122,9 @@ export default {
   mounted: function() {
     this.reload();
   },
+  beforeDestroy() {
+    this.clearTime();
+  },
   methods: {
     reload() {
       this.axios
@@ -133,7 +136,7 @@ export default {
         })
         .then(response => {
           if (response.data.Err != "") {
-            window.clearTimeout(this.timer);
+            this.clearTime();
             if (response.data.Err === "Sorry! The room is not existing!") {
               this.$router.push({
                 path: "/Game/FindAirplane/Introduction"

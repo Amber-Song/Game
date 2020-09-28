@@ -195,6 +195,10 @@ export default {
     this.loadData();
   },
 
+  beforeDestroy() {
+    this.clearTimer();
+  },
+
   methods: {
     clearTimer() {
       window.clearTimeout(this.timer);

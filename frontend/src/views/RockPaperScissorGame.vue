@@ -139,6 +139,9 @@ export default {
   mounted: function() {
     this.loadData();
   },
+  beforeDestroy() {
+    this.clearTime();
+  },
   methods: {
     loadData() {
       this.timeStop = window.setTimeout(this.loadData, 1000);

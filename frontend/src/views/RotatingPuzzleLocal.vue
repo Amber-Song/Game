@@ -75,6 +75,9 @@ export default {
       gameTimer: null
     };
   },
+  beforeDestroy() {
+    this.clearTimer();
+  },
   mounted: function() {
     switch (this.boardtype) {
       case "easy":
@@ -234,7 +237,7 @@ export default {
       let isWin = this.checkSuccess();
       if (isWin) {
         this.win = "Congratulation! You win!";
-        window.clearTimeout(this.gameTimer);
+        this.clearTimer();
       }
     },
 

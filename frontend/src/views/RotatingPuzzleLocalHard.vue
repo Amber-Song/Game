@@ -228,6 +228,10 @@ export default {
     this.gameTimer = window.setTimeout(this.updateTimer, 1000);
   },
 
+  beforeDestroy() {
+    this.clearTimer();
+  },
+
   methods: {
     generateColor() {
       for (let i = 0; i < 30; i++) {
@@ -331,7 +335,7 @@ export default {
       let isWin = this.checkSuccess();
       if (isWin) {
         this.win = "Congratulation! You win!";
-        window.clearTimeout(this.gameTimer);
+        this.clearTimer();
       }
     },
 
