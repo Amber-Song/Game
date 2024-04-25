@@ -3,10 +3,10 @@ import Home from '../views/Home.vue'
 import Notice from "../views/Notice.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
 //import FindAirplaneGame from "../views/FindAirplaneGame.vue";
-//import FindAirplaneLocal from "../views/FindAirplaneLocal.vue";
+import FindAirplaneLocal from "../views/FindAirplaneLocal.vue";
 import TicTacToeBoxIntro from "../views/TicTacToeBoxIntro.vue";
 //import TicTacToeBoxGame from "../views/TicTacToeBoxGame.vue";
-//import TicTacToeBoxLocal from "../views/TicTacToeBoxLocal.vue";
+import TicTacToeBoxLocal from "../views/TicTacToeBoxLocal.vue";
 import RotatingPuzzleIntro from "../views/RotatingPuzzleIntro.vue";
 import RotatingPuzzleLocal from "../views/RotatingPuzzleLocal.vue";
 import RotatingPuzzleLocalHard from "../views/RotatingPuzzleLocalHard.vue";
@@ -39,15 +39,15 @@ const router = createRouter({
 //      component: FindAirplaneGame,
 //      props: route => ({ roomid: route.query.room, shape: route.query.shape })
 //    },
-//    {
-//      path: "/FindAirplane/Localgame",
-//      name: "FindAirplaneLocal",
-//      component: FindAirplaneLocal,
-//      props: route => ({
-//        boardlength: route.query.boardlength,
-//        shape: route.query.shape
-//      })
-//    },
+    {
+      path: "/FindAirplane/Localgame",
+      name: "FindAirplaneLocal",
+      component: FindAirplaneLocal,
+      props: route => ({
+        boardlength: route.query.boardlength,
+        shape: route.query.shape
+      })
+    },
     {
       path: "/TicTacToeBox/Introduction",
       name: "TicTacToeBoxIntroduction",
@@ -59,11 +59,11 @@ const router = createRouter({
 //      component: TicTacToeBoxGame,
 //      props: router => ({ roomid: router.query.room })
 //    },
-//    {
-//      path: "/TicTacToeBox/Localgame",
-//      name: "TicTacToeBoxLocal",
-//      component: TicTacToeBoxLocal
-//    },
+    {
+      path: "/TicTacToeBox/Localgame",
+      name: "TicTacToeBoxLocal",
+      component: TicTacToeBoxLocal
+    },
     {
       path: "/RotatingPuzzle/Introduction",
       name: "RotatingPuzzleIntroduction",

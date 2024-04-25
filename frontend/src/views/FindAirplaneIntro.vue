@@ -109,7 +109,7 @@ export default {
 
       if (this.where == "local") {
         this.$router.push({
-          path: "/Game/FindAirplane/Localgame",
+          path: "/FindAirplane/Localgame",
           query: { boardlength: this.boardlength, shape: this.shape }
         });
       } else {
