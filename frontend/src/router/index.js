@@ -11,7 +11,7 @@ import RotatingPuzzleIntro from "../views/RotatingPuzzleIntro.vue";
 import RotatingPuzzleLocal from "../views/RotatingPuzzleLocal.vue";
 import RotatingPuzzleLocalHard from "../views/RotatingPuzzleLocalHard.vue";
 import MonopolyIntro from "../views/MonopolyIntro.vue";
-//import MonopolyLocal from "../views/MonopolyLocal.vue";
+import MonopolyLocal from "../views/MonopolyLocal.vue";
 import NotFound from "../views/NotFound.vue";
 
 const router = createRouter({
@@ -85,12 +85,12 @@ const router = createRouter({
       name: "MonopolyIntroduction",
       component: MonopolyIntro
     },
-//    {
-//      path: "/Monopoly/Localgame",
-//      name: "MonopolyLocal",
-//      component: MonopolyLocal,
-//      props: router => ({ playerNum: router.query.playerNum })
-//    },
+    {
+      path: "/Monopoly/Localgame",
+      name: "MonopolyLocal",
+      component: MonopolyLocal,
+      props: router => ({ playerNum: router.query.playerNum })
+    },
     {
       path: "/.*",
       name: "NotFound",
