@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import Notice from "../views/Notice.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
-//import FindAirplaneGame from "../views/FindAirplaneGame.vue";
+import FindAirplaneGame from "../views/FindAirplaneGame.vue";
 import FindAirplaneLocal from "../views/FindAirplaneLocal.vue";
 import TicTacToeBoxIntro from "../views/TicTacToeBoxIntro.vue";
-//import TicTacToeBoxGame from "../views/TicTacToeBoxGame.vue";
+import TicTacToeBoxGame from "../views/TicTacToeBoxGame.vue";
 import TicTacToeBoxLocal from "../views/TicTacToeBoxLocal.vue";
 import RotatingPuzzleIntro from "../views/RotatingPuzzleIntro.vue";
 import RotatingPuzzleLocal from "../views/RotatingPuzzleLocal.vue";
@@ -33,12 +33,12 @@ const router = createRouter({
       name: "FindAirplaneIntroduction",
       component: FindAirplaneIntro
     },
-//    {
-//      path: "/FindAirplane/Game/room",
-//      name: "FindAirplaneGame",
-//      component: FindAirplaneGame,
-//      props: route => ({ roomid: route.query.room, shape: route.query.shape })
-//    },
+    {
+      path: "/FindAirplane/Game/room",
+      name: "FindAirplaneGame",
+      component: FindAirplaneGame,
+      props: route => ({ roomid: route.query.room, shape: route.query.shape })
+    },
     {
       path: "/FindAirplane/Localgame",
       name: "FindAirplaneLocal",
@@ -53,12 +53,12 @@ const router = createRouter({
       name: "TicTacToeBoxIntroduction",
       component: TicTacToeBoxIntro
     },
-//    {
-//      path: "/TicTacToeBox/Game/room",
-//      name: "TicTacToeBoxGame",
-//      component: TicTacToeBoxGame,
-//      props: router => ({ roomid: router.query.room })
-//    },
+    {
+      path: "/TicTacToeBox/Game/room",
+      name: "TicTacToeBoxGame",
+      component: TicTacToeBoxGame,
+      props: router => ({ roomid: router.query.room })
+    },
     {
       path: "/TicTacToeBox/Localgame",
       name: "TicTacToeBoxLocal",

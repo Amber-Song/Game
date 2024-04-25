@@ -114,7 +114,7 @@ export default {
         });
       } else {
         this.axios
-          .get(`${this.$hostname}/Game/api/FindAirplane/Game`, {
+          .get("/api/FindAirplane/Game", {
             withCredentials: true,
             params: { boardLength: this.boardlength, shape: this.shape }
           })
@@ -124,7 +124,7 @@ export default {
               "Please copy the address shown on next page and send to the other player to invite she/he to enter the game!"
             );
             this.$router.push({
-              path: "/Game/FindAirplane/Game/room",
+              path: "/FindAirplane/Game/room",
               query: { room: response.data, shape: this.shape }
             });
           })

@@ -28,7 +28,7 @@ export default {
   methods: {
     startGame() {
       this.axios
-        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game`, {
+        .get("/api/TicTacToeBox/Game", {
           withCredentials: true
         })
         .then(response => {
