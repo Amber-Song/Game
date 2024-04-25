@@ -1,30 +1,14 @@
-import Vue from "vue";
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import axios from "axios";
-import VueAxios from "vue-axios";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faPlane } from "@fortawesome/free-solid-svg-icons";
-import { faBullhorn } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import notice from "./components/gameNotice.vue";
+import './assets/main.css'
 
-library.add(faPlane);
-library.add(faBullhorn);
-Vue.component("font-awesome-icon", FontAwesomeIcon);
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 
-Vue.component("notice", notice);
+import App from './App.vue'
+import router from './router'
 
-Vue.prototype.$hostname =
-  process.env.NODE_ENV === "development" ? "http://localhost:3000" : "";
+const app = createApp(App)
 
-Vue.use(VueAxios, axios);
+app.use(createPinia())
+app.use(router)
 
-Vue.config.productionTip = false;
-
-new Vue({
-  router,
-  store,
-  render: h => h(App)
-}).$mount("#app");
+app.mount('#app')
