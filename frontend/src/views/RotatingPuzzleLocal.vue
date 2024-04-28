@@ -229,10 +229,10 @@ export default {
     // This make the four color rotate
     rotate(i, j) {
       var color = this.board[i][j];
-      this.$set(this.board[i], j, this.board[i - 1][j]);
-      this.$set(this.board[i - 1], j, this.board[i - 1][j - 1]);
-      this.$set(this.board[i - 1], j - 1, this.board[i][j - 1]);
-      this.$set(this.board[i], j - 1, color);
+      this.board[i][j] = this.board[i - 1][j];
+      this.board[i - 1][j] = this.board[i - 1][j - 1];
+      this.board[i - 1][j - 1] = this.board[i][j - 1];
+      this.board[i][j - 1] = color;
 
       let isWin = this.checkSuccess();
       if (isWin) {

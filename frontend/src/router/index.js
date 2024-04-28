@@ -1,5 +1,4 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
 import Notice from "../views/Notice.vue";
 import FindAirplaneIntro from "../views/FindAirplaneIntro.vue";
@@ -15,102 +14,89 @@ import MonopolyIntro from "../views/MonopolyIntro.vue";
 import MonopolyLocal from "../views/MonopolyLocal.vue";
 import NotFound from "../views/NotFound.vue";
 
-Vue.use(VueRouter);
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      name: "Home",
+      component: Home,
+      alias: "/index.html"
+    },
+    {
+      path: "/notice",
+      name: "Notice",
+      component: Notice
+    },
+    {
+      path: "/FindAirplane/Introduction",
+      name: "FindAirplaneIntroduction",
+      component: FindAirplaneIntro
+    },
+    {
+      path: "/FindAirplane/Game/room",
+      name: "FindAirplaneGame",
+      component: FindAirplaneGame,
+      props: route => ({ roomid: route.query.room, shape: route.query.shape })
+    },
+    {
+      path: "/FindAirplane/Localgame",
+      name: "FindAirplaneLocal",
+      component: FindAirplaneLocal,
+      props: route => ({
+        boardlength: route.query.boardlength,
+        shape: route.query.shape
+      })
+    },
+    {
+      path: "/TicTacToeBox/Introduction",
+      name: "TicTacToeBoxIntroduction",
+      component: TicTacToeBoxIntro
+    },
+    {
+      path: "/TicTacToeBox/Game/room",
+      name: "TicTacToeBoxGame",
+      component: TicTacToeBoxGame,
+      props: router => ({ roomid: router.query.room })
+    },
+    {
+      path: "/TicTacToeBox/Localgame",
+      name: "TicTacToeBoxLocal",
+      component: TicTacToeBoxLocal
+    },
+    {
+      path: "/RotatingPuzzle/Introduction",
+      name: "RotatingPuzzleIntroduction",
+      component: RotatingPuzzleIntro
+    },
+    {
+      path: "/RotatingPuzzle/Localgame",
+      name: "RotatingPuzzleLocal",
+      component: RotatingPuzzleLocal,
+      props: router => ({ boardtype: router.query.board })
+    },
+    {
+      path: "/RotatingPuzzle/Localgame/Hard",
+      name: "RotatingPuzzleLocalHard",
+      component: RotatingPuzzleLocalHard
+    },
+    {
+      path: "/Monopoly/Introduction",
+      name: "MonopolyIntroduction",
+      component: MonopolyIntro
+    },
+    {
+      path: "/Monopoly/Localgame",
+      name: "MonopolyLocal",
+      component: MonopolyLocal,
+      props: router => ({ playerNum: router.query.playerNum })
+    },
+    {
+      path: "/.*",
+      name: "NotFound",
+      component: NotFound
+    }
+  ]
+})
 
-const routes = [
-  {
-    path: "/Game",
-    name: "Home",
-    component: Home,
-    alias: "/index.html"
-  },
-  {
-    path: "/Game/notice",
-    name: "Notice",
-    component: Notice
-  },
-  // {
-  //   path: "/about",
-  //   name: "About",
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ "../views/About.vue")
-  // },
-  {
-    path: "/Game/FindAirplane/Introduction",
-    name: "FindAirplaneIntroduction",
-    component: FindAirplaneIntro
-  },
-  {
-    path: "/Game/FindAirplane/Game/room",
-    name: "FindAirplaneGame",
-    component: FindAirplaneGame,
-    props: route => ({ roomid: route.query.room, shape: route.query.shape })
-  },
-  {
-    path: "/Game/FindAirplane/Localgame",
-    name: "FindAirplaneLocal",
-    component: FindAirplaneLocal,
-    props: route => ({
-      boardlength: route.query.boardlength,
-      shape: route.query.shape
-    })
-  },
-  {
-    path: "/Game/TicTacToeBox/Introduction",
-    name: "TicTacToeBoxIntroduction",
-    component: TicTacToeBoxIntro
-  },
-  {
-    path: "/Game/TicTacToeBox/Game/room",
-    name: "TicTacToeBoxGame",
-    component: TicTacToeBoxGame,
-    props: router => ({ roomid: router.query.room })
-  },
-  {
-    path: "/Game/TicTacToeBox/Localgame",
-    name: "TicTacToeBoxLocal",
-    component: TicTacToeBoxLocal
-  },
-  {
-    path: "/Game/RotatingPuzzle/Introduction",
-    name: "RotatingPuzzleIntroduction",
-    component: RotatingPuzzleIntro
-  },
-  {
-    path: "/Game/RotatingPuzzle/Localgame",
-    name: "RotatingPuzzleLocal",
-    component: RotatingPuzzleLocal,
-    props: router => ({ boardtype: router.query.board })
-  },
-  {
-    path: "/Game/RotatingPuzzle/Localgame/Hard",
-    name: "RotatingPuzzleLocalHard",
-    component: RotatingPuzzleLocalHard
-  },
-  {
-    path: "/Game/Monopoly/Introduction",
-    name: "MonopolyIntroduction",
-    component: MonopolyIntro
-  },
-  {
-    path: "/Game/Monopoly/Localgame",
-    name: "MonopolyLocal",
-    component: MonopolyLocal,
-    props: router => ({ playerNum: router.query.playerNum })
-  },
-  {
-    path: "*",
-    name: "NotFound",
-    component: NotFound
-  }
-];
-
-const router = new VueRouter({
-  mode: "history",
-  routes
-});
-
-export default router;
+export default router

@@ -8,22 +8,16 @@
       <br>* If you want to play on the same device, choose to play locally.
       <br>
       <br>* Click to see
-      <router-link :to="{name: 'Notice'}" class="link__none-style">Changelog</router-link>
+      <RouterLink to="/notice" class="link__none-style">Changelog</RouterLink>
     </div>
     <ul>
       <li>
         <span class="fa fa-rotate-right icon"></span>
-        <router-link
-          :to="{name: 'RotatingPuzzleIntroduction'}"
-          class="link__none-style"
-        >Rotating puzzle (1 player)</router-link>
+        <RouterLink to="/RotatingPuzzle/Introduction" class="link__none-style">Rotating puzzle (1 player)</RouterLink>
       </li>
       <li>
         <font-awesome-icon :icon="['fas', 'plane']" class="icon__airplane icon"/>
-        <router-link
-          :to="{name: 'FindAirplaneIntroduction'}"
-          class="link__none-style"
-        >Seek for Airplane's Head (2 players)</router-link>
+        <RouterLink to="/FindAirplane/Introduction" class="link__none-style">Seek for Airplane's Head (2 players)</RouterLink>
       </li>
       <!-- <li>
         <span class="fa fa-hand-scissors-o icon__scissor icon"></span>
@@ -34,19 +28,13 @@
       </li>-->
       <li>
         <span class="fa fa-cube icon"></span>
-        <router-link
-          :to="{name: 'TicTacToeBoxIntroduction'}"
-          class="link__none-style"
-        >Tic Tac Toe Box version (2 players)</router-link>
+        <RouterLink to="/TicTacToeBox/Introduction" class="link__none-style">Tic Tac Toe Box version (2 players)</RouterLink>
       </li>
       <li>
         <span class="icon">
           <img src="../assets/flower.png">
         </span>
-        <router-link
-          :to="{name: 'MonopolyIntroduction'}"
-          class="link__none-style"
-        >Monopoly (2-4 players)</router-link>
+        <RouterLink to="/Monopoly/Introduction" class="link__none-style">Monopoly (2-4 players)</RouterLink>
       </li>
     </ul>
   </div>

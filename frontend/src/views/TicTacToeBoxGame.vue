@@ -206,14 +206,14 @@ export default {
 
     loadData() {
       this.axios
-        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game/wait`, {
+        .get("/api/TicTacToeBox/Game/wait", {
           withCredentials: true,
           params: { room: this.roomid }
         })
         .then(response => {
           if (response.data.Err != "") {
             if (response.data.Err == "Sorry! The room is not existing!") {
-              this.$router.push({ path: "/Game/TicTacToeBox/Introduction" });
+              this.$router.push({ path: "/TicTacToeBox/Introduction" });
             }
             if (response.data.Err == "Sorry! This room is full!") {
               console.log("room full");
@@ -247,7 +247,7 @@ export default {
 
     queryServer() {
       this.axios
-        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game/room`, {
+        .get("/api/TicTacToeBox/Game/room", {
           withCredentials: true,
           params: {
             room: this.roomid
@@ -256,7 +256,7 @@ export default {
         .then(response => {
           if (response.data.Err != "") {
             if (response.data.Err == "Sorry! The room is not existing!") {
-              this.$router.push({ path: "/Game/TicTacToeBox/Introduction" });
+              this.$router.push({ path: "/TicTacToeBox/Introduction" });
             }
             if (response.data.Err == "Sorry! This room is full!") {
               console.log("room full");
@@ -343,7 +343,7 @@ export default {
             this.collection1.splice(this.boxChosenIndex, 1);
             this.axios
               .post(
-                `${this.$hostname}/Game/api/TicTacToeBox/Game/room`,
+                "/api/TicTacToeBox/Game/room",
                 {
                   BoxCollection1: this.collection1,
                   Board: this.board,
@@ -364,7 +364,7 @@ export default {
             this.collection2.splice(this.boxChosenIndex, 1);
             this.axios
               .post(
-                `${this.$hostname}/Game/api/TicTacToeBox/Game/room`,
+                "/api/TicTacToeBox/Game/room",
                 {
                   BoxCollection2: this.collection2,
                   Board: this.board,
@@ -402,7 +402,7 @@ export default {
 
             this.axios
               .post(
-                `${this.$hostname}/Game/api/TicTacToeBox/Game/room`,
+                "/api/TicTacToeBox/Game/room",
                 {
                   BoxCollection1: this.collection1,
                   BoxCollection2: this.collection2,

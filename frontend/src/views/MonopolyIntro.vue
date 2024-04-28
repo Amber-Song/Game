@@ -85,25 +85,6 @@ export default {
     return { playerNum: 2 };
   },
   methods: {
-    // startGame() {
-    //   this.axios
-    //     .get(`${this.$hostname}/Game/api/TicTacToeBox/Game`, {
-    //       withCredentials: true
-    //     })
-    //     .then(response => {
-    //       alert(
-    //         "Please copy the address shown on next page and send to the other player to invite she/he to enter the game!"
-    //       );
-    //       this.$router.push({
-    //         path: "/Game/TicTacToeBox/Game/room",
-    //         query: { room: response.data }
-    //       });
-    //     })
-    //     .catch(error => {
-    //       console.log("Error:", error); // Logs out the error
-    //     });
-    // },
-
     startLocalGame() {
       if (this.playerNum > 4) {
         this.playerNum = 4;
@@ -112,7 +93,7 @@ export default {
         this.playerNum = 2;
       }
       this.$router.push({
-        path: "/Game/Monopoly/Localgame",
+        path: "/Monopoly/Localgame",
         query: { playerNum: this.playerNum }
       });
     }

@@ -13,10 +13,14 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia';
+import { useAirplaneStore } from '../stores/airplane';
+
 export default {
   computed: {
+    ...mapStores(useAirplaneStore),
     airplaneB() {
-      return this.$store.state.airplaneB;
+      return this.airplaneStore.airplaneB;
     }
   }
 };

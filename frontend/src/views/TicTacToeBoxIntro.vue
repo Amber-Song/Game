@@ -28,7 +28,7 @@ export default {
   methods: {
     startGame() {
       this.axios
-        .get(`${this.$hostname}/Game/api/TicTacToeBox/Game`, {
+        .get("/api/TicTacToeBox/Game", {
           withCredentials: true
         })
         .then(response => {
@@ -36,7 +36,7 @@ export default {
             "Please copy the address shown on next page and send to the other player to invite she/he to enter the game!"
           );
           this.$router.push({
-            path: "/Game/TicTacToeBox/Game/room",
+            path: "/TicTacToeBox/Game/room",
             query: { room: response.data }
           });
         })
@@ -47,7 +47,7 @@ export default {
 
     startLocalGame() {
       this.$router.push({
-        path: "/Game/TicTacToeBox/Localgame"
+        path: "/TicTacToeBox/Localgame"
       });
     }
   }

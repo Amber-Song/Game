@@ -153,8 +153,8 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("frontend/dist/js/"))))
-	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("frontend/dist/css/"))))
+	// http.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir("frontend/dist/js/"))))
+	// http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("frontend/dist/css/"))))
 
 	// Airplane
 	airplaneRooms = make(map[string]AirplaneRoom, 0)
@@ -167,21 +167,21 @@ func main() {
 	tictactoeGames = make(map[string]TicTacToeBoxGame, 0)
 
 	// Index
-	http.HandleFunc("/", indexHandler)
-	http.HandleFunc("/Game", indexHandler)
+	// http.HandleFunc("/", indexHandler)
+	// http.HandleFunc("/Game", indexHandler)
 	// Airplane
-	http.HandleFunc("/Game/api/FindAirplane/Game", airplaneInitHandler)
-	http.HandleFunc("/Game/api/FindAirplane/Game/room", airplaneGameHandler)
+	http.HandleFunc("/api/FindAirplane/Game", airplaneInitHandler)
+	http.HandleFunc("/api/FindAirplane/Game/room", airplaneGameHandler)
 	// http.HandleFunc("/api/FindAirplane/restart", airplaneRestartHandler)
 	// Rock paper scissor
-	http.HandleFunc("/Game/api/RockPaperScissor/Game", rpsInitHandler)
-	http.HandleFunc("/Game/api/RockPaperScissor/Game/wait", rpsWaitForPlayer2Handler)
-	http.HandleFunc("/Game/api/RockPaperScissor/Game/room", rpsGameHandler)
-	http.HandleFunc("/Game/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
+	// http.HandleFunc("/api/RockPaperScissor/Game", rpsInitHandler)
+	// http.HandleFunc("/api/RockPaperScissor/Game/wait", rpsWaitForPlayer2Handler)
+	// http.HandleFunc("/api/RockPaperScissor/Game/room", rpsGameHandler)
+	// http.HandleFunc("/api/RockPaperScissor/Game/roundend", rpsRoundHandler)
 	// TicTacToe
-	http.HandleFunc("/Game/api/TicTacToeBox/Game", tictactoeBoxInitHandler)
-	http.HandleFunc("/Game/api/TicTacToeBox/Game/wait", tictactoeBoxWaitHandler)
-	http.HandleFunc("/Game/api/TicTacToeBox/Game/room", tictactoeBoxGameHandler)
+	http.HandleFunc("/api/TicTacToeBox/Game", tictactoeBoxInitHandler)
+	http.HandleFunc("/api/TicTacToeBox/Game/wait", tictactoeBoxWaitHandler)
+	http.HandleFunc("/api/TicTacToeBox/Game/room", tictactoeBoxGameHandler)
 
 	fmt.Println(http.ListenAndServe(":3000", nil))
 }

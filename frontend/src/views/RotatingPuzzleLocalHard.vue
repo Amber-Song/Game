@@ -305,32 +305,12 @@ export default {
       var startItem = this.board[startRow][startColumn];
 
       // Change color!
-      this.$set(
-        this.board[startRow],
-        startColumn,
-        this.board[startRow + 1][startColumn]
-      );
-      this.$set(
-        this.board[startRow + 1],
-        startColumn,
-        this.board[startRow + 1][startColumn + 1]
-      );
-      this.$set(
-        this.board[startRow + 1],
-        startColumn + 1,
-        this.board[startRow + 1][startColumn + 2]
-      );
-      this.$set(
-        this.board[startRow + 1],
-        startColumn + 2,
-        this.board[startRow][startColumn + 2]
-      );
-      this.$set(
-        this.board[startRow],
-        startColumn + 2,
-        this.board[startRow][startColumn + 1]
-      );
-      this.$set(this.board[startRow], startColumn + 1, startItem);
+      this.board[startRow][startColumn] = this.board[startRow + 1][startColumn];
+      this.board[startRow + 1][startColumn] = this.board[startRow + 1][startColumn + 1];
+      this.board[startRow + 1][startColumn + 1] = this.board[startRow + 1][startColumn + 2];
+      this.board[startRow + 1][startColumn + 2] = this.board[startRow][startColumn + 2];
+      this.board[startRow][startColumn + 2] = this.board[startRow][startColumn + 1];
+      this.board[startRow][startColumn + 1] = startItem;
 
       let isWin = this.checkSuccess();
       if (isWin) {

@@ -1,32 +1,8 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  state: {
-    airplaneA: [
-      [3, 3, 4, 3, 3, 3, 3, 3],
-      [4, 3, 4, 3, 3, 3, 3, 3],
-      [4, 4, 4, 5, 3, 3, 3, 3],
-      [4, 3, 4, 3, 3, 3, 3, 3],
-      [3, 3, 4, 3, 3, 5, 3, 3],
-      [3, 3, 3, 4, 4, 4, 4, 4],
-      [3, 3, 3, 3, 3, 4, 3, 3],
-      [3, 3, 3, 3, 4, 4, 4, 3]
-    ],
-    airplaneB: [
-      [3, 3, 3, 3, 3, 3, 3, 3, 4, 3],
-      [3, 3, 3, 3, 3, 3, 3, 4, 3, 3],
-      [3, 3, 3, 3, 3, 3, 4, 3, 3, 4],
-      [3, 3, 3, 3, 3, 5, 4, 4, 4, 4],
-      [3, 3, 3, 3, 3, 3, 4, 3, 3, 4],
-      [3, 3, 3, 5, 3, 3, 3, 4, 3, 3],
-      [3, 3, 4, 4, 4, 3, 3, 3, 4, 3],
-      [3, 4, 3, 4, 3, 4, 3, 3, 3, 3],
-      [4, 3, 3, 4, 3, 3, 4, 3, 3, 3],
-      [3, 3, 4, 4, 4, 3, 3, 3, 3, 3]
-    ],
+export const usePuzzleStore = defineStore('puzzle', () => {
+  return {
     rotatePuzzle4Example: [
       ["yellow", "green", "green", "green"],
       ["blue", "blue", "red", "red"],
@@ -215,6 +191,5 @@ export default new Vuex.Store({
         ""
       ]
     ]
-  },
-  mutations: {}
-});
+  } 
+})

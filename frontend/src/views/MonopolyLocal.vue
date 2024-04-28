@@ -763,16 +763,8 @@ export default {
       let playerGotPaidIndex = this.getPlayerIndex(this.playerPayTo);
       let playerBeforeGot = this.playerList[playerGotPaidIndex].coinNum;
 
-      this.$set(
-        this.playerList[this.playerNowIndex],
-        "coinNum",
-        coinBeforePay - this.payment
-      );
-      this.$set(
-        this.playerList[playerGotPaidIndex],
-        "coinNum",
-        playerBeforeGot + this.payment
-      );
+      this.playerList[this.playerNowIndex]["coinNum"] = coinBeforePay - this.payment;
+      this.playerList[playerGotPaidIndex]["coinNum"] = playerBeforeGot + this.payment;
 
       this.nextStepOfGame();
       this.payment = 0;
@@ -871,18 +863,10 @@ export default {
       this.updateBlocks(this.board[this.grassPieceOnei][this.grassPieceOnej]);
       this.updateBlocks(this.board[this.grassPieceTwoi][this.grassPieceTwoj]);
 
-      this.$set(
-        this.board[this.grassPieceOnei],
-        this.grassPieceOnej,
-        this.playerNow
-      );
-      this.$set(
-        this.board[this.grassPieceTwoi],
-        this.grassPieceTwoj,
-        this.playerNow
-      );
+      this.board[this.grassPieceOnei][this.grassPieceOnej] = this.playerNow;
+      this.board[this.grassPieceTwoi][this.grassPieceTwoj] = this.playerNow;
       let newGrassNum = this.playerList[this.playerNowIndex].grassNum - 1;
-      this.$set(this.playerList[this.playerNowIndex], "grassNum", newGrassNum);
+      this.playerList[this.playerNowIndex]["grassNum"] = newGrassNum;
 
       this.resetGrassChoose();
       if (!this.isGameFinish()) {
@@ -939,17 +923,17 @@ export default {
       if (this.playerNow != originalPlayer && originalPlayer != "") {
         let thisplayer = this.playerList[this.getPlayerIndex(originalPlayer)];
         let blocks = thisplayer.blockNum;
-        this.$set(thisplayer, "blockNum", blocks - 1);
+        thisplayer["blockNum"] = blocks - 1;
         thisplayer = this.playerList[this.playerNowIndex];
         blocks = thisplayer.blockNum;
-        this.$set(thisplayer, "blockNum", blocks + 1);
+        thisplayer["blockNum"] = blocks + 1;
 
         return;
       }
       if (originalPlayer == "") {
         let thisplayer = this.playerList[this.playerNowIndex];
         let blocks = thisplayer.blockNum;
-        this.$set(thisplayer, "blockNum", blocks + 1);
+        thisplayer["blockNum"] = blocks + 1;
       }
     },
     nextPlayer() {

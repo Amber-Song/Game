@@ -128,7 +128,7 @@ export default {
   methods: {
     reload() {
       this.axios
-        .get(`${this.$hostname}/Game/api/FindAirplane/Game/room`, {
+        .get("/api/FindAirplane/Game/room", {
           withCredentials: true,
           params: {
             room: this.roomid
@@ -139,7 +139,7 @@ export default {
             this.clearTime();
             if (response.data.Err === "Sorry! The room is not existing!") {
               this.$router.push({
-                path: "/Game/FindAirplane/Introduction"
+                path: "/FindAirplane/Introduction"
               });
             }
             if (response.data.Err === "Sorry! This room is full!") {
@@ -170,7 +170,7 @@ export default {
         }
         this.axios
           .post(
-            `${this.$hostname}/Game/api/FindAirplane/Game/room`,
+            "/api/FindAirplane/Game/room",
             {
               Board1: this.player1Board,
               Board2: this.player2Board

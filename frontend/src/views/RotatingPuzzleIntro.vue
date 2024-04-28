@@ -115,6 +115,9 @@
 </template>
 
 <script>
+import { mapStores } from 'pinia';
+import { usePuzzleStore } from '../stores/puzzle';
+
 export default {
   data: function() {
     return {
@@ -122,34 +125,35 @@ export default {
     };
   },
   computed: {
+    ...mapStores(usePuzzleStore),
     board4() {
-      return this.$store.state.rotatePuzzle4Example;
+      return this.puzzleStore.rotatePuzzle4Example;
     },
     board4Target() {
-      return this.$store.state.rotatePuzzle4Target;
+      return this.puzzleStore.rotatePuzzle4Target;
     },
     board6() {
-      return this.$store.state.rotatePuzzle6Example;
+      return this.puzzleStore.rotatePuzzle6Example;
     },
     board6Target() {
-      return this.$store.state.rotatePuzzle6Target;
+      return this.puzzleStore.rotatePuzzle6Target;
     },
     board11() {
-      return this.$store.state.rotatePuzzle11Example;
+      return this.puzzleStore.rotatePuzzle11Example;
     },
     board11Target() {
-      return this.$store.state.rotatePuzzle11Target;
+      return this.puzzleStore.rotatePuzzle11Target;
     }
   },
   methods: {
     startLocalGame() {
       if (this.board == "hell") {
         this.$router.push({
-          path: "/Game/RotatingPuzzle/Localgame/Hard"
+          path: "/RotatingPuzzle/Localgame/Hard"
         });
       } else {
         this.$router.push({
-          path: "/Game/RotatingPuzzle/Localgame",
+          path: "/RotatingPuzzle/Localgame",
           query: { board: this.board }
         });
       }
