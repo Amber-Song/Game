@@ -12,4 +12,4 @@ Monopoly (2-4 players)
 
 
 
-To play the game, please head to http://ambersong.me/Game .
+To play the game, please head to http://ambersong.me/ .
