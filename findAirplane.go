@@ -2,7 +2,7 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"math/rand"
 	"net/http"
 	"strconv"
@@ -577,7 +577,7 @@ func airplaneGameHandler(w http.ResponseWriter, r *http.Request) {
 	// Check if it is post or get
 	if r.Method == http.MethodPost {
 		//	if post, get new data, update it and then send the data back
-		reqBody, err := ioutil.ReadAll(r.Body)
+		reqBody, err := io.ReadAll(r.Body)
 		logError(err)
 		var receiveGame AirplaneGame
 		err = json.Unmarshal(reqBody, &receiveGame)
