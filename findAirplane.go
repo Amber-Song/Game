@@ -327,7 +327,7 @@ func (airplane AirplaneTypeB) placeAirplane(i int, j int, direction string, boar
 
 	switch direction {
 	case "up":
-		for index := i + 1; index <= i+3; index++ {
+		for index := i + 1; index <= i+4; index++ {
 			board[index][j] = 1
 		}
 		for index := 1; index <= 3; index++ {
@@ -335,10 +335,10 @@ func (airplane AirplaneTypeB) placeAirplane(i int, j int, direction string, boar
 			board[i+index][j-index] = 1
 		}
 		for index := j - 1; index <= j+1; index++ {
-			board[i+3][index] = 1
+			board[i+4][index] = 1
 		}
 	case "down":
-		for index := i - 1; index >= i-3; index-- {
+		for index := i - 1; index >= i-4; index-- {
 			board[index][j] = 1
 		}
 		for index := 1; index <= 3; index++ {
@@ -346,10 +346,10 @@ func (airplane AirplaneTypeB) placeAirplane(i int, j int, direction string, boar
 			board[i-index][j-index] = 1
 		}
 		for index := j - 1; index <= j+1; index++ {
-			board[i-3][index] = 1
+			board[i-4][index] = 1
 		}
 	case "left":
-		for index := j + 1; index <= j+3; index++ {
+		for index := j + 1; index <= j+4; index++ {
 			board[i][index] = 1
 		}
 		for index := 1; index <= 3; index++ {
@@ -357,10 +357,10 @@ func (airplane AirplaneTypeB) placeAirplane(i int, j int, direction string, boar
 			board[i-index][j+index] = 1
 		}
 		for index := i - 1; index <= i+1; index++ {
-			board[index][j+3] = 1
+			board[index][j+4] = 1
 		}
 	case "right":
-		for index := j - 1; index >= j-3; index-- {
+		for index := j - 1; index >= j-4; index-- {
 			board[i][index] = 1
 		}
 		for index := 1; index <= 3; index++ {
@@ -368,7 +368,7 @@ func (airplane AirplaneTypeB) placeAirplane(i int, j int, direction string, boar
 			board[i-index][j-index] = 1
 		}
 		for index := i - 1; index <= i+1; index++ {
-			board[index][j-3] = 1
+			board[index][j-4] = 1
 		}
 	}
 	return board
