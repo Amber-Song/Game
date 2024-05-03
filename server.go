@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"math/rand"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -147,7 +147,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b, err := ioutil.ReadFile("frontend/dist/index.html")
+	b, err := os.ReadFile("frontend/dist/index.html")
 	logError(err)
 	w.Write(b)
 }
